@@ -1,0 +1,75 @@
+# Git
+.git
+.gitignore
+.github/
+
+# Secrets: pass via env_file/runtime, never COPY into image
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials/
+
+# Python caches / virtualenvs
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+.venv/
+venv/
+env/
+ENV/
+
+# Build / coverage
+build/
+dist/
+*.egg-info/
+.eggs/
+.coverage
+.coverage.*
+htmlcov/
+coverage/
+
+# Logs / temp
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Local DB/data
+*.db
+*.sqlite
+*.sqlite3
+postgres-data/
+postgres_data/
+pgdata/
+
+# Frontend artifacts if monorepo later
+node_modules/
+.next/
+out/
+.vercel/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Docs/local archives not needed by runtime image
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
