@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: oniria
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "3310:5432"
+    volumes:
+      - oniria_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d oniria"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    env_file: .env
+    environment:
+      # Inside Docker, PostgreSQL is reached by the service name "db" on 5432.
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/oniria
+      FRONTEND_ORIGINS: http://localhost:3200,http://127.0.0.1:3200
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "6200:6200"
+
+volumes:
+  oniria_pg:
