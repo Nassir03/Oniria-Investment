@@ -1,88 +1,154 @@
-# \# ONIRIA Investments — Database
+# ONIRIA Investments Backend
 
-# 
+FastAPI backend implementing the ONIRIA implementation plan: public projects/news APIs, lead capture, Supabase JWT staff authorization, newsroom CRUD/publish/unpublish/archive, lead management, signed storage uploads, audit logs, email notifications, PostgreSQL/SQLAlchemy and Alembic.
 
-# PostgreSQL 17 (Supabase-managed) migration files live in `database/migrations`
+## Ports used by this project
 
-# and should be applied in filename order.
+- Frontend: `http://localhost:3200`
+- Backend API: `http://localhost:6200`
+- Swagger/OpenAPI: `http://localhost:6200/docs`
+- Health check: `http://localhost:6200/health`
+- Local Windows PostgreSQL: `127.0.0.1:3310`
 
-# 
+## 1. Windows local setup (recommended when PostgreSQL is installed on Windows)
 
-# \## Local Setup
+Open PowerShell in the backend project folder:
 
-# 
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
 
-# 1\. Install PostgreSQL 17 and pgAdmin 4.
+If `.env` does not exist, create it from `.env.example`:
 
-# 2\. In pgAdmin, create a new database named `oniria\_investments`.
+```powershell
+Copy-Item .env.example .env
+```
 
-# 3\. Open a Query Tool on `oniria\_investments` and run each file in
+Edit `.env` and set your real PostgreSQL password:
 
-# &#x20;  `database/migrations/` in filename order (001 through 004).
+```env
+DATABASE_URL=postgresql+asyncpg://postgres:YOUR_POSTGRES_PASSWORD@127.0.0.1:3310/oniria
+FRONTEND_ORIGINS=http://localhost:3200,http://127.0.0.1:3200
+```
 
-# 4\. Run `database/seed/001\_projects\_seed.sql` to load the four placeholder
+Make sure PostgreSQL is running and create a database named `oniria` before running migrations.
 
-# &#x20;  ONIRIA projects (Stone Town, Michamvi, ONA Towers, V Town).
+## 2. Create/update database tables
 
-# 5\. See `database/docs/database-dictionary.md` for a full explanation of
+```powershell
+alembic upgrade head
+python seed.py
+```
 
-# &#x20;  every table and field.
+To verify migration rollback/re-apply on a development database:
 
-# 
+```powershell
+alembic downgrade base
+alembic upgrade head
+python seed.py
+```
 
-# \## Authentication
+Do not run the downgrade command against a database containing data you need to keep.
 
-# 
+## 3. Run the backend on port 6200
 
-# `profiles.id` is designed to match Supabase Auth's `auth.users.id` exactly.
+```powershell
+python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 6200
+```
 
-# Staff sign in through Supabase Auth; the backend (FastAPI) validates the
+Open:
 
-# JWT and checks `staff\_roles` for permissions on every protected request.
+- `http://localhost:6200/health`
+- `http://localhost:6200/docs`
 
-# 
+A healthy database connection returns:
 
-# \## Row-Level Security
+```json
+{"status":"ok","database":"ok","environment":"local"}
+```
 
-# 
+## 4. Run the frontend on port 3200
 
-# RLS is enabled on all sensitive tables (`profiles`, `staff\_roles`, `leads`,
+In the frontend project folder, use the command appropriate to that frontend. For a Next.js project:
 
-# `lead\_notes`, `audit\_log`, `site\_settings`, `projects`, `news\_articles`).
+```powershell
+npm install
+npm run dev -- -p 3200
+```
 
-# 
+The frontend should call the backend at:
 
-# \- `projects` and `news\_articles` allow public read access only where
+```text
+http://localhost:6200
+```
 
-# &#x20; `status = 'published'`.
+## 5. Run tests
 
-# \- All other RLS-enabled tables have no public policy — they are accessible
+From the backend folder with the virtual environment active:
 
-# &#x20; only through the backend's privileged service-role connection.
+```powershell
+python -m pytest -q
+```
 
-# 
+## 6. Optional Docker run
 
-# \## Migration Files
+Docker Compose is an alternative to the Windows PostgreSQL setup. Do not start its PostgreSQL service while another PostgreSQL server is already using Windows port `3310`.
 
-# 
+```powershell
+docker compose up --build
+```
 
-# | File | Contents |
+Docker exposes:
 
-# |---|---|
+- API: `http://localhost:6200`
+- PostgreSQL: `localhost:3310`
 
-# | 001\_profiles\_staff\_roles.sql | Staff profiles and role assignments |
+Inside Docker, the API connects to PostgreSQL using `db:5432`; this is intentionally different from the Windows-local `.env` connection `127.0.0.1:3310`.
 
-# | 002\_projects.sql | Portfolio projects, media, business areas |
+## 7. Staff authentication
 
-# | 003\_newsroom.sql | News categories, articles, and article-category links |
+Supabase is not required to test public routes locally. Protected admin routes require these values in `.env`:
 
-# | 004\_leads\_settings\_audit.sql | Leads, lead notes, site settings, audit log |
+```env
+SUPABASE_URL=...
+SUPABASE_JWT_ISSUER=...
+SUPABASE_JWKS_URL=...
+SUPABASE_SERVICE_ROLE_KEY=...
+```
 
-# 
+The frontend signs staff in with Supabase Auth and sends `Authorization: Bearer <access_token>` to protected endpoints. FastAPI validates the token and then loads roles from `staff_roles`.
 
-# Never commit real passwords, service-role keys, or production credentials.
+## 8. Main endpoints
 
-# 
+Public:
 
-# Maintained by Kelvin — Database Lead.
+- `GET /api/v1/projects`
+- `GET /api/v1/projects/{slug}`
+- `GET /api/v1/news`
+- `GET /api/v1/news/{slug}`
+- `POST /api/v1/leads`
+- `GET /api/v1/business-areas`
+- `GET /api/v1/site-settings`
 
+Protected:
+
+- `GET /api/v1/admin/me`
+- `GET/POST /api/v1/admin/news`
+- `PATCH /api/v1/admin/news/{id}`
+- `POST /api/v1/admin/news/{id}/publish`
+- `POST /api/v1/admin/news/{id}/unpublish`
+- `DELETE /api/v1/admin/news/{id}`
+- `GET /api/v1/admin/leads`
+- `PATCH /api/v1/admin/leads/{id}`
+- `POST /api/v1/admin/uploads/sign`
+
+## 9. Production notes
+
+- Keep `.env`, `DATABASE_URL`, Supabase service-role keys and email keys out of Git.
+- Use a managed rate limiter such as Redis when running multiple API instances.
+- Configure Supabase Storage before testing signed uploads.
+- Apply migrations in staging before production.
+- Add RLS as a second database protection layer if the database is also accessed directly through Supabase APIs.
