@@ -169,6 +169,15 @@ class SiteSetting(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default='now()', nullable=False)
 
 
+class SiteVisit(Base, UUIDPrimaryKeyMixin):
+    __tablename__ = 'site_visits'
+    path: Mapped[str] = mapped_column(String(500), index=True)
+    session_id: Mapped[str | None] = mapped_column(String(120), index=True)
+    referrer: Mapped[str | None] = mapped_column(Text)
+    user_agent: Mapped[str | None] = mapped_column(String(500))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default='now()', nullable=False, index=True)
+
+
 class AuditLog(Base, UUIDPrimaryKeyMixin):
     __tablename__ = 'audit_log'
     actor_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey('profiles.id', ondelete='SET NULL'), index=True)

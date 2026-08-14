@@ -56,11 +56,11 @@ async function proxy(request: NextRequest, context: { params: Promise<{ path: st
       headers: responseHeaders,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Backend request failed';
+    const message = error instanceof Error ? error.message : 'ONIRIA service request failed';
     return NextResponse.json(
       {
         code: 'backend_unreachable',
-        message: 'The ONIRIA backend could not be reached. Confirm FastAPI is running on port 6200 and restart the frontend.',
+        message: 'The ONIRIA service could not be reached. Please confirm the service is running and try again.',
         detail: message,
       },
       { status: 502 },

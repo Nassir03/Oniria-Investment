@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import Header from './Header';
 import Footer from './Footer';
+import SiteAnalytics from './SiteAnalytics';
 
 export default function SiteChrome({ children }: { children: ReactNode }) {
   const path = usePathname();
@@ -13,6 +14,7 @@ export default function SiteChrome({ children }: { children: ReactNode }) {
 
   return (
     <>
+      <SiteAnalytics />
       <Header />
       {children}
       <Footer />

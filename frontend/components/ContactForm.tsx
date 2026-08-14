@@ -66,7 +66,6 @@ export default function ContactForm({ projects, selectedProjectId: selectedProje
       message,
       preferred_contact_method: fd.get('preferred_contact_method') || null,
       consent: fd.get('consent') === 'on',
-      honeypot: fd.get('company_website') || null,
     };
 
     try {
@@ -174,7 +173,6 @@ export default function ContactForm({ projects, selectedProjectId: selectedProje
           />
         </label>
 
-        <input className="hp" name="company_website" tabIndex={-1} autoComplete="off" />
       </div>
 
       <div className="contactCompactSubmitRow">

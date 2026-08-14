@@ -48,7 +48,7 @@ function textToBody(text:string) {
 }
 
 async function token() {
-  if (!supabase) throw new Error('Supabase is not configured.');
+  if (!supabase) throw new Error('Staff sign-in is unavailable. Please contact an administrator.');
   const { data } = await supabase.auth.getSession();
   if (!data.session?.access_token) throw new Error('Your staff session has expired.');
   return data.session.access_token;
@@ -145,13 +145,13 @@ export default function Page() {
   const formItem=editing;
   return <AdminFrame title="Newsroom" kicker="Editorial publishing">
     <div className="adminMetrics adminMetricsModern newsroomMetrics">
-      <article><span>Editorial records</span><strong>{data?.meta.total??'—'}</strong><small>Draft + published</small></article>
-      <article><span>Live stories</span><strong>{published||'—'}</strong><small>Visible to website visitors</small></article>
-      <article><span>Draft workspace</span><strong>{drafts||'—'}</strong><small>Not yet public</small></article>
+      <article><span>All stories</span><strong>{data?.meta.total??'—'}</strong><small>Draft and published</small></article>
+      <article><span>Live stories</span><strong>{published||'—'}</strong><small>Live on the public website</small></article>
+      <article><span>In preparation</span><strong>{drafts||'—'}</strong><small>Ready for review</small></article>
     </div>
 
     <div className="adminEditorialToolbar">
-      <div><p className="eyebrow">Publishing workflow</p><h2>Write once. Publish everywhere.</h2><p>Articles published here are served by the FastAPI newsroom API and appear automatically on the public ONIRIA website.</p></div>
+      <div><p className="eyebrow">Newsroom planning</p><h2>Shape the story. Share it with confidence.</h2><p>Published stories appear automatically in the public ONIRIA Newsroom and can also feature on the homepage.</p></div>
       <button className="adminPrimaryButton" onClick={()=>{setEditing(null);setUploadedImageUrl('');setCreating(true);}}>New article <span>＋</span></button>
     </div>
 

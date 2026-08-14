@@ -5,10 +5,10 @@ import { AdminFrame, AdminState, type StaffProfile, useAdminSession } from '@/co
 import { authFetch } from '@/lib/api';
 
 const roleOptions = [
-  { value: 'admin', label: 'Administrator', description: 'Full access, including staff management.' },
-  { value: 'editor', label: 'Editor', description: 'Create, edit, publish and unpublish newsroom content.' },
-  { value: 'content_manager', label: 'Content manager', description: 'Create and edit newsroom content.' },
-  { value: 'sales', label: 'Sales', description: 'View and manage leads and enquiries.' },
+  { value: 'admin', label: 'Administrator', description: 'Full access across the staff workspace.' },
+  { value: 'editor', label: 'Editor', description: 'Prepare, review and publish newsroom stories.' },
+  { value: 'content_manager', label: 'Content manager', description: 'Prepare and maintain newsroom content.' },
+  { value: 'sales', label: 'Sales', description: 'Review and follow up customer enquiries.' },
 ];
 
 type Staff = StaffProfile & {
@@ -19,7 +19,7 @@ type Staff = StaffProfile & {
 
 async function getToken() {
   const { supabase } = await import('@/lib/supabase');
-  if (!supabase) throw new Error('Supabase is not configured.');
+  if (!supabase) throw new Error('Staff sign-in is unavailable. Please contact an administrator.');
   const { data } = await supabase.auth.getSession();
   const token = data.session?.access_token;
   if (!token) throw new Error('Your staff session has expired.');
@@ -127,9 +127,9 @@ export default function Page() {
       ) : (
         <>
           <div className="adminMetrics adminMetricsModern">
-            <article><span>Team members</span><strong>{staff.length || '—'}</strong><small>Database-backed profiles</small></article>
-            <article><span>Active access</span><strong>{activeCount || '—'}</strong><small>Authorized staff</small></article>
-            <article><span>Access model</span><strong className="metricText">Role based</strong><small>Supabase Auth + PostgreSQL</small></article>
+            <article><span>Team members</span><strong>{staff.length || '—'}</strong><small>Staff profiles</small></article>
+            <article><span>Active access</span><strong>{activeCount || '—'}</strong><small>Current staff access</small></article>
+            <article><span>Access setup</span><strong className="metricText">Assigned roles</strong><small>Managed by administrators</small></article>
           </div>
 
           <div className="adminSplitWorkspace">
@@ -137,14 +137,14 @@ export default function Page() {
               <div className="adminSectionTitle">
                 <p className="eyebrow">Create staff access</p>
                 <h2>Add a team member.</h2>
-                <p>Create the Supabase sign-in and the matching ONIRIA staff profile in one secure action.</p>
+                <p>Create staff access, choose responsibilities and provide a temporary password in one step.</p>
               </div>
               <form className="adminForm" onSubmit={createStaff}>
                 <label><span>Full name</span><input name="full_name" required placeholder="Staff member name" /></label>
                 <label><span>Email address</span><input name="email" type="email" required placeholder="staff@oniria.com" /></label>
                 <label><span>Temporary password</span><input name="password" type="password" minLength={8} required placeholder="Use a strong temporary password" /></label>
                 <fieldset>
-                  <legend>Role & permissions</legend>
+                  <legend>Responsibilities</legend>
                   <div className="adminRoleGrid">
                     {roleOptions.map((role) => <label className="adminRoleOption" key={role.value}>
                       <input type="checkbox" name={`role_${role.value}`} defaultChecked={role.value === 'sales'} />
@@ -166,7 +166,7 @@ export default function Page() {
                 {staff.map((item) => <button className={`adminStaffRow ${selected?.id === item.id ? 'selected' : ''}`} key={item.id} onClick={() => setSelected(item)}>
                   <span className="adminAvatar">{(item.full_name || item.email || 'S').slice(0, 1).toUpperCase()}</span>
                   <span className="adminStaffIdentity"><strong>{item.full_name || 'Unnamed staff'}</strong><small>{item.email}</small></span>
-                  <span className="adminStaffRoles">{item.roles.join(' · ')}</span>
+                  <span className="adminStaffResponsibilities">{item.roles.join(' · ')}</span>
                   <span className={`adminStatusDot ${item.status}`}>{item.status}</span>
                 </button>)}
               </div>
@@ -179,7 +179,7 @@ export default function Page() {
               <label><span>Full name</span><input name="full_name" defaultValue={selected.full_name || ''} required /></label>
               <label><span>Account status</span><select name="status" defaultValue={selected.status}><option value="active">Active</option><option value="suspended">Suspended</option></select></label>
               <label><span>New password (optional)</span><input name="password" type="password" minLength={8} placeholder="Leave blank to keep current password" /></label>
-              <fieldset className="wide"><legend>Roles</legend><div className="adminRoleGrid four">{roleOptions.map((role)=><label className="adminRoleOption" key={role.value}><input type="checkbox" name={`edit_role_${role.value}`} defaultChecked={selected.roles.includes(role.value)} /><span><strong>{role.label}</strong><small>{role.description}</small></span></label>)}</div></fieldset>
+              <fieldset className="wide"><legend>Responsibilities</legend><div className="adminRoleGrid four">{roleOptions.map((role)=><label className="adminRoleOption" key={role.value}><input type="checkbox" name={`edit_role_${role.value}`} defaultChecked={selected.roles.includes(role.value)} /><span><strong>{role.label}</strong><small>{role.description}</small></span></label>)}</div></fieldset>
               <button className="adminPrimaryButton" disabled={saving}>{saving ? 'Saving…' : 'Save staff changes'} <span>→</span></button>
             </form>
           </section>}

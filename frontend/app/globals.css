@@ -3517,6 +3517,204 @@ em{font-weight:400;font-style:italic}
   .homeNewsTeaserEmpty{grid-template-columns:1fr;gap:12px;padding:24px}
 }
 
+/* =========================================================
+   CONTACT — COMPACT PREMIUM REFINEMENT
+   Tightens vertical rhythm and keeps the existing lead workflow intact.
+========================================================= */
+.contactCompactBody{
+  padding-top:clamp(64px,5.5vw,86px);
+  padding-bottom:clamp(72px,6vw,96px);
+}
+.contactCompactIntro{
+  grid-template-columns:minmax(0,1.05fr) minmax(300px,.72fr);
+  gap:clamp(30px,4.5vw,64px);
+  margin-bottom:clamp(34px,3.5vw,48px);
+  align-items:end;
+}
+.contactCompactIntro h2{
+  max-width:700px;
+  font-size:clamp(44px,4.8vw,70px);
+  line-height:.95;
+}
+.contactCompactIntro>p{
+  max-width:500px;
+  margin-bottom:4px;
+  font-size:15px;
+  line-height:1.7;
+}
+.contactCompactServices{
+  margin-bottom:clamp(38px,3.8vw,54px);
+}
+.contactCompactServices article{
+  min-height:176px;
+  padding:22px 24px 24px;
+}
+.contactCompactServices span{
+  font-size:9px;
+  letter-spacing:.15em;
+}
+.contactCompactServices h3{
+  margin:auto 0 10px;
+  font-size:clamp(27px,2.2vw,35px);
+  line-height:1.02;
+}
+.contactCompactServices p{
+  font-size:13px;
+  line-height:1.62;
+}
+.contactCompactFormShell{
+  width:min(1020px,100%);
+  padding:clamp(28px,3.2vw,42px);
+  box-shadow:0 18px 48px rgba(3,27,53,.055);
+}
+.contactCompactFormIntro{
+  max-width:none;
+  margin:0 0 28px;
+  padding-bottom:22px;
+  border-bottom:1px solid rgba(3,27,53,.15);
+  display:grid;
+  grid-template-columns:160px minmax(0,1fr);
+  gap:28px;
+  align-items:start;
+  text-align:left;
+}
+.contactCompactFormIntro .eyebrow{
+  margin:5px 0 0;
+}
+.contactCompactFormIntro>div h3{
+  margin:0;
+  max-width:620px;
+  font:400 clamp(36px,3.8vw,54px)/.96 var(--serif);
+  letter-spacing:-.04em;
+}
+.contactCompactFormIntro>div p{
+  max-width:590px;
+  margin:12px 0 0;
+  font-size:13px;
+  line-height:1.65;
+  color:rgba(3,27,53,.72);
+}
+.contactCompactFields{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:20px 28px!important;
+}
+.contactCompactFields>label,
+.contactCompactPhone label{
+  gap:8px;
+}
+.contactCompactFields input,
+.contactCompactFields select,
+.contactCompactFields textarea,
+.contactCompactPhone input,
+.contactCompactPhone select{
+  min-height:50px;
+  padding:11px 10px;
+}
+.contactCompactPhone{
+  gap:20px;
+}
+.contactCompactFields textarea{
+  min-height:112px!important;
+}
+.contactCompactSubmitRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:26px;
+  margin-top:24px;
+  padding-top:22px;
+  border-top:1px solid rgba(3,27,53,.15);
+}
+.contactCompactSubmitRow .consent{
+  margin:0!important;
+  max-width:620px;
+}
+.contactCompactSubmitRow .button{
+  min-width:190px!important;
+  flex:0 0 auto;
+}
+.contactCompactForm .form-success,
+.contactCompactForm .form-error{
+  margin-top:18px;
+}
+
+@media(max-width:900px){
+  .contactCompactIntro{grid-template-columns:1fr;gap:18px}
+  .contactCompactServices{grid-template-columns:1fr}
+  .contactCompactServices article{
+    min-height:0;
+    padding:20px 0;
+    border-right:0;
+    border-bottom:1px solid rgba(3,27,53,.18);
+  }
+  .contactCompactServices article:last-child{border-bottom:0}
+  .contactCompactServices h3{margin:16px 0 8px}
+  .contactCompactFormIntro{grid-template-columns:1fr;gap:10px}
+}
+@media(max-width:680px){
+  .contactCompactBody{padding-top:54px;padding-bottom:68px}
+  .contactCompactFormShell{padding:24px 18px}
+  .contactCompactFields{grid-template-columns:1fr;gap:18px!important}
+  .contactCompactFields .wide{grid-column:auto}
+  .contactCompactPhone{grid-column:auto;grid-template-columns:1fr;gap:18px}
+  .contactCompactSubmitRow{flex-direction:column;align-items:stretch}
+  .contactCompactSubmitRow .button{width:100%;min-width:0!important}
+}
+
+/* =========================================================
+   ONIRIA ADMIN — EXECUTIVE WORKSPACE REFINEMENT
+   Premium, compact and administration-focused
+========================================================= */
+.adminStandalone{background:#B8A37C;color:#031B35}
+.adminLayoutPremium{grid-template-columns:282px minmax(0,1fr);min-height:100vh}
+.adminSidebarPremium{padding:30px 24px 24px;background:#031B35;box-shadow:18px 0 50px rgba(3,27,53,.08)}
+.adminSidebarPremium .adminBrandLockup{padding-bottom:22px;border-bottom:1px solid rgba(255,255,255,.12)}
+.adminSidebarPremium .adminBrandLockup img{width:52px;height:52px;object-fit:contain;background:rgba(255,255,255,.04);padding:7px;border-radius:50%}
+.adminSidebarPremium .adminBrandLockup span strong{font-size:22px;letter-spacing:.14em}
+.adminSidebarPremium .adminBrandLockup span small{font-size:7px;letter-spacing:.28em;color:#B8A37C}
+.adminSidebarPremium .adminUser{margin:26px 0 22px;padding:17px 0}
+.adminSidebarPremium .adminUser span{font-size:19px}.adminSidebarPremium .adminUser small{font-size:7px;line-height:1.5}
+.adminSidebarPremium nav{gap:6px}.adminSidebarPremium nav a{padding:13px 12px;border:1px solid transparent;border-radius:2px}
+.adminSidebarPremium nav a:not(.active){border-color:rgba(255,255,255,.08)}
+.adminSidebarPremium .adminSecureNote{display:grid;gap:5px;padding:14px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03)}
+.adminSidebarPremium .adminSecureNote span{font-size:8px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#fff}
+.adminSidebarPremium .adminSecureNote small{font-size:9px;line-height:1.5;color:rgba(255,255,255,.56)}
+.adminTopbarPremium{min-height:138px;padding:34px 4vw 26px;background:rgba(255,255,255,.09);backdrop-filter:blur(8px)}
+.adminTopbarPremium h1{font-size:clamp(44px,4.5vw,70px);letter-spacing:-.045em}
+.adminContentPremium{padding:34px 4vw 70px;max-width:1680px;margin:0 auto;width:100%}
+.adminWelcomePremium{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:6vw;align-items:end;padding:28px 0 32px;border-top:1px solid rgba(3,27,53,.25);border-bottom:1px solid rgba(3,27,53,.25);margin-bottom:26px}
+.adminWelcomePremium.compact{padding-top:18px}.adminWelcomePremium h2{max-width:850px;margin:7px 0 0;font-size:clamp(34px,3.5vw,56px);line-height:.98;letter-spacing:-.04em}.adminWelcomePremium>p{margin:0;max-width:580px;font-size:14px;line-height:1.75;color:rgba(3,27,53,.76)}
+.adminMetricsModern.adminMetricsFour{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:26px}.adminMetricsModern.adminMetricsThree{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.adminMetricsModern article{min-height:145px;padding:20px 22px;background:rgba(255,255,255,.13);border:1px solid rgba(3,27,53,.16);box-shadow:0 12px 35px rgba(3,27,53,.04)}
+.adminMetricsModern strong{font-size:44px}.adminMetricsModern span{font-weight:800}.adminMetricsModern small{color:rgba(3,27,53,.58)}
+.adminAnalyticsGrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(330px,.7fr);gap:16px;margin-bottom:16px}
+.adminChartCard{padding:22px 22px 18px;border:1px solid rgba(3,27,53,.18);background:rgba(255,255,255,.17);min-height:330px}.adminPanelHead.compact{padding:0 0 18px}.adminPanelHead.compact small{font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:rgba(3,27,53,.55)}
+.adminBarChart{height:220px;display:flex;align-items:stretch;gap:8px;padding-top:16px}.adminBarItem{flex:1;min-width:18px;display:grid;grid-template-rows:18px 1fr 24px;gap:4px;align-items:end;text-align:center}.adminBarValue{font-size:8px;font-weight:800;opacity:.7}.adminBarTrack{height:100%;display:flex;align-items:flex-end;justify-content:center;background:rgba(3,27,53,.055);overflow:hidden}.adminBarTrack i{display:block;width:72%;min-height:7px;background:#031B35;transition:height .35s ease}.adminBarItem small{font-size:7px;text-transform:uppercase;letter-spacing:.04em;color:rgba(3,27,53,.65);white-space:nowrap}
+.adminMonthChart{display:grid;gap:12px;padding-top:15px}.adminMonthRow{display:grid;grid-template-columns:54px 1fr 34px;gap:10px;align-items:center}.adminMonthRow>span{font-size:8px;text-transform:uppercase;letter-spacing:.08em}.adminMonthRow>div{height:8px;background:rgba(3,27,53,.08);overflow:hidden}.adminMonthRow i{display:block;height:100%;background:#031B35}.adminMonthRow strong{font-size:10px;text-align:right}.adminChartEmpty{grid-column:1/-1;align-self:center;padding:28px;text-align:center;font-size:12px;line-height:1.6;color:rgba(3,27,53,.6)}
+.adminLowerGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}.adminPopularPanel,.adminReportsPanel{padding:0 20px 20px;border:1px solid rgba(3,27,53,.16);background:rgba(255,255,255,.12)}.adminPopularRow{display:grid;grid-template-columns:34px 1fr 42px;gap:10px;align-items:center;padding:13px 0;border-bottom:1px solid rgba(3,27,53,.12)}.adminPopularRow span{font-size:8px;opacity:.55}.adminPopularRow strong{font:400 16px var(--serif)}.adminPopularRow b{font-size:10px;text-align:right}.adminPanelIntro{font-size:12px;line-height:1.7;color:rgba(3,27,53,.72);margin:2px 0 20px}.adminReportButtons{display:flex;gap:8px;flex-wrap:wrap}.adminReportButtons button{min-width:150px;padding:13px 15px;border:1px solid #031B35;background:#031B35;color:#B8A37C;display:flex;justify-content:space-between;gap:24px;font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}.adminReportButtons button:hover{background:transparent;color:#031B35}.adminReportButtons.compact button{min-width:100px}.adminAccessSummary{margin-top:20px;padding-top:16px;border-top:1px solid rgba(3,27,53,.14);display:flex;justify-content:space-between;gap:20px}.adminAccessSummary span{font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.adminAccessSummary strong{font:400 15px var(--serif);text-align:right}
+.adminQuickActionsPremium{margin:0 0 24px;gap:10px}.adminQuickActionsPremium a{min-height:118px;padding:18px;background:rgba(255,255,255,.12);border:1px solid rgba(3,27,53,.16)}.adminQuickActionsPremium a:hover{background:#031B35;color:#B8A37C}.adminQuickActionsPremium a strong{font-size:21px;line-height:1.1}
+.adminDashboardGridModern{gap:16px}.adminPanelModern{background:rgba(255,255,255,.08);padding:0 18px 12px;border:1px solid rgba(3,27,53,.15)}.adminCompactRow{padding:14px 0}.adminCompactRow strong{font-size:17px}
+.adminListToolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:22px;padding:24px 0 16px;border-bottom:1px solid rgba(3,27,53,.24)}.adminListToolbar h2{font-size:34px;margin:5px 0 0}.adminTablePremium{margin-top:0;background:rgba(255,255,255,.08);padding:0 18px 10px;border:1px solid rgba(3,27,53,.14);border-top:0}.adminTablePremium .adminTableRow{padding:16px 0}
+.adminProjectGrid{gap:10px;margin-top:20px}.adminProjectGrid article{padding:22px;background:rgba(255,255,255,.12);border:1px solid rgba(3,27,53,.14);grid-template-columns:1fr 230px}.adminProjectGrid h2{font-size:30px}.adminProjectGrid article>div:last-child{padding-left:18px;border-left:1px solid rgba(3,27,53,.14)}
+.adminSettingsGrid{gap:10px;background:transparent;border:0}.adminSettingsGrid article{background:rgba(255,255,255,.12);border:1px solid rgba(3,27,53,.14)}
+.adminFeatureCard{background:rgba(255,255,255,.13)!important;border-color:rgba(3,27,53,.16)!important;box-shadow:0 14px 38px rgba(3,27,53,.04)}.adminStaffRow{background:rgba(255,255,255,.1)!important}.adminStaffRow:hover,.adminStaffRow.selected{background:rgba(255,255,255,.27)!important}.adminRoleOption{background:rgba(255,255,255,.1)!important}
+.adminEditorialToolbar{padding:26px 0;margin-bottom:18px;border-top:1px solid rgba(3,27,53,.2);border-bottom:1px solid rgba(3,27,53,.2)}.adminEditorialToolbar h2{font-size:clamp(34px,3.4vw,52px)}.adminNewsCard,.adminEditorPanel{background:rgba(255,255,255,.12)!important;border-color:rgba(3,27,53,.16)!important}.adminEditorPanel{box-shadow:0 22px 60px rgba(3,27,53,.08)}
+
+/* Login + recovery */
+.adminLoginRefined .adminLoginBrand{background:linear-gradient(135deg,#B8A37C 0%,#c9b994 48%,#B8A37C 100%)}
+.adminLoginRefined .adminLoginStory h1{max-width:8ch}.adminLoginCardRefined{padding:44px 46px;border-radius:2px;background:rgba(248,243,234,.88);box-shadow:0 30px 90px rgba(3,27,53,.14)}.adminLoginCardRefined h2{font-size:58px}.adminRecoveryLink{width:max-content;margin-top:18px;padding:0 0 6px;border:0;border-bottom:1px solid rgba(3,27,53,.35);background:transparent;color:#031B35;font-size:8px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;cursor:pointer}.adminLoginNotice{padding:13px 14px;margin-top:18px;border:1px solid rgba(3,27,53,.2);font-size:11px;line-height:1.55;background:rgba(255,255,255,.5)}
+
+@media(max-width:1180px){
+  .adminLayoutPremium{grid-template-columns:230px minmax(0,1fr)}
+  .adminMetricsModern.adminMetricsFour{grid-template-columns:repeat(2,1fr)}
+  .adminAnalyticsGrid,.adminLowerGrid{grid-template-columns:1fr}
+  .adminWelcomePremium{grid-template-columns:1fr;gap:18px}
+}
+@media(max-width:760px){
+  .adminLayoutPremium{grid-template-columns:1fr}.adminSidebarPremium{position:relative;height:auto;padding:18px}.adminSidebarPremium .adminBrandLockup{border-bottom:0;padding-bottom:8px}.adminSidebarPremium nav{display:flex;overflow-x:auto;gap:6px;padding:7px 0}.adminSidebarPremium nav a{min-width:118px}.adminSidebarPremium .adminUser,.adminSidebarPremium .adminSidebarBottom{display:none}.adminTopbarPremium{padding:28px 20px 20px}.adminContentPremium{padding:24px 20px 55px}.adminMetricsModern.adminMetricsFour,.adminMetricsModern.adminMetricsThree{grid-template-columns:1fr 1fr}.adminMetricsModern article{min-height:118px}.adminAnalyticsGrid{grid-template-columns:1fr}.adminBarChart{gap:4px;overflow-x:auto}.adminBarItem{min-width:26px}.adminLowerGrid{grid-template-columns:1fr}.adminListToolbar{align-items:flex-start;flex-direction:column}.adminTablePremium{overflow-x:auto}.adminProjectGrid article{grid-template-columns:1fr}.adminProjectGrid article>div:last-child{border-left:0;padding-left:0;border-top:1px solid rgba(3,27,53,.14);padding-top:14px}.adminLoginCardRefined{padding:32px 24px}.adminLoginRefined .adminLoginBrand{min-height:460px}.adminLoginRefined .adminLoginStory h1{font-size:58px}.adminLoginRefined .adminLoginPanel{padding:42px 20px}}
+@media(max-width:480px){.adminMetricsModern.adminMetricsFour,.adminMetricsModern.adminMetricsThree{grid-template-columns:1fr}.adminReportButtons{width:100%}.adminReportButtons button{flex:1}.adminWelcomePremium h2{font-size:38px}}
+
+
 /* Homepage newsroom: compact multi-update editorial rail */
 .homeNewsTeaserGrid{
   display:grid;

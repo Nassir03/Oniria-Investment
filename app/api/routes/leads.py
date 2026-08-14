@@ -22,8 +22,6 @@ def make_reference() -> str:
 async def create_lead(payload: LeadCreate, request: Request, background_tasks: BackgroundTasks, db: AsyncSession = Depends(get_db)):
     ip = request.client.host if request.client else 'unknown'
     await lead_limiter.check(ip)
-    if payload.honeypot:
-        raise AppError('spam_detected', 'Submission rejected.', 400)
     if payload.project_id and not await db.scalar(select(Project.id).where(Project.id == payload.project_id, Project.status == 'published')):
         raise AppError('invalid_project', 'Selected project does not exist.', 400)
 

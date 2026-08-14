@@ -1,15 +1,17 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
+from io import BytesIO, StringIO
+import csv
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, File, Query, Request, Response, UploadFile
-from sqlalchemy import func, select
+from sqlalchemy import cast, Date, func, literal_column, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.core.errors import AppError
 from app.core.security import StaffPrincipal, get_current_staff, require_roles
 from app.db.session import get_db
-from app.models.entities import Lead, LeadNote, NewsArticle
+from app.models.entities import Lead, LeadNote, NewsArticle, SiteVisit
 from app.schemas.admin import CurrentStaff, StaffCreate, StaffOut, StaffUpdate, UploadSignRequest, UploadSignResponse
 from app.schemas.common import PageMeta, Paginated
 from app.schemas.lead import LeadOut, LeadUpdate
@@ -18,6 +20,7 @@ from app.services.audit_service import write_audit
 from app.services.news_service import archive_article, create_article, get_article, publish_article, unpublish_article, update_article
 from app.services.storage_service import create_signed_upload, save_local_newsroom_image
 from app.services.staff_service import create_staff, list_staff, update_staff
+from fastapi.responses import StreamingResponse
 
 router = APIRouter(prefix='/admin', tags=['admin'])
 
@@ -161,3 +164,139 @@ async def upload_newsroom_image(
 async def sign_upload(payload: UploadSignRequest, staff: StaffPrincipal = Depends(require_roles('admin','editor'))):
     data = create_signed_upload(payload.filename, payload.content_type, payload.size_bytes, payload.folder)
     return UploadSignResponse(**data)
+
+
+@router.get('/analytics')
+async def admin_analytics(
+    days: int = Query(30, ge=7, le=365),
+    db: AsyncSession = Depends(get_db),
+    _: StaffPrincipal = Depends(require_roles('admin','sales','editor','content_manager')),
+):
+    now = datetime.now(timezone.utc)
+    start = now - timedelta(days=days - 1)
+    month_start = now - timedelta(days=365)
+
+    daily_rows = (await db.execute(
+        select(
+            cast(SiteVisit.created_at, Date).label('day'),
+            func.count(SiteVisit.id).label('views'),
+            func.count(func.distinct(SiteVisit.session_id)).label('visitors'),
+        )
+        .where(SiteVisit.created_at >= start)
+        .group_by(cast(SiteVisit.created_at, Date))
+        .order_by(cast(SiteVisit.created_at, Date))
+    )).all()
+
+    # Use a literal SQL date-trunc unit so PostgreSQL sees the exact same
+    # expression in SELECT/GROUP BY/ORDER BY. Parameterising 'month' in each
+    # clause can produce separate bind parameters and PostgreSQL then rejects
+    # the grouping even though the expressions look equivalent.
+    month_expr = func.date_trunc(literal_column("'month'"), SiteVisit.created_at)
+    monthly_rows = (await db.execute(
+        select(
+            month_expr.label('month'),
+            func.count(SiteVisit.id).label('views'),
+            func.count(func.distinct(SiteVisit.session_id)).label('visitors'),
+        )
+        .where(SiteVisit.created_at >= month_start)
+        .group_by(month_expr)
+        .order_by(month_expr)
+    )).all()
+
+    top_pages = (await db.execute(
+        select(SiteVisit.path, func.count(SiteVisit.id).label('views'))
+        .where(SiteVisit.created_at >= start)
+        .group_by(SiteVisit.path)
+        .order_by(func.count(SiteVisit.id).desc())
+        .limit(6)
+    )).all()
+
+    total_views = await db.scalar(select(func.count()).select_from(SiteVisit).where(SiteVisit.created_at >= start)) or 0
+    unique_visitors = await db.scalar(
+        select(func.count(func.distinct(SiteVisit.session_id))).where(SiteVisit.created_at >= start)
+    ) or 0
+
+    return {
+        'period_days': days,
+        'total_views': total_views,
+        'unique_visitors': unique_visitors,
+        'daily': [{'label': row.day.isoformat(), 'views': row.views, 'visitors': row.visitors} for row in daily_rows],
+        'monthly': [{'label': row.month.strftime('%Y-%m'), 'views': row.views, 'visitors': row.visitors} for row in monthly_rows],
+        'top_pages': [{'path': row.path, 'views': row.views} for row in top_pages],
+    }
+
+
+async def _lead_export_rows(db: AsyncSession):
+    return (await db.scalars(
+        select(Lead).where(Lead.deleted_at.is_(None)).order_by(Lead.created_at.desc())
+    )).all()
+
+
+@router.get('/exports/leads.csv')
+async def export_leads_csv(
+    db: AsyncSession = Depends(get_db),
+    _: StaffPrincipal = Depends(require_roles('admin','sales')),
+):
+    leads = await _lead_export_rows(db)
+    output = StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['Reference','Name','Email','Phone','Country','Enquiry type','Preferred contact','Status','Created'])
+    for lead in leads:
+        writer.writerow([
+            lead.reference_no,
+            f'{lead.first_name} {lead.last_name}'.strip(),
+            lead.email,
+            lead.phone or '',
+            lead.country or '',
+            lead.enquiry_type or '',
+            lead.preferred_contact_method or '',
+            lead.status,
+            lead.created_at.isoformat() if lead.created_at else '',
+        ])
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type='text/csv',
+        headers={'Content-Disposition': 'attachment; filename="oniria-enquiries.csv"'},
+    )
+
+
+@router.get('/exports/leads.xlsx')
+async def export_leads_xlsx(
+    db: AsyncSession = Depends(get_db),
+    _: StaffPrincipal = Depends(require_roles('admin','sales')),
+):
+    from openpyxl import Workbook
+    from openpyxl.styles import Font
+
+    leads = await _lead_export_rows(db)
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = 'Enquiries'
+    headers = ['Reference','Name','Email','Phone','Country','Enquiry type','Preferred contact','Status','Created']
+    sheet.append(headers)
+    for cell in sheet[1]:
+        cell.font = Font(bold=True)
+    for lead in leads:
+        sheet.append([
+            lead.reference_no,
+            f'{lead.first_name} {lead.last_name}'.strip(),
+            lead.email,
+            lead.phone or '',
+            lead.country or '',
+            lead.enquiry_type or '',
+            lead.preferred_contact_method or '',
+            lead.status,
+            lead.created_at.isoformat() if lead.created_at else '',
+        ])
+    for column_cells in sheet.columns:
+        width = min(max(len(str(cell.value or '')) for cell in column_cells) + 2, 42)
+        sheet.column_dimensions[column_cells[0].column_letter].width = width
+    stream = BytesIO()
+    workbook.save(stream)
+    stream.seek(0)
+    return StreamingResponse(
+        stream,
+        media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers={'Content-Disposition': 'attachment; filename="oniria-enquiries.xlsx"'},
+    )

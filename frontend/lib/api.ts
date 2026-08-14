@@ -28,7 +28,13 @@ type ApiErrorBody = {
 
 function formatApiError(body: ApiErrorBody, status: number) {
   const detailMessage = typeof body?.detail === 'object' ? body.detail?.message : body?.detail;
-  const base = body?.message || detailMessage || `Request failed (${status})`;
+  let base = body?.message || detailMessage || `Request failed (${status})`;
+
+  // Never surface server tracebacks or internal implementation details in the staff UI.
+  if (/traceback|sqlalchemy|asyncpg|site_visits|programmingerror/i.test(base)) {
+    base = 'This report could not be loaded right now. Please refresh the page or try again shortly.';
+  }
+
   if (!body?.field_errors) return base;
   const fields = Object.entries(body.field_errors)
     .flatMap(([field, messages]) => messages.map((message) => `${field}: ${message}`))
@@ -70,10 +76,10 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
     return body as T;
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') {
-      throw new Error('The ONIRIA API request timed out. Confirm the backend is running on port 6200.');
+      throw new Error('The ONIRIA service took too long to respond. Please try again.');
     }
     if (error instanceof TypeError) {
-      throw new Error('Unable to reach the ONIRIA API. Confirm the backend is running and restart the frontend.');
+      throw new Error('Unable to reach the ONIRIA service. Please try again after confirming the service is running.');
     }
     throw error;
   } finally {
