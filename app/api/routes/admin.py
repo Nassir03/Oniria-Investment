@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query, Response
+from fastapi import APIRouter, Depends, File, Query, Request, Response, UploadFile
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -10,13 +10,14 @@ from app.core.errors import AppError
 from app.core.security import StaffPrincipal, get_current_staff, require_roles
 from app.db.session import get_db
 from app.models.entities import Lead, LeadNote, NewsArticle
-from app.schemas.admin import CurrentStaff, UploadSignRequest, UploadSignResponse
+from app.schemas.admin import CurrentStaff, StaffCreate, StaffOut, StaffUpdate, UploadSignRequest, UploadSignResponse
 from app.schemas.common import PageMeta, Paginated
 from app.schemas.lead import LeadOut, LeadUpdate
 from app.schemas.news import NewsArticleOut, NewsCreate, NewsUpdate
 from app.services.audit_service import write_audit
 from app.services.news_service import archive_article, create_article, get_article, publish_article, unpublish_article, update_article
-from app.services.storage_service import create_signed_upload
+from app.services.storage_service import create_signed_upload, save_local_newsroom_image
+from app.services.staff_service import create_staff, list_staff, update_staff
 
 router = APIRouter(prefix='/admin', tags=['admin'])
 
@@ -24,6 +25,54 @@ router = APIRouter(prefix='/admin', tags=['admin'])
 @router.get('/me', response_model=CurrentStaff)
 async def me(staff: StaffPrincipal = Depends(get_current_staff)):
     return CurrentStaff(id=staff.id, email=staff.email, full_name=staff.full_name, roles=sorted(staff.roles))
+
+
+@router.get('/staff', response_model=list[StaffOut])
+async def admin_staff_list(
+    db: AsyncSession = Depends(get_db),
+    _: StaffPrincipal = Depends(require_roles('admin')),
+):
+    return await list_staff(db)
+
+
+@router.post('/staff', response_model=StaffOut, status_code=201)
+async def admin_staff_create(
+    payload: StaffCreate,
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(require_roles('admin')),
+):
+    result = await create_staff(
+        db,
+        email=str(payload.email),
+        full_name=payload.full_name,
+        password=payload.password,
+        roles=payload.roles,
+        granted_by=staff.id,
+    )
+    await write_audit(db, staff.id, 'staff.create', 'profile', result['id'], {'email': result['email'], 'roles': result['roles']})
+    await db.commit()
+    return result
+
+
+@router.patch('/staff/{user_id}', response_model=StaffOut)
+async def admin_staff_update(
+    user_id: UUID,
+    payload: StaffUpdate,
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(require_roles('admin')),
+):
+    result = await update_staff(
+        db,
+        user_id,
+        full_name=payload.full_name,
+        status=payload.status,
+        roles=payload.roles,
+        password=payload.password,
+        actor_id=staff.id,
+    )
+    await write_audit(db, staff.id, 'staff.update', 'profile', user_id, {'status': result['status'], 'roles': result['roles']})
+    await db.commit()
+    return result
 
 
 @router.get('/news', response_model=Paginated[NewsArticleOut])
@@ -95,6 +144,17 @@ async def admin_update_lead(lead_id: UUID, payload: LeadUpdate, db: AsyncSession
     await write_audit(db, staff.id, 'lead.update', 'lead', lead.id, {'before': before, 'after': {'status': lead.status, 'assigned_to': str(lead.assigned_to) if lead.assigned_to else None}})
     await db.commit()
     return await db.scalar(select(Lead).options(selectinload(Lead.notes)).where(Lead.id == lead.id))
+
+
+@router.post('/uploads/newsroom-image')
+async def upload_newsroom_image(
+    request: Request,
+    file: UploadFile = File(...),
+    _: StaffPrincipal = Depends(require_roles('admin','editor','content_manager')),
+):
+    public_path = await save_local_newsroom_image(file)
+    base = str(request.base_url).rstrip('/')
+    return {'url': f'{base}{public_path}', 'path': public_path}
 
 
 @router.post('/uploads/sign', response_model=UploadSignResponse)

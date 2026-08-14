@@ -1,10 +1,16 @@
 import re
 import secrets
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
+
+from fastapi import UploadFile
 from supabase import create_client
 
 from app.core.config import settings
 from app.core.errors import AppError
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+LOCAL_MEDIA_ROOT = PROJECT_ROOT / 'uploads'
 
 
 def _safe_filename(name: str) -> str:
@@ -20,7 +26,7 @@ def create_signed_upload(filename: str, content_type: str, size_bytes: int, fold
         raise AppError('unsupported_file_type', 'This file type is not allowed.', 400)
     if size_bytes <= 0 or size_bytes > settings.max_upload_bytes:
         raise AppError('invalid_file_size', f'Upload must be between 1 and {settings.max_upload_bytes} bytes.', 400)
-    if not settings.supabase_service_role_key:
+    if not settings.supabase_url or not settings.supabase_service_role_key:
         raise AppError('storage_not_configured', 'Storage service is not configured.', 503)
 
     safe = _safe_filename(filename)
@@ -36,3 +42,37 @@ def create_signed_upload(filename: str, content_type: str, size_bytes: int, fold
         'token': result.get('token') or result.get('signedURL', '').split('token=')[-1],
         'signed_url': result.get('signedURL') or result.get('signed_url'),
     }
+
+
+async def save_local_newsroom_image(file: UploadFile) -> str:
+    """Store an uploaded newsroom image locally and return its public /media path.
+
+    This gives local Windows development a reliable upload workflow without
+    depending on third-party share links. Production can later switch to the
+    existing signed Supabase Storage workflow without changing article fields.
+    """
+    content_type = (file.content_type or '').lower()
+    if content_type not in settings.allowed_upload_mime_types:
+        raise AppError('unsupported_file_type', 'Use JPG, PNG, WEBP or AVIF images.', 400)
+
+    raw = await file.read(settings.max_upload_bytes + 1)
+    if not raw:
+        raise AppError('empty_upload', 'The uploaded image is empty.', 400)
+    if len(raw) > settings.max_upload_bytes:
+        raise AppError('invalid_file_size', f'Image must be smaller than {settings.max_upload_bytes} bytes.', 400)
+
+    safe = _safe_filename(file.filename or 'newsroom-image')
+    extension = Path(safe).suffix.lower()
+    if extension not in {'.jpg', '.jpeg', '.png', '.webp', '.avif'}:
+        extension = {
+            'image/jpeg': '.jpg',
+            'image/png': '.png',
+            'image/webp': '.webp',
+            'image/avif': '.avif',
+        }.get(content_type, '.jpg')
+
+    target_dir = LOCAL_MEDIA_ROOT / 'newsroom'
+    target_dir.mkdir(parents=True, exist_ok=True)
+    filename = f'{secrets.token_hex(12)}{extension}'
+    (target_dir / filename).write_bytes(raw)
+    return f'/media/newsroom/{filename}'

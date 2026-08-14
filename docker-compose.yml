@@ -13,20 +13,42 @@ services:
       test: ["CMD-SHELL", "pg_isready -U postgres -d oniria"]
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 15
 
   api:
     build: .
-    env_file: .env
     environment:
-      # Inside Docker, PostgreSQL is reached by the service name "db" on 5432.
+      APP_NAME: ONIRIA Investments API
+      ENVIRONMENT: docker
+      DEBUG: "false"
+      API_V1_PREFIX: /api/v1
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/oniria
       FRONTEND_ORIGINS: http://localhost:3200,http://127.0.0.1:3200
+      SUPABASE_URL: ${SUPABASE_URL:-}
+      SUPABASE_JWT_ISSUER: ${SUPABASE_JWT_ISSUER:-}
+      SUPABASE_JWKS_URL: ${SUPABASE_JWKS_URL:-}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
+      STORAGE_BUCKET: ${STORAGE_BUCKET:-oniria-media}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      CONTACT_NOTIFICATION_EMAIL: ${CONTACT_NOTIFICATION_EMAIL:-oniriaassist@gmail.com}
+      EMAIL_FROM: ${EMAIL_FROM:-ONIRIA Investments <oniriaassist@gmail.com>}
     depends_on:
       db:
         condition: service_healthy
     ports:
       - "6200:6200"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:6200/api/v1
+    environment:
+      INTERNAL_API_BASE_URL: http://api:6200/api/v1
+    depends_on:
+      - api
+    ports:
+      - "3200:3200"
 
 volumes:
   oniria_pg:

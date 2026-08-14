@@ -25,7 +25,7 @@ class NewsArticleOut(BaseModel):
     seo_title: str | None
     meta_description: str | None
     og_image_url: str | None
-    categories: list[CategoryOut] = []
+    categories: list[CategoryOut] = Field(default_factory=list)
     created_at: datetime
     updated_at: datetime
 

@@ -1,18 +1,34 @@
-# ONIRIA Investments Backend
+# ONIRIA Investments — local development
 
-FastAPI backend implementing the ONIRIA implementation plan: public projects/news APIs, lead capture, Supabase JWT staff authorization, newsroom CRUD/publish/unpublish/archive, lead management, signed storage uploads, audit logs, email notifications, PostgreSQL/SQLAlchemy and Alembic.
-
-## Ports used by this project
+## Ports
 
 - Frontend: `http://localhost:3200`
-- Backend API: `http://localhost:6200`
-- Swagger/OpenAPI: `http://localhost:6200/docs`
-- Health check: `http://localhost:6200/health`
-- Local Windows PostgreSQL: `127.0.0.1:3310`
+- FastAPI backend: `http://localhost:6200`
+- PostgreSQL: `127.0.0.1:3310`
+- Swagger: `http://localhost:6200/docs`
+- Health: `http://localhost:6200/health`
 
-## 1. Windows local setup (recommended when PostgreSQL is installed on Windows)
+## Important PowerShell rule
 
-Open PowerShell in the backend project folder:
+When documentation shows:
+
+```text
+(.venv) PS C:\Users\Nassir\Downloads\Oniria-Investment> alembic upgrade head
+```
+
+**type only:**
+
+```powershell
+alembic upgrade head
+```
+
+Do not paste `(.venv) PS C:\...>` into PowerShell. That text is the prompt, not a command. Pasting the prompt causes errors such as `Unexpected token 'PS'`.
+
+Also, if `$env:DATABASE_URL` prints nothing, that is fine. `Remove-Item Env:DATABASE_URL` will then say the path does not exist; there is nothing to remove.
+
+## Recommended Windows setup
+
+### 1. Create and activate the virtual environment
 
 ```powershell
 python -m venv .venv
@@ -21,134 +37,130 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-If `.env` does not exist, create it from `.env.example`:
+Python 3.12 or 3.13 is recommended for the smoothest dependency support.
+
+### 2. Create `.env` safely
+
+Run:
 
 ```powershell
-Copy-Item .env.example .env
+.\scripts\configure-local.ps1
 ```
 
-Edit `.env` and set your real PostgreSQL password:
+Enter the same PostgreSQL password that works with `psql`. The script URL-encodes special characters such as `@` automatically, so you do not need to manually write `%40`.
 
-```env
-DATABASE_URL=postgresql+asyncpg://postgres:YOUR_POSTGRES_PASSWORD@127.0.0.1:3310/oniria
-FRONTEND_ORIGINS=http://localhost:3200,http://127.0.0.1:3200
-```
-
-Make sure PostgreSQL is running and create a database named `oniria` before running migrations.
-
-## 2. Create/update database tables
+### 3. Confirm PostgreSQL before running Alembic
 
 ```powershell
-alembic upgrade head
-python seed.py
+python scripts\doctor.py
 ```
 
-To verify migration rollback/re-apply on a development database:
-
-```powershell
-alembic downgrade base
-alembic upgrade head
-python seed.py
-```
-
-Do not run the downgrade command against a database containing data you need to keep.
-
-## 3. Run the backend on port 6200
-
-```powershell
-python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 6200
-```
-
-Open:
-
-- `http://localhost:6200/health`
-- `http://localhost:6200/docs`
-
-A healthy database connection returns:
-
-```json
-{"status":"ok","database":"ok","environment":"local"}
-```
-
-## 4. Run the frontend on port 3200
-
-In the frontend project folder, use the command appropriate to that frontend. For a Next.js project:
-
-```powershell
-npm install
-npm run dev -- -p 3200
-```
-
-The frontend should call the backend at:
+You must see:
 
 ```text
-http://localhost:6200
+[ OK ] PostgreSQL connection and authentication work.
 ```
 
-## 5. Run tests
+If this fails with `InvalidPasswordError`, the password entered into `.env` is not the same password PostgreSQL accepts. Do not modify Alembic in that case; rerun `configure-local.ps1` with the correct password.
 
-From the backend folder with the virtual environment active:
+### 4. Create tables and seed content
 
 ```powershell
+alembic upgrade head
+python seed.py
 python -m pytest -q
 ```
 
-## 6. Optional Docker run
+### 5. Start backend
 
-Docker Compose is an alternative to the Windows PostgreSQL setup. Do not start its PostgreSQL service while another PostgreSQL server is already using Windows port `3310`.
+```powershell
+.\scripts\start-backend.ps1
+```
+
+Verify:
+
+- `http://localhost:6200/health`
+- `http://localhost:6200/docs`
+- `http://localhost:6200/api/v1/projects`
+
+### 6. Start frontend in a second PowerShell terminal
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+.\scripts\start-frontend.ps1
+```
+
+The frontend starts at `http://localhost:3200`.
+
+## Direct frontend setup (alternative)
+
+```powershell
+cd frontend
+Copy-Item .env.example .env.local
+npm install
+npm run typecheck
+npm run build
+npm run dev
+```
+
+## Docker alternative
+
+Use Docker **instead of** the Windows PostgreSQL service if port `3310` is already free:
 
 ```powershell
 docker compose up --build
 ```
 
-Docker exposes:
+Do not run local PostgreSQL on port `3310` and the Docker PostgreSQL service on port `3310` at the same time.
 
-- API: `http://localhost:6200`
-- PostgreSQL: `localhost:3310`
+The Docker frontend uses `http://api:6200/api/v1` for server-side requests inside the Docker network and `http://localhost:6200/api/v1` for browser requests.
 
-Inside Docker, the API connects to PostgreSQL using `db:5432`; this is intentionally different from the Windows-local `.env` connection `127.0.0.1:3310`.
+## Supabase/admin
 
-## 7. Staff authentication
+Public projects, newsroom reads, business areas, site settings, health, and lead submission can run with local PostgreSQL without Supabase. Staff login and protected admin endpoints require valid Supabase Auth/JWKS configuration and matching `profiles` / `staff_roles` rows in PostgreSQL.
 
-Supabase is not required to test public routes locally. Protected admin routes require these values in `.env`:
+## Secrets
 
-```env
-SUPABASE_URL=...
-SUPABASE_JWT_ISSUER=...
-SUPABASE_JWKS_URL=...
-SUPABASE_SERVICE_ROLE_KEY=...
+Never commit `.env`, PostgreSQL passwords, Supabase service-role keys, or Resend API keys. Only `.env.example` should be committed.
+
+## Frontend design revision (premium sales / corporate presentation)
+
+The public site is intentionally separated from the staff administration portal.
+
+Public routes:
+- `/`
+- `/our-story`
+- `/projects`
+- `/projects/[slug]`
+- `/business`
+- `/newsroom`
+- `/newsroom/[slug]`
+- `/contact`
+
+Staff-only entry point (not linked from the public website):
+- `/admin/login`
+- `/admin`
+- `/admin/news`
+- `/admin/leads`
+- `/admin/projects`
+- `/admin/settings`
+
+Brand surface colors are limited to:
+- Warm Taupe / Khaki Beige: `#B8A37C`
+- Dark Navy / Midnight Navy: `#031B35`
+
+Local ports:
+- Next.js frontend: `3200`
+- FastAPI backend: `6200`
+- PostgreSQL: `3310`
+
+Frontend checks:
+```powershell
+cd frontend
+npm install
+npm run typecheck
+npm run build
+npm run dev
 ```
 
-The frontend signs staff in with Supabase Auth and sends `Authorization: Bearer <access_token>` to protected endpoints. FastAPI validates the token and then loads roles from `staff_roles`.
-
-## 8. Main endpoints
-
-Public:
-
-- `GET /api/v1/projects`
-- `GET /api/v1/projects/{slug}`
-- `GET /api/v1/news`
-- `GET /api/v1/news/{slug}`
-- `POST /api/v1/leads`
-- `GET /api/v1/business-areas`
-- `GET /api/v1/site-settings`
-
-Protected:
-
-- `GET /api/v1/admin/me`
-- `GET/POST /api/v1/admin/news`
-- `PATCH /api/v1/admin/news/{id}`
-- `POST /api/v1/admin/news/{id}/publish`
-- `POST /api/v1/admin/news/{id}/unpublish`
-- `DELETE /api/v1/admin/news/{id}`
-- `GET /api/v1/admin/leads`
-- `PATCH /api/v1/admin/leads/{id}`
-- `POST /api/v1/admin/uploads/sign`
-
-## 9. Production notes
-
-- Keep `.env`, `DATABASE_URL`, Supabase service-role keys and email keys out of Git.
-- Use a managed rate limiter such as Redis when running multiple API instances.
-- Configure Supabase Storage before testing signed uploads.
-- Apply migrations in staging before production.
-- Add RLS as a second database protection layer if the database is also accessed directly through Supabase APIs.
+Staff authentication requires valid Supabase frontend credentials in `frontend/.env.local` and matching backend Supabase JWT settings in the backend `.env`.

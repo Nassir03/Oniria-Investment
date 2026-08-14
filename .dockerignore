@@ -73,3 +73,6 @@ Desktop.ini
 *.tgz
 *.rar
 *.7z
+
+# Frontend has its own Docker build context
+frontend/
