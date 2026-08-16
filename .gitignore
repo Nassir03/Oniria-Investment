@@ -90,3 +90,11 @@ temp/
 *.tgz
 *.rar
 *.7z
+
+# Cloudflare Workers / OpenNext generated artifacts
+.wrangler/
+.dev.vars*
+!.dev.vars.example
+.open-next/
+frontend/.wrangler/
+frontend/.open-next/
