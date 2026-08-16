@@ -9,6 +9,7 @@ from app.db.session import get_db
 from app.models.entities import Lead, Project
 from app.schemas.lead import LeadCreate, LeadCreated
 from app.services.email_service import send_lead_notifications
+from app.services.notification_service import create_preference_notifications
 from app.services.rate_limit import lead_limiter
 
 router = APIRouter(prefix='/leads', tags=['leads'])
@@ -39,5 +40,15 @@ async def create_lead(payload: LeadCreate, request: Request, background_tasks: B
     db.add(lead)
     await db.commit()
     await db.refresh(lead)
+    await create_preference_notifications(
+        db,
+        preference_key='new_customer_enquiry',
+        notification_type='new_customer_enquiry',
+        title='New customer enquiry',
+        message=f'A new enquiry was received from {lead.first_name} {lead.last_name}. Reference: {lead.reference_no}',
+        link='/admin/leads',
+        allowed_roles={'admin', 'sales'},
+    )
+    await db.commit()
     background_tasks.add_task(send_lead_notifications, lead.reference_no, lead.first_name, lead.email, lead.message)
     return LeadCreated(id=lead.id, reference_no=lead.reference_no)

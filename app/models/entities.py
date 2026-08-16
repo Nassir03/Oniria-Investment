@@ -51,6 +51,12 @@ class Profile(Base, TimestampMixin):
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
     full_name: Mapped[str | None] = mapped_column(String(200))
     email: Mapped[str | None] = mapped_column(String(320), index=True)
+    phone: Mapped[str | None] = mapped_column(String(60))
+    job_title: Mapped[str | None] = mapped_column(String(120))
+    department: Mapped[str | None] = mapped_column(String(120))
+    preferred_contact_method: Mapped[str | None] = mapped_column(String(30))
+    avatar_url: Mapped[str | None] = mapped_column(Text)
+    notification_preferences: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
     status: Mapped[str] = mapped_column(String(20), default=ProfileStatus.active.value, nullable=False)
 
 
@@ -188,5 +194,17 @@ class AuditLog(Base, UUIDPrimaryKeyMixin):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default='now()', nullable=False, index=True)
 
 
+class AdminNotification(Base, UUIDPrimaryKeyMixin):
+    __tablename__ = 'admin_notifications'
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey('profiles.id', ondelete='CASCADE'), index=True)
+    type: Mapped[str] = mapped_column(String(80), index=True)
+    title: Mapped[str] = mapped_column(String(180))
+    message: Mapped[str] = mapped_column(Text)
+    link: Mapped[str | None] = mapped_column(String(500))
+    is_read: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default='now()', nullable=False, index=True)
+
+
 Index('ix_news_status_published_desc', NewsArticle.status, NewsArticle.published_at.desc())
 Index('ix_leads_status_created_desc', Lead.status, Lead.created_at.desc())
+Index('ix_admin_notifications_user_read_created', AdminNotification.user_id, AdminNotification.is_read, AdminNotification.created_at.desc())

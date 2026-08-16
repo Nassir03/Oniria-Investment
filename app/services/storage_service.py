@@ -1,6 +1,7 @@
 import re
 import secrets
 from pathlib import Path, PurePosixPath
+from uuid import UUID
 
 from fastapi import UploadFile
 from supabase import create_client
@@ -76,3 +77,31 @@ async def save_local_newsroom_image(file: UploadFile) -> str:
     filename = f'{secrets.token_hex(12)}{extension}'
     (target_dir / filename).write_bytes(raw)
     return f'/media/newsroom/{filename}'
+
+
+async def save_local_profile_image(file: UploadFile, user_id: UUID) -> str:
+    content_type = (file.content_type or '').lower()
+    if content_type not in settings.allowed_upload_mime_types:
+        raise AppError('unsupported_file_type', 'Use JPG, PNG, WEBP or AVIF images.', 400)
+
+    raw = await file.read(settings.max_upload_bytes + 1)
+    if not raw:
+        raise AppError('empty_upload', 'The uploaded image is empty.', 400)
+    if len(raw) > settings.max_upload_bytes:
+        raise AppError('invalid_file_size', f'Image must be smaller than {settings.max_upload_bytes} bytes.', 400)
+
+    safe = _safe_filename(file.filename or 'profile-image')
+    extension = Path(safe).suffix.lower()
+    if extension not in {'.jpg', '.jpeg', '.png', '.webp', '.avif'}:
+        extension = {
+            'image/jpeg': '.jpg',
+            'image/png': '.png',
+            'image/webp': '.webp',
+            'image/avif': '.avif',
+        }.get(content_type, '.jpg')
+
+    target_dir = LOCAL_MEDIA_ROOT / 'staff'
+    target_dir.mkdir(parents=True, exist_ok=True)
+    filename = f'{user_id}-{secrets.token_hex(6)}{extension}'
+    (target_dir / filename).write_bytes(raw)
+    return f'/media/staff/{filename}'

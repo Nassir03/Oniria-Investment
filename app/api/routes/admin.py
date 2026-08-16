@@ -11,14 +11,21 @@ from sqlalchemy.orm import selectinload
 from app.core.errors import AppError
 from app.core.security import StaffPrincipal, get_current_staff, require_roles
 from app.db.session import get_db
-from app.models.entities import Lead, LeadNote, NewsArticle, SiteVisit
-from app.schemas.admin import CurrentStaff, StaffCreate, StaffOut, StaffUpdate, UploadSignRequest, UploadSignResponse
+from app.models.entities import Lead, LeadNote, NewsArticle, Profile, SiteVisit
+from app.schemas.admin import AdminNotificationList, CurrentStaff, ProfileUpdate, StaffCreate, StaffOut, StaffUpdate, UploadSignRequest, UploadSignResponse
 from app.schemas.common import PageMeta, Paginated
 from app.schemas.lead import LeadOut, LeadUpdate
 from app.schemas.news import NewsArticleOut, NewsCreate, NewsUpdate
 from app.services.audit_service import write_audit
 from app.services.news_service import archive_article, create_article, get_article, publish_article, unpublish_article, update_article
-from app.services.storage_service import create_signed_upload, save_local_newsroom_image
+from app.services.notification_service import (
+    create_preference_notifications,
+    list_user_notifications,
+    mark_all_notifications_read,
+    mark_notification_read,
+    normalize_notification_preferences,
+)
+from app.services.storage_service import create_signed_upload, save_local_newsroom_image, save_local_profile_image
 from app.services.staff_service import create_staff, list_staff, update_staff
 from fastapi.responses import StreamingResponse
 
@@ -26,8 +33,91 @@ router = APIRouter(prefix='/admin', tags=['admin'])
 
 
 @router.get('/me', response_model=CurrentStaff)
-async def me(staff: StaffPrincipal = Depends(get_current_staff)):
-    return CurrentStaff(id=staff.id, email=staff.email, full_name=staff.full_name, roles=sorted(staff.roles))
+async def me(db: AsyncSession = Depends(get_db), staff: StaffPrincipal = Depends(get_current_staff)):
+    profile = await db.scalar(select(Profile).where(Profile.id == staff.id))
+    return CurrentStaff(
+        id=staff.id,
+        email=profile.email if profile else staff.email,
+        full_name=profile.full_name if profile else staff.full_name,
+        phone=profile.phone if profile else None,
+        job_title=profile.job_title if profile else None,
+        department=profile.department if profile else None,
+        preferred_contact_method=profile.preferred_contact_method if profile else None,
+        avatar_url=profile.avatar_url if profile else None,
+        notification_preferences=normalize_notification_preferences(profile.notification_preferences if profile else {}, staff.roles),
+        roles=sorted(staff.roles),
+    )
+
+
+@router.patch('/me', response_model=CurrentStaff)
+async def update_me(
+    payload: ProfileUpdate,
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(get_current_staff),
+):
+    profile = await db.scalar(select(Profile).where(Profile.id == staff.id))
+    if not profile:
+        raise AppError('staff_not_found', 'Staff account not found.', 404)
+
+    if payload.full_name is not None:
+        profile.full_name = payload.full_name
+    if 'phone' in payload.model_fields_set:
+        profile.phone = payload.phone
+    if 'job_title' in payload.model_fields_set:
+        profile.job_title = payload.job_title
+    if 'department' in payload.model_fields_set:
+        profile.department = payload.department
+    if 'preferred_contact_method' in payload.model_fields_set:
+        profile.preferred_contact_method = payload.preferred_contact_method
+    if 'avatar_url' in payload.model_fields_set:
+        profile.avatar_url = payload.avatar_url
+    if payload.notification_preferences is not None:
+        notification_preferences = normalize_notification_preferences(payload.notification_preferences, staff.roles)
+        profile.notification_preferences = notification_preferences
+
+    await write_audit(db, staff.id, 'profile.update', 'profile', staff.id, {'self_service': True})
+    await db.commit()
+    await db.refresh(profile)
+    return CurrentStaff(
+        id=staff.id,
+        email=profile.email,
+        full_name=profile.full_name,
+        phone=profile.phone,
+        job_title=profile.job_title,
+        department=profile.department,
+        preferred_contact_method=profile.preferred_contact_method,
+        avatar_url=profile.avatar_url,
+        notification_preferences=normalize_notification_preferences(profile.notification_preferences, staff.roles),
+        roles=sorted(staff.roles),
+    )
+
+
+@router.get('/notifications', response_model=AdminNotificationList)
+async def admin_notifications(
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(get_current_staff),
+):
+    items, unread_count = await list_user_notifications(db, staff.id)
+    return {'items': items, 'unread_count': unread_count}
+
+
+@router.patch('/notifications/{notification_id}/read', status_code=204)
+async def admin_notification_read(
+    notification_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(get_current_staff),
+):
+    await mark_notification_read(db, staff.id, notification_id)
+    return Response(status_code=204)
+
+
+@router.patch('/notifications/read-all', status_code=204)
+async def admin_notifications_read_all(
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(get_current_staff),
+):
+    await mark_all_notifications_read(db, staff.id)
+    return Response(status_code=204)
 
 
 @router.get('/staff', response_model=list[StaffOut])
@@ -52,7 +142,21 @@ async def admin_staff_create(
         roles=payload.roles,
         granted_by=staff.id,
     )
-    await write_audit(db, staff.id, 'staff.create', 'profile', result['id'], {'email': result['email'], 'roles': result['roles']})
+    await write_audit(db, staff.id, 'staff.create', 'profile', result['id'], {
+        'email': result['email'],
+        'roles': result['roles'],
+        'notification_key': 'staff_changes',
+        'notification_events': ['staff_account_created', 'staff_permissions_changed'],
+    })
+    await create_preference_notifications(
+        db,
+        preference_key='staff_account_changes',
+        notification_type='staff_account_created',
+        title='Staff account created',
+        message=f"{result['full_name']} was added to Team Access.",
+        link='/admin/staff',
+        allowed_roles={'admin'},
+    )
     await db.commit()
     return result
 
@@ -73,7 +177,38 @@ async def admin_staff_update(
         password=payload.password,
         actor_id=staff.id,
     )
-    await write_audit(db, staff.id, 'staff.update', 'profile', user_id, {'status': result['status'], 'roles': result['roles']})
+    notification_events = []
+    if payload.status == 'active':
+        notification_events.append('staff_account_activated')
+    if payload.status == 'suspended':
+        notification_events.append('staff_account_suspended')
+    if payload.roles is not None:
+        notification_events.extend(['staff_role_changed', 'staff_permissions_changed'])
+    if payload.password:
+        notification_events.append('staff_access_changed')
+    await write_audit(db, staff.id, 'staff.update', 'profile', user_id, {
+        'status': result['status'],
+        'roles': result['roles'],
+        'notification_key': 'staff_changes',
+        'notification_events': notification_events,
+    })
+    if notification_events:
+        action_text = 'access was updated'
+        if payload.status == 'active':
+            action_text = 'account was activated'
+        if payload.status == 'suspended':
+            action_text = 'account was suspended'
+        if payload.roles is not None:
+            action_text = 'roles or access were updated'
+        await create_preference_notifications(
+            db,
+            preference_key='staff_account_changes',
+            notification_type='staff_account_changed',
+            title='Staff account changes',
+            message=f"{result['full_name']}'s {action_text}.",
+            link='/admin/staff',
+            allowed_roles={'admin'},
+        )
     await db.commit()
     return result
 
@@ -98,22 +233,69 @@ async def admin_create_news(payload: NewsCreate, db: AsyncSession = Depends(get_
 
 @router.patch('/news/{article_id}', response_model=NewsArticleOut)
 async def admin_update_news(article_id: UUID, payload: NewsUpdate, db: AsyncSession = Depends(get_db), staff: StaffPrincipal = Depends(require_roles('admin','editor','content_manager'))):
-    return await update_article(db, article_id, payload, staff.id)
+    before = await get_article(db, article_id)
+    was_published = before.status == 'published'
+    article = await update_article(db, article_id, payload, staff.id)
+    if was_published:
+        await create_preference_notifications(
+            db,
+            preference_key='newsroom_publication_activity',
+            notification_type='newsroom_article_updated',
+            title='Published newsroom article updated',
+            message=f'"{article.title}" was updated.',
+            link=f'/admin/news',
+            allowed_roles={'admin', 'editor', 'content_manager'},
+        )
+        await db.commit()
+    return article
 
 
 @router.post('/news/{article_id}/publish', response_model=NewsArticleOut)
 async def admin_publish_news(article_id: UUID, db: AsyncSession = Depends(get_db), staff: StaffPrincipal = Depends(require_roles('admin','editor'))):
-    return await publish_article(db, article_id, staff.id)
+    article = await publish_article(db, article_id, staff.id)
+    await create_preference_notifications(
+        db,
+        preference_key='newsroom_publication_activity',
+        notification_type='newsroom_article_published',
+        title='Newsroom update published',
+        message=f'"{article.title}" was published.',
+        link='/admin/news',
+        allowed_roles={'admin', 'editor', 'content_manager'},
+    )
+    await db.commit()
+    return article
 
 
 @router.post('/news/{article_id}/unpublish', response_model=NewsArticleOut)
 async def admin_unpublish_news(article_id: UUID, db: AsyncSession = Depends(get_db), staff: StaffPrincipal = Depends(require_roles('admin','editor'))):
-    return await unpublish_article(db, article_id, staff.id)
+    article = await unpublish_article(db, article_id, staff.id)
+    await create_preference_notifications(
+        db,
+        preference_key='newsroom_publication_activity',
+        notification_type='newsroom_article_unpublished',
+        title='Newsroom update unpublished',
+        message=f'"{article.title}" was unpublished.',
+        link='/admin/news',
+        allowed_roles={'admin', 'editor', 'content_manager'},
+    )
+    await db.commit()
+    return article
 
 
 @router.delete('/news/{article_id}', status_code=204)
 async def admin_archive_news(article_id: UUID, db: AsyncSession = Depends(get_db), staff: StaffPrincipal = Depends(require_roles('admin'))):
+    article = await get_article(db, article_id)
     await archive_article(db, article_id, staff.id)
+    await create_preference_notifications(
+        db,
+        preference_key='newsroom_publication_activity',
+        notification_type='newsroom_article_archived',
+        title='Newsroom update archived',
+        message=f'"{article.title}" was archived.',
+        link='/admin/news',
+        allowed_roles={'admin', 'editor', 'content_manager'},
+    )
+    await db.commit()
     return Response(status_code=204)
 
 
@@ -145,6 +327,17 @@ async def admin_update_lead(lead_id: UUID, payload: LeadUpdate, db: AsyncSession
     if payload.note:
         db.add(LeadNote(lead_id=lead.id, staff_id=staff.id, note=payload.note))
     await write_audit(db, staff.id, 'lead.update', 'lead', lead.id, {'before': before, 'after': {'status': lead.status, 'assigned_to': str(lead.assigned_to) if lead.assigned_to else None}})
+    if payload.status is not None and payload.status != before['status']:
+        actor_name = staff.full_name or staff.email or 'A staff member'
+        await create_preference_notifications(
+            db,
+            preference_key='lead_status_updates',
+            notification_type='lead_status_changed',
+            title='Lead status updated',
+            message=f"{lead.reference_no} changed from {before['status']} to {lead.status} by {actor_name}.",
+            link='/admin/leads',
+            allowed_roles={'admin', 'sales'},
+        )
     await db.commit()
     return await db.scalar(select(Lead).options(selectinload(Lead.notes)).where(Lead.id == lead.id))
 
@@ -156,6 +349,17 @@ async def upload_newsroom_image(
     _: StaffPrincipal = Depends(require_roles('admin','editor','content_manager')),
 ):
     public_path = await save_local_newsroom_image(file)
+    base = str(request.base_url).rstrip('/')
+    return {'url': f'{base}{public_path}', 'path': public_path}
+
+
+@router.post('/uploads/profile-image')
+async def upload_profile_image(
+    request: Request,
+    file: UploadFile = File(...),
+    staff: StaffPrincipal = Depends(get_current_staff),
+):
+    public_path = await save_local_profile_image(file, staff.id)
     base = str(request.base_url).rstrip('/')
     return {'url': f'{base}{public_path}', 'path': public_path}
 
@@ -299,4 +503,62 @@ async def export_leads_xlsx(
         stream,
         media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         headers={'Content-Disposition': 'attachment; filename="oniria-enquiries.xlsx"'},
+    )
+
+
+@router.get('/exports/news.csv')
+async def export_news_csv(
+    db: AsyncSession = Depends(get_db),
+    _: StaffPrincipal = Depends(require_roles('admin','editor','content_manager')),
+):
+    articles = (await db.scalars(
+        select(NewsArticle).where(NewsArticle.deleted_at.is_(None)).order_by(NewsArticle.updated_at.desc())
+    )).all()
+    output = StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['Title','Slug','Status','Published','Updated'])
+    for article in articles:
+        writer.writerow([
+            article.title,
+            article.slug,
+            article.status,
+            article.published_at.isoformat() if article.published_at else '',
+            article.updated_at.isoformat() if article.updated_at else '',
+        ])
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type='text/csv',
+        headers={'Content-Disposition': 'attachment; filename="oniria-newsroom.csv"'},
+    )
+
+
+@router.get('/exports/activity.csv')
+async def export_activity_csv(
+    days: int = Query(30, ge=7, le=365),
+    db: AsyncSession = Depends(get_db),
+    _: StaffPrincipal = Depends(require_roles('admin','sales','editor','content_manager')),
+):
+    start = datetime.now(timezone.utc) - timedelta(days=days - 1)
+    rows = (await db.execute(
+        select(
+            cast(SiteVisit.created_at, Date).label('day'),
+            SiteVisit.path,
+            func.count(SiteVisit.id).label('views'),
+            func.count(func.distinct(SiteVisit.session_id)).label('visitors'),
+        )
+        .where(SiteVisit.created_at >= start)
+        .group_by(cast(SiteVisit.created_at, Date), SiteVisit.path)
+        .order_by(cast(SiteVisit.created_at, Date).desc(), func.count(SiteVisit.id).desc())
+    )).all()
+    output = StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['Date','Page','Views','Visitors'])
+    for row in rows:
+        writer.writerow([row.day.isoformat(), row.path, row.views, row.visitors])
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type='text/csv',
+        headers={'Content-Disposition': 'attachment; filename="oniria-website-activity.csv"'},
     )
