@@ -44,7 +44,12 @@ function formatApiError(body: ApiErrorBody, status: number) {
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 20_000);
+  const method = (init?.method || 'GET').toUpperCase();
+  // Public pages already contain graceful fallbacks. Do not hold an entire
+  // navigation for 20 seconds when the local/API service is offline.
+  // Mutations and browser-side admin actions keep the longer safety window.
+  const timeoutMs = typeof window === 'undefined' && method === 'GET' ? 2_500 : 20_000;
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const headers = new Headers(init?.headers || {});

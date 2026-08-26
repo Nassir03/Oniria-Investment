@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import HomeHero from '@/components/HomeHero';
 import Reveal from '@/components/Reveal';
@@ -8,10 +9,34 @@ import { getNews } from '@/lib/api';
 export const dynamic = 'force-dynamic';
 
 const collection = [
-  { name: 'ONIRIA Stone Town', descriptor: 'Heritage Hospitality' },
-  { name: 'ONIRIA Michamvi', descriptor: 'Wellness · Nature · Longevity' },
-  { name: 'ONA Towers', descriptor: 'Landmark Residences' },
-  { name: 'V Town', descriptor: 'The Art of Living' },
+  {
+    name: 'ONIRIA Stone Town',
+    descriptor: 'Heritage Hospitality',
+    image: '/images/stone-town-restaurant.png',
+    href: '/projects/oniria-stone-town',
+    external: false,
+  },
+  {
+    name: 'ONIRIA Michamvi',
+    descriptor: 'Wellness · Nature · Longevity',
+    image: '/images/michamvi-concept.png',
+    href: '/projects/oniria-michamvi',
+    external: false,
+  },
+  {
+    name: 'ONA Towers',
+    descriptor: 'Landmark Residences',
+    image: '/images/ona-tower.webp',
+    href: '/projects/ona-towers',
+    external: false,
+  },
+  {
+    name: 'V Town',
+    descriptor: 'The Art of Living',
+    image: '/images/v-town-villa.webp',
+    href: 'https://oniria-city-2hez.vercel.app/',
+    external: true,
+  },
 ];
 
 export default async function Home() {
@@ -22,72 +47,80 @@ export default async function Home() {
     <main className="publicPage">
       <HomeHero />
 
-      <section className="section pointOfViewSection pointOfViewEditorial">
+      <section id="vision" className="section pointOfViewSection pointOfViewEditorial">
         <Reveal>
-          <p className="eyebrow">ONIRIA / Our point of view</p>
+          <p className="eyebrow">ONIRIA / Our view</p>
           <div className="pointOfViewGrid">
             <div className="pointOfViewStatement">
               <h2>We begin with <em>place.</em><br />Then imagine what it could become.</h2>
             </div>
             <div className="pointOfViewCopy">
-              <p>ONIRIA develops destinations and residences around one clear idea: the experience should feel intentional from the first view to the final detail.</p>
-              <Link href="/our-story" className="textLink">Discover our story <span>→</span></Link>
+              <p>Every ONIRIA project begins with its place — its landscape, culture and possibilities — and evolves into an experience that could belong nowhere else.</p>
+              <Link href="/our-story" className="textLink">Discover Our Vision <span>→</span></Link>
             </div>
           </div>
         </Reveal>
 
-        <Reveal className="oniriaPhilosophyFlow" aria-label="ONIRIA principles and collection">
-          <div className="philosophyRail" role="list" aria-label="ONIRIA principles">
-            {['Place', 'Design', 'Experience', 'Legacy'].map((principle) => (
-              <div key={principle} className="philosophyRailItem" role="listitem">
-                <span className="philosophyRailDot" aria-hidden="true" />
-                <span>{principle}</span>
-              </div>
-            ))}
+        <Reveal className="homeCollectionPremium" aria-label="The ONIRIA Collection">
+          <div className="homeCollectionPremiumIntro">
+            <p className="eyebrow">The ONIRIA Collection</p>
+            <h3>Distinctive places. Unmistakably ONIRIA.</h3>
+            <p>
+              From heritage hospitality to coastal wellness, landmark residences and complete living environments,
+              every ONIRIA project is shaped to create memorable experiences, distinctive identity and lasting value.
+            </p>
           </div>
 
-          <div className="collectionOrbit">
-            <div className="collectionOrbitIntro">
-              <p className="eyebrow">The ONIRIA Collection</p>
-              <h3>Distinctive places. Enduring value. Unmistakably ONIRIA.</h3>
-              <p>From heritage hospitality to coastal wellness, landmark residences and complete living environments, every ONIRIA destination is shaped to create memorable experiences, distinctive identity and lasting value.</p>
-            </div>
-
-            <div className="collectionOrbitStage" role="list" aria-label="The ONIRIA Collection">
-              <div className="collectionOrbitHubWrap" aria-hidden="true">
-                <span className="collectionOrbitPulse collectionOrbitPulseOne" />
-                <span className="collectionOrbitPulse collectionOrbitPulseTwo" />
-                <div className="collectionOrbitHub">
-                  <span>ONIRIA</span>
-                  <strong>Collection</strong>
-                </div>
-              </div>
-
-              <svg className="collectionOrbitLines" viewBox="0 0 1200 430" preserveAspectRatio="none" aria-hidden="true">
-                <path className="orbitArc" d="M220 150 C 380 10, 820 10, 980 150" />
-                <path className="orbitStem" d="M600 186 L600 228" />
-                <path className="orbitLink" d="M220 150 C 210 216, 186 244, 160 268" />
-                <path className="orbitLink" d="M420 120 C 416 204, 392 236, 350 268" />
-                <path className="orbitLink" d="M780 120 C 784 204, 808 236, 850 268" />
-                <path className="orbitLink" d="M980 150 C 990 216, 1014 244, 1040 268" />
-                <circle className="orbitNode orbitNodeA" cx="220" cy="150" r="9" />
-                <circle className="orbitNode orbitNodeB" cx="420" cy="120" r="9" />
-                <circle className="orbitNode orbitNodeC" cx="780" cy="120" r="9" />
-                <circle className="orbitNode orbitNodeD" cx="980" cy="150" r="9" />
-              </svg>
-
-              <div className="collectionOrbitProjects">
-                {collection.map((project, index) => (
-                  <article key={project.name} className={`collectionOrbitProject collectionOrbitProject${index + 1}`} role="listitem">
-                    <span className="collectionOrbitNode" aria-hidden="true"><i /></span>
-                    <div className="collectionOrbitProjectText">
+          <div className="homeCollectionPremiumGrid" role="list" aria-label="ONIRIA projects">
+            {collection.map((project, index) => {
+              const CardInner = (
+                <>
+                  <div className="homeCollectionPremiumMedia">
+                    <Image
+                      src={project.image}
+                      alt={`${project.name} project image`}
+                      fill
+                      sizes="(max-width: 700px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    />
+                    <div className="homeCollectionPremiumShade" />
+                  </div>
+                  <div className="homeCollectionPremiumBody">
+                    <span className="homeCollectionPremiumMarker" aria-hidden="true" />
+                    <div>
                       <h4>{project.name}</h4>
                       <p>{project.descriptor}</p>
                     </div>
-                  </article>
-                ))}
-              </div>
-            </div>
+                    <span className="homeCollectionPremiumAction">Discover <b>→</b></span>
+                  </div>
+                </>
+              );
+
+              return project.external ? (
+                <a
+                  key={project.name}
+                  href={project.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`homeCollectionPremiumCard homeCollectionPremiumCard${index + 1}`}
+                  role="listitem"
+                >
+                  {CardInner}
+                </a>
+              ) : (
+                <Link
+                  key={project.name}
+                  href={project.href}
+                  className={`homeCollectionPremiumCard homeCollectionPremiumCard${index + 1}`}
+                  role="listitem"
+                >
+                  {CardInner}
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="homeCollectionPremiumFooter">
+            <Link href="/projects" className="textLink">Explore all projects <span>→</span></Link>
           </div>
         </Reveal>
       </section>

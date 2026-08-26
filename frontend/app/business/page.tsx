@@ -74,16 +74,13 @@ function projectHref(slug: string) {
 }
 
 export default async function Page() {
-  let areas: any[] = [];
-  let projects: any[] = [];
+  const [areasResult, projectsResult] = await Promise.allSettled([
+    getBusinessAreas(),
+    getProjects(),
+  ]);
 
-  try {
-    areas = await getBusinessAreas();
-  } catch {}
-
-  try {
-    projects = (await getProjects()).items;
-  } catch {}
+  const areas = areasResult.status === 'fulfilled' ? areasResult.value : [];
+  const projects = projectsResult.status === 'fulfilled' ? projectsResult.value.items : [];
 
   const businessAreas = areas.length ? areas : fallbackAreas;
   const projectList = projects.length ? projects : fallbackProjects;
@@ -91,7 +88,7 @@ export default async function Page() {
   return (
     <main className="publicPage businessPremiumPage">
       <section className="businessPremiumHero">
-        <Image src="/images/restaurant.png" alt="ONIRIA hospitality interior" fill priority sizes="100vw" />
+        <Image src="/images/restaurant.webp" alt="ONIRIA hospitality interior" fill priority sizes="100vw" />
         <div className="businessPremiumHeroShade" />
         <div className="businessPremiumHeroCopy">
           <p className="eyebrow light">Our Business</p>
@@ -135,7 +132,7 @@ export default async function Page() {
 
       <section className="businessPremiumPerspective">
         <div className="businessPremiumPerspectiveMedia">
-          <Image src="/images/outside-ona-tower.png" alt="ONA Towers arrival" fill sizes="100vw" />
+          <Image src="/images/outside-ona-tower.webp" alt="ONA Towers arrival" fill sizes="100vw" />
           <div className="businessPremiumPerspectiveShade" />
         </div>
         <Reveal className="businessPremiumPerspectiveCopy">

@@ -1,15 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 const links = [
-  ['/our-story', 'Our Story'],
-  ['/business', 'Our Business'],
-  ['/newsroom', 'Newsroom'],
+  ['/#vision', 'Vision'],
+  ['/projects', 'Projects'],
+  ['/our-story', 'About'],
+  ['/newsroom', 'News'],
   ['/contact', 'Contact'],
-];
+] as const;
 
 function routeCanOverlay(path: string) {
   return (
@@ -18,12 +19,13 @@ function routeCanOverlay(path: string) {
     path.startsWith('/business') ||
     path.startsWith('/contact') ||
     path === '/newsroom' ||
-    path.startsWith('/projects/')
+    path.startsWith('/projects')
   );
 }
 
 export default function Header() {
   const path = usePathname();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -35,6 +37,16 @@ export default function Header() {
   }, []);
 
   useEffect(() => setOpen(false), [path]);
+
+  // Warm the primary public routes shortly after the header mounts so navigation
+  // feels immediate, while keeping the initial page render the top priority.
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      ['/projects', '/our-story', '/newsroom', '/contact'].forEach((href) => router.prefetch(href));
+    }, 350);
+    return () => window.clearTimeout(timer);
+  }, [router]);
+
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
     return () => {
@@ -48,15 +60,16 @@ export default function Header() {
   return (
     <header className={`siteHeader ${solid ? 'solid' : 'overlay'} ${canOverlay ? 'canOverlay' : 'surfaceOnly'} ${path === '/' ? 'homeRoute' : ''}`}>
       <Link href="/" className="wordmark" aria-label="ONIRIA Investments home">
-        <span>ONIRIA</span>
-        <small>INVESTMENTS</small>
+        <span className="wordmarkLogo" aria-hidden="true" />
       </Link>
 
       <nav className="desktopNav desktopNavRight" aria-label="Primary navigation">
         {links.map(([href, label]) => {
-          const active = path === href || (href !== '/' && path.startsWith(`${href}/`));
+          const active = href === '/#vision'
+            ? path === '/'
+            : path === href || path.startsWith(`${href}/`);
           return (
-            <Link key={href} href={href} className={active ? 'active' : ''}>
+            <Link key={href} href={href} prefetch className={active ? 'active' : ''}>
               {label}
             </Link>
           );
@@ -76,7 +89,7 @@ export default function Header() {
       <div className={`mobileMenu ${open ? 'open' : ''}`} aria-hidden={!open}>
         <p className="eyebrow gold">ONIRIA</p>
         {links.map(([href, label]) => (
-          <Link key={href} href={href}>
+          <Link key={href} href={href} prefetch>
             {label}
           </Link>
         ))}

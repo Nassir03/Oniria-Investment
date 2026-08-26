@@ -19,7 +19,7 @@ export default async function Page() {
       <section className="newsroomImageHero">
         <div className="newsroomImageHeroMedia">
           <EditorialImage
-            src="/images/newsroom-hero.png"
+            src="/images/newsroom-hero.webp"
             alt="ONIRIA newsroom"
             priority
             sizes="100vw"

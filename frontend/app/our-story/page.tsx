@@ -53,7 +53,7 @@ export default function Page() {
     <main className="publicPage story2026Page">
       <section className="story2026Hero">
         <Image
-          src="/images/outside-ona-tower.png"
+          src="/images/outside-ona-tower.webp"
           alt="ONIRIA contemporary destination architecture"
           fill
           priority
@@ -108,7 +108,7 @@ export default function Page() {
       <section className="story2026VisionSplit">
         <div className="story2026VisionMedia">
           <Image
-            src="/images/homepage-light.png"
+            src="/images/homepage-light.webp"
             alt="ONIRIA coastal residential concept"
             fill
             sizes="(max-width: 900px) 100vw, 56vw"
