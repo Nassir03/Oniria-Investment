@@ -11,7 +11,7 @@ const visionPrinciples = [
     number: '01',
     label: 'Destination',
     title: 'Create reasons to arrive.',
-    copy: 'We imagine places with a clear identity — destinations that feel rooted in Zanzibar while offering an experience compelling enough to be sought out, shared and remembered.',
+    copy: 'We imagine places with a clear identity - destinations that feel rooted in Zanzibar while offering an experience compelling enough to be sought out, shared and remembered.',
   },
   {
     number: '02',

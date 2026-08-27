@@ -26,12 +26,15 @@ export default function HomeHero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
       >
-        <h1>We create what does not exist yet.</h1>
+        <h1>
+          <span>We create what</span>
+          <span>does not exist yet.</span>
+        </h1>
         <p className="heroLead">Places. Experience new ways living. Born in Zanzibar.</p>
 
         <div className="heroActions heroActionsSingle">
-          <Link href="/projects" prefetch className="button buttonLight">
-            Explore Our projects 
+          <Link href="/projects" prefetch className="homeMontserratUnderlineLink">
+            EXPLORE OUR PROJECTS 
           </Link>
         </div>
       </motion.div>

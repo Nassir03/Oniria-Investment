@@ -49,7 +49,7 @@ export default function Header() {
   const solid = !canOverlay || scrolled;
 
   return (
-    <header className={`siteHeader ${solid ? 'solid' : 'overlay'} ${canOverlay ? 'canOverlay' : 'surfaceOnly'} ${path === '/' ? 'homeRoute' : ''}`}>
+    <header className={`siteHeader ${solid ? 'solid' : 'overlay'} ${canOverlay ? 'canOverlay' : 'surfaceOnly'} ${path === '/' ? 'homeRoute' : ''} ${path.startsWith('/contact') ? 'contactRoute' : ''}`}>
       <Link href="/" prefetch className="wordmark" aria-label="ONIRIA Investments home">
         <span className="wordmarkLogo" aria-hidden="true" />
       </Link>

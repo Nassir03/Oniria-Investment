@@ -10,7 +10,7 @@ const pillars = [
   {
     label: 'Our Purpose',
     title: 'Create places with a reason to belong.',
-    copy: 'We begin with context — the character of a place, the people it serves and the experience it can create. Purpose gives every decision a clear direction.',
+    copy: 'We begin with context - the character of a place, the people it serves and the experience it can create. Purpose gives every decision a clear direction.',
   },
   {
     label: 'Our Perspective',
@@ -20,7 +20,7 @@ const pillars = [
   {
     label: 'Built on Integrity',
     title: 'Make clarity part of the experience.',
-    copy: 'We value considered decisions, responsible partnerships and straightforward communication — from the first idea through delivery and beyond.',
+    copy: 'We value considered decisions, responsible partnerships and straightforward communication - from the first idea through delivery and beyond.',
   },
 ];
 

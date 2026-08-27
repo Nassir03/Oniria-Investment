@@ -37,7 +37,7 @@ const collection = [
 
 export default function Home() {
   return (
-    <main className="publicPage">
+    <main className="publicPage homePageIvory">
       <HomeHero />
 
       <section id="vision" className="section pointOfViewSection pointOfViewEditorial">
@@ -48,8 +48,8 @@ export default function Home() {
               <h2><span className="pointOfViewFirstLine">We begin with <em>place.</em></span><br />Then imagine what it could become.</h2>
             </div>
             <div className="pointOfViewCopy">
-              <p>Every ONIRIA project begins with its place — its landscape, culture and possibilities — and evolves into an experience that could belong nowhere else.</p>
-              <Link href="/vision" prefetch className="textLink">Discover Our Vision <span>→</span></Link>
+              <p>Every ONIRIA project begins with its place - its landscape, culture and possibilities and evolves into an experience that could belong nowhere else.</p>
+              <Link href="/vision" prefetch className="textLink">DISCOVER OUR VISION <span className="arrow">→</span> </Link>
             </div>
           </div>
         </Reveal>
@@ -78,13 +78,12 @@ export default function Home() {
                     <div className="homeCollectionPremiumShade" />
                   </div>
                   <div className="homeCollectionPremiumBody">
-                    <span className="homeCollectionPremiumMarker" aria-hidden="true" />
                     <div>
                       <h4>{project.name}</h4>
                       <p>{project.descriptor}</p>
                     </div>
                     {project.external ? (
-                      <span className="homeCollectionPremiumAction">Discover <b>→</b></span>
+                      <span className="homeCollectionPremiumAction">DISCOVER <span className="arrow">→</span></span>
                     ) : null}
                   </div>
                 </>
@@ -114,7 +113,7 @@ export default function Home() {
           </div>
 
           <div className="homeCollectionPremiumFooter">
-            <Link href="/projects" prefetch className="textLink">Explore all projects <span>→</span></Link>
+            <Link href="/projects" prefetch className="textLink">EXPLORE ALL PROJECTS <span className="arrow">→</span></Link>
           </div>
         </Reveal>
       </section>
@@ -126,7 +125,7 @@ export default function Home() {
         <Reveal className="dualCopy hospitalityCopy hospitalityCopyRefined">
           <h2>We design for how life feels.</h2>
           <p>Every details shapes the experience, how we arrive, move, connect retreat and belong.</p>
-          <Link href="/business" prefetch className="button buttonNavy">Explore Our Project <span>↗</span></Link>
+          <Link href="/business" prefetch className="homeMontserratUnderlineLink homeMontserratUnderlineLinkDark">EXPLORE OUR PROJECT <span className="arrow">→</span> </Link>
         </Reveal>
       </section>
 

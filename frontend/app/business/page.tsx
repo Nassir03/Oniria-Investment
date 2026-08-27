@@ -18,7 +18,7 @@ const fallbackProjects = [
     category: 'Hospitality',
     location: '',
     summary:
-      'A hospitality-led ONIRIA concept where heritage character, warm materiality and contemporary guest experience meet. First AI boutique hotel in the heart of stone town',
+      'A hospitality-led ONIRIA concept where heritage character, warm materiality and contemporary guest experience meet. First AI boutique hotel in the heart of Stone Town.',
   },
   {
     id: 'oniria-michamvi',
@@ -26,7 +26,7 @@ const fallbackProjects = [
     name: 'ONIRIA Michamvi',
     category: 'Destination Development',
     location: '',
-    summary: 'A coastal destination concept focused on wellness, rejuvenation and longevity',
+    summary: 'A coastal destination concept focused on wellness, rejuvenation and longevity.',
   },
   {
     id: 'ona-towers',
@@ -44,48 +44,46 @@ const fallbackProjects = [
     category: 'Mixed-use',
     location: 'Fumba, Zanzibar',
     summary:
-      'A new kind of coastal community where residences, sport and social life come together- designed around the way people want to live.',
+      'A new kind of coastal community where residences, sport and social life come together — designed around the way people want to live.',
   },
 ];
 
 const projectPresentation: Record<
   string,
-  { number: string; name: string; summary: string }
+  { number: string; name: string; subheading: string; summary: string }
 > = {
   'oniria-stone-town': {
-    number: '1.',
+    number: '01',
     name: 'ONIRIA Stone Town',
+    subheading: 'Heritage Hospitality',
     summary:
-      'A hospitality-led ONIRIA concept where heritage character, warm materiality and contemporary guest experience meet. First AI boutique hotel in the heart of stone town',
+      'A hospitality-led ONIRIA concept where heritage character, warm materiality and contemporary guest experience meet. First AI boutique hotel in the heart of Stone Town.',
   },
   'oniria-michamvi': {
-    number: '2.',
+    number: '02',
     name: 'ONIRIA Michamvi',
-    summary: 'A coastal destination concept focused on wellness, rejuvenation and longevity',
+    subheading: 'Wellness · Nature · Longevity',
+    summary: 'A coastal destination concept focused on wellness, rejuvenation and longevity.',
   },
   'ona-towers': {
-    number: '3.',
+    number: '03',
     name: 'ONA Towers',
+    subheading: 'Landmark Residences',
     summary:
       'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
   },
   'v-town': {
-    number: '4.',
+    number: '04',
     name: 'V Town',
+    subheading: 'The Art of Living',
     summary:
-      'A new kind of coastal community where residences, sport and social life come together- designed around the way people want to live.',
+      'A new kind of coastal community where residences, sport and social life come together — designed around the way people want to live.',
   },
 };
 
 function projectHref(slug: string) {
-  return slug === 'v-town' ? V_TOWN_URL : '';
+  return slug === 'v-town' ? V_TOWN_URL : `/projects/${slug}`;
 }
-
-function cleanProjectLocation(location?: string | null) {
-  if (!location) return '';
-  return location.toLowerCase().includes('enquiry') ? '' : location;
-}
-
 
 const stableProjectHero: Record<string, string> = {
   'oniria-stone-town': '/images/stone-town-restaurant.jpg',
@@ -119,7 +117,7 @@ export default async function Page() {
           <p className="eyebrow light">Our Project</p>
           <h1>Place that don&apos;t exist anywhere else.</h1>
           <p className="businessPremiumHeroLeadTwoLine">
-            <span>From stone town to Zanzibar Coastline, ONIRIA is creating a new</span>
+            <span>From Stone Town to Zanzibar coastline, ONIRIA is creating a new</span>
             <span>generation of places to stay, live, gather and experience.</span>
           </p>
         </div>
@@ -140,44 +138,54 @@ export default async function Page() {
             const external = href.startsWith('http');
             const presentation = projectPresentation[project.slug];
             const displayName = presentation?.name || project.name;
+            const displaySubheading = presentation?.subheading || project.category || visual.eyebrow;
             const displaySummary =
               presentation?.summary ||
               project.summary ||
               'A distinctive ONIRIA project shaped around considered architecture, landscape and experience.';
-            const displayLocation = cleanProjectLocation(project.location);
+            const displayNumber = presentation?.number || String(index + 1).padStart(2, '0');
 
             return (
               <Reveal key={project.id ?? project.slug} delay={index * 0.03}>
-                <article className={`businessPremiumProject ${index % 2 ? 'reverse' : ''}`}>
-                  <div className="businessPremiumProjectMedia" aria-hidden="true">
+                <article className="businessPremiumProject projectEditorialRow">
+                  <div className="businessPremiumProjectMedia projectEditorialMedia">
                     <Image
                       src={hero}
                       alt={project.media?.[0]?.alt_text || `${displayName} project`}
                       fill
-                      sizes="(max-width: 900px) 100vw, 62vw"
+                      sizes="(max-width: 900px) 100vw, 58vw"
                     />
-                    <div className="businessPremiumProjectShade" />
                   </div>
 
-                  <div className="businessPremiumProjectCopy">
-                    <div>
-                      <h3>
-                        {presentation ? `${presentation.number} ${displayName}` : displayName}
-                      </h3>
-                    </div>
-                    <p className="businessPremiumProjectSummary">{displaySummary}</p>
-                    <div className="businessPremiumProjectMeta">
-                      <span>{displayLocation}</span>
-                      {external ? (
-                        <a href={href} target="_blank" rel="noreferrer" className="businessPremiumProjectLink">
-                          View website
-                        </a>
-                      ) : presentation ? (
-                        <span className="businessPremiumProjectLink businessPremiumProjectLinkStatic">
-                          View website
-                        </span>
-                      ) : null}
-                    </div>
+                  <div className="businessPremiumProjectCopy projectEditorialCopy">
+                    <span className="projectEditorialNumber">{displayNumber}</span>
+                    <h3>{displayName}</h3>
+                    <p className="projectEditorialSubheading">{displaySubheading}</p>
+                    <div className="projectEditorialRule" aria-hidden="true" />
+                    <p className="businessPremiumProjectSummary projectEditorialSummary">{displaySummary}</p>
+
+                    {external ? (
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="projectEditorialDiscover"
+                        aria-label={`Discover ${displayName}`}
+                      >
+                        <span>DISCOVER PROJECT</span>
+                        <span aria-hidden="true">→</span>
+                      </a>
+                    ) : (
+                      <Link
+                        href={href}
+                        prefetch
+                        className="projectEditorialDiscover"
+                        aria-label={`Discover ${displayName}`}
+                      >
+                        <span>DISCOVER PROJECT</span>
+                        <span aria-hidden="true">→</span>
+                      </Link>
+                    )}
                   </div>
                 </article>
               </Reveal>
@@ -215,10 +223,10 @@ export default async function Page() {
             >
               <div className="businessPremiumGroupLogoWrap">
                 <Image
-                  src="/images/vigor-group-new.webp"
+                  src="/images/vigor-group-attached.png"
                   alt="Vigor, a Turky's Group of Companies"
                   fill
-                  sizes="(max-width: 900px) 60vw, 28vw"
+                  sizes="(max-width: 900px) 68vw, 30vw"
                 />
               </div>
             </a>
@@ -234,7 +242,7 @@ export default async function Page() {
                 rel="noreferrer"
                 className="businessPremiumGroupLink"
               >
-                Visit Vigor Group
+                VISIT VIGOR GROUP <span className="arrow">→</span>
               </a>
             </div>
           </Reveal>

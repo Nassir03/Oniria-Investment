@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Montserrat:wght@500&display=swap');
+
 :root{
   --taupe:#B8A37C;
   --navy:#031B35;
@@ -5851,4 +5853,2426 @@ em{font-weight:400;font-style:italic}
   .adminNewsCardMain{grid-template-columns:96px minmax(0,1fr);gap:13px}
   .adminNewsCardThumb{min-height:108px}
   .adminLeadMessage{grid-template-columns:1fr;gap:7px;padding-left:10px;padding-right:10px}
+}
+
+
+/* =========================================================
+   AUG 27, 2026 — HOME TYPOGRAPHY + IVORY SURFACE REFINEMENT
+   Shared navigation uses Montserrat Medium; Home display titles use
+   Canela Light when the licensed family is available, with a serif fallback.
+   ========================================================= */
+:root{
+  --page-ivory:#EDE9E5;
+  --montserrat-medium:"Montserrat","Helvetica Neue",Arial,sans-serif;
+  --canela-light:"Canela Light","Canela",Georgia,"Times New Roman",serif;
+}
+
+/* Shared menu typography across Vision, Projects, About, News and Contact. */
+.siteHeader .desktopNav{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+  text-transform:none;
+  letter-spacing:.08em;
+}
+.siteHeader .desktopNav a{
+  text-transform:none;
+}
+.mobileMenu>a{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+  text-transform:none;
+  letter-spacing:.02em;
+}
+
+/* Home page base surface requested by design. */
+.homePageIvory,
+.homePageIvory .pointOfViewEditorial,
+.homePageIvory .hospitalityFeature,
+.homePageIvory .hospitalityMedia,
+.homePageIvory .hospitalityCopy{
+  background:var(--page-ivory);
+}
+
+/* Main Home statement — Canela Light. */
+.homeHeroEditorial h1{
+  font-family:var(--canela-light);
+  font-weight:300;
+  letter-spacing:-.035em;
+}
+
+/* Editorial underline CTAs: no button box. */
+.homeMontserratUnderlineLink{
+  display:inline-flex;
+  width:max-content;
+  align-items:center;
+  gap:9px;
+  padding:0 0 7px;
+  border:0;
+  border-bottom:1px solid currentColor;
+  background:transparent;
+  color:var(--cream);
+  font-family:var(--montserrat-medium);
+  font-size:11px;
+  font-weight:500;
+  line-height:1.2;
+  letter-spacing:.08em;
+  text-transform:none;
+  transition:opacity .25s ease,border-color .25s ease;
+}
+.homeMontserratUnderlineLink:hover{
+  opacity:.72;
+  transform:none;
+}
+.homeMontserratUnderlineLinkDark{
+  color:var(--navy);
+}
+.homeHeroEditorial .heroActionsSingle{
+  margin-top:36px;
+}
+
+/* Collection cards: remove the former plus marker and use Canela Light headings. */
+.homeCollectionPremiumMarker{
+  display:none!important;
+}
+.homeCollectionPremiumBody h4{
+  font-family:var(--canela-light);
+  font-weight:300;
+  letter-spacing:-.025em;
+}
+.homeCollectionPremiumBody p{
+  font-family:var(--canela-light);
+  font-size:clamp(15px,1.15vw,19px);
+  font-weight:300;
+  line-height:1.25;
+  letter-spacing:.01em;
+  text-transform:none;
+}
+.homeCollectionPremiumAction{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+  text-transform:none;
+  letter-spacing:.08em;
+}
+
+/* Keep the second Home CTA visually consistent with the hero CTA. */
+.hospitalityCopyRefined .homeMontserratUnderlineLink{
+  margin-top:2px;
+  align-self:flex-start;
+}
+
+@media(max-width:850px){
+  .mobileMenu>a{
+    font-family:var(--montserrat-medium);
+    font-weight:500;
+    letter-spacing:.01em;
+  }
+}
+
+
+/* =========================================================
+   AUG 27, 2026 — SITE-WIDE HOME TYPOGRAPHY SYSTEM
+   Applies the approved Home visual language to every public page:
+   Montserrat Medium navigation/CTAs, Canela Light display headings,
+   and the #EDE9E5 public-page surface.
+   ========================================================= */
+:root{
+  --page-ivory:#EDE9E5;
+  --montserrat-medium:"Montserrat","Helvetica Neue",Arial,sans-serif;
+  --canela-light:"Canela Light","Canela","Cormorant Garamond",Georgia,"Times New Roman",serif;
+}
+
+/* Public-page surface: Home, Vision, Projects, About, News, Contact and articles. */
+body,
+.publicPage,
+.homePageIvory,
+.story2026Page,
+.about2026Page,
+.about2026Opening,
+.about2026Pillars,
+.vision2026Page,
+.vision2026Statement,
+.vision2026Principles,
+.businessPremiumPage,
+.businessPremiumCreating,
+.businessPremiumProjects,
+.businessPremiumPartnerships,
+.businessPremiumPartnershipsIntegrated,
+.newsroomExperiencePage,
+.newsroomCompactSection,
+.newsroomArticleTaupe,
+.contactPremiumPage,
+.contactPremiumBody,
+.contactDirectBody{
+  background-color:var(--page-ivory);
+}
+
+/* Preserve image/dark hero areas while the content surfaces use the ivory page tone. */
+.homeHero,
+.businessPremiumHero,
+.newsroomImageHero,
+.contactPremiumHero,
+.about2026HeroFull,
+.vision2026HeroEditorial,
+.vision2026HeroImage,
+.siteFooter{
+  background-color:var(--navy);
+}
+
+/* All public display headings follow the Home Canela Light direction. */
+.publicPage h1,
+.publicPage h2,
+.publicPage h3,
+.publicPage h4,
+.publicPage .homeHeroEditorial h1,
+.publicPage .premiumUnifiedHeroCopy h1,
+.publicPage .businessPremiumHeroCopy h1,
+.publicPage .newsroomImageHeroCopy h1,
+.publicPage .contactPremiumHeroContent h1,
+.publicPage .vision2026HeroCopyEditorial h1,
+.publicPage .about2026HeroFullCopy h1,
+.publicPage .businessPremiumCreating h2,
+.publicPage .businessPremiumProjectCopy h3,
+.publicPage .story2026PillarCard h3,
+.publicPage .vision2026PrincipleCard h3,
+.publicPage .newsroomCompactBody h3{
+  font-family:var(--canela-light);
+  font-weight:300;
+}
+
+/* The supplied Home supporting sentence intentionally keeps its existing font. */
+.homeHeroEditorial .heroLead{
+  font-family:var(--sans);
+  font-weight:400;
+}
+
+/* Primary navigation — Montserrat Medium, title case exactly as written. */
+.siteHeader .desktopNav,
+.siteHeader .desktopNav a,
+.mobileMenu>a{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+  text-transform:none;
+}
+.siteHeader .desktopNav{
+  letter-spacing:.08em;
+}
+.mobileMenu>a{
+  letter-spacing:.02em;
+}
+
+/* Public editorial links use the same Montserrat Medium character as the menu. */
+.publicPage .textLink,
+.publicPage .homeMontserratUnderlineLink,
+.publicPage .businessPremiumProjectLink,
+.publicPage .businessPremiumGroupLink{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+  text-transform:none;
+  letter-spacing:.08em;
+}
+
+/* Requested Explore CTAs: text only, with a single line underneath — no button box. */
+.homeMontserratUnderlineLink,
+.homeHeroEditorial .homeMontserratUnderlineLink,
+.hospitalityCopyRefined .homeMontserratUnderlineLink{
+  display:inline-flex;
+  width:max-content;
+  min-height:0;
+  align-items:center;
+  gap:9px;
+  padding:0 0 7px;
+  border:0;
+  border-bottom:1px solid currentColor;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  font-family:var(--montserrat-medium);
+  font-size:11px;
+  font-weight:500;
+  line-height:1.2;
+  letter-spacing:.08em;
+  text-transform:none;
+}
+.homeMontserratUnderlineLink:hover,
+.homeHeroEditorial .homeMontserratUnderlineLink:hover,
+.hospitalityCopyRefined .homeMontserratUnderlineLink:hover{
+  background:transparent;
+  box-shadow:none;
+  transform:none;
+  opacity:.72;
+}
+
+/* The Home collection project names and descriptors use Canela Light. */
+.homeCollectionPremiumBody h4,
+.homeCollectionPremiumBody p{
+  font-family:var(--canela-light);
+  font-weight:300;
+  text-transform:none;
+}
+.homeCollectionPremiumBody h4{
+  letter-spacing:-.025em;
+}
+.homeCollectionPremiumBody p{
+  font-size:clamp(15px,1.15vw,19px);
+  line-height:1.25;
+  letter-spacing:.01em;
+}
+
+/* Remove the old plus marker completely, including its pseudo-elements. */
+.homeCollectionPremiumMarker,
+.homeCollectionPremiumMarker::before,
+.homeCollectionPremiumMarker::after{
+  display:none!important;
+  content:none!important;
+}
+
+/* Keep Home collection CTA typography aligned with the menu. */
+.homeCollectionPremiumAction,
+.homeCollectionPremiumFooter .textLink{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+  text-transform:none;
+  letter-spacing:.08em;
+}
+
+/* Footer statement follows the same Canela Light display family; utility labels stay clean. */
+.compactFooterBrand>span{
+  font-family:var(--canela-light);
+  font-weight:300;
+}
+.compactFooterLinks span{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+  text-transform:none;
+}
+
+@media(max-width:850px){
+  .siteHeader .mobileMenu>a{
+    font-family:var(--montserrat-medium);
+    font-weight:500;
+    text-transform:none;
+  }
+}
+
+/* Scrolled public header follows the same ivory page surface. */
+.siteHeader.solid{
+  background:rgba(237,233,229,.97);
+}
+
+/* =========================================================
+   AUG 27, 2026 — PROJECTS EDITORIAL SPLIT LAYOUT
+   Picture on one side, editorial project information on the other.
+   ========================================================= */
+:root{
+  --oniria-gold:#B8A37C;
+}
+
+.businessPremiumProjectsNoIntro{
+  background:#EDE9E5;
+}
+
+.businessPremiumProjectsNoIntro .businessPremiumProjectStack{
+  margin-top:clamp(34px,4vw,58px);
+  gap:0;
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialRow{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  min-height:clamp(560px,54vw,720px);
+  border-top:1px solid var(--oniria-gold);
+  background:#EDE9E5;
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialRow:last-child{
+  border-bottom:1px solid var(--oniria-gold);
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialRow.reverse{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialMedia{
+  position:relative;
+  min-height:clamp(560px,54vw,720px);
+  overflow:hidden;
+  background:var(--navy);
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialMedia>img{
+  object-fit:cover;
+  transition:transform .9s cubic-bezier(.22,1,.36,1);
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialRow:hover .projectEditorialMedia>img{
+  transform:scale(1.025);
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialCopy{
+  min-width:0;
+  padding:clamp(46px,6vw,92px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+  background:#EDE9E5;
+  color:var(--navy);
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialNumber{
+  display:block;
+  margin:0 0 clamp(32px,4vw,58px);
+  font-family:var(--montserrat-medium);
+  font-size:12px;
+  font-weight:500;
+  line-height:1;
+  letter-spacing:.16em;
+  color:var(--navy);
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialCopy h3{
+  max-width:680px;
+  margin:0;
+  font-family:var(--canela-light);
+  font-size:clamp(48px,5.3vw,82px);
+  font-weight:300;
+  line-height:.98;
+  letter-spacing:-.04em;
+  color:var(--navy);
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialSubheading{
+  margin:20px 0 0;
+  font-family:var(--montserrat-medium);
+  font-size:clamp(10px,.9vw,12px);
+  font-weight:500;
+  line-height:1.5;
+  letter-spacing:.14em;
+  text-transform:none;
+  color:var(--oniria-gold);
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialRule{
+  width:100%;
+  height:1px;
+  margin:clamp(30px,3vw,44px) 0;
+  background:var(--oniria-gold);
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialSummary{
+  max-width:560px;
+  margin:0;
+  font-family:var(--sans);
+  font-size:15px;
+  font-weight:400;
+  line-height:1.82;
+  letter-spacing:0;
+  color:var(--navy);
+}
+
+.projectEditorialDiscover{
+  display:inline-flex;
+  align-items:center;
+  gap:14px;
+  width:max-content;
+  margin-top:clamp(34px,4vw,52px);
+  padding:0 0 8px;
+  border:0;
+  border-bottom:1px solid var(--oniria-gold);
+  background:transparent;
+  font-family:var(--montserrat-medium);
+  font-size:10px;
+  font-weight:500;
+  line-height:1.2;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--navy);
+  transition:gap .25s ease,opacity .25s ease;
+}
+
+.projectEditorialDiscover:hover{
+  gap:20px;
+  opacity:.7;
+}
+
+.projectEditorialDiscover>span:last-child{
+  font-size:15px;
+  line-height:1;
+}
+
+/* The supplied Vigor artwork replaces the previous group picture. */
+.businessPremiumGroupLogoWrap{
+  min-height:360px;
+  background:transparent;
+}
+
+.businessPremiumGroupLogoWrap>img{
+  object-fit:contain;
+  object-position:center;
+  padding:0;
+}
+
+/* Individual project pages used by DISCOVER PROJECT links. */
+.projectDetailPage{
+  background:#EDE9E5;
+}
+
+.projectDetailHero{
+  position:relative;
+  min-height:78svh;
+  overflow:hidden;
+  background:var(--navy);
+  color:var(--white);
+}
+
+.projectDetailHero>img{
+  object-fit:cover;
+}
+
+.projectDetailHeroShade{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:linear-gradient(0deg,rgba(3,27,53,.68),rgba(3,27,53,.06) 70%);
+}
+
+.projectDetailHeroCopy{
+  position:absolute;
+  z-index:2;
+  left:6vw;
+  right:6vw;
+  bottom:9%;
+  max-width:1100px;
+}
+
+.projectDetailHeroCopy h1{
+  margin:0;
+  font-family:var(--canela-light);
+  font-size:clamp(58px,7vw,112px);
+  font-weight:300;
+  line-height:.92;
+  letter-spacing:-.045em;
+  color:var(--white);
+}
+
+.projectDetailSubheading,
+.projectDetailLabel{
+  font-family:var(--montserrat-medium);
+  font-size:10px;
+  font-weight:500;
+  line-height:1.4;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+
+.projectDetailSubheading{
+  margin:0 0 20px;
+  color:var(--oniria-gold);
+}
+
+.projectDetailBody{
+  background:#EDE9E5;
+}
+
+.projectDetailBodyGrid{
+  display:grid;
+  grid-template-columns:minmax(220px,.55fr) minmax(0,1.45fr);
+  gap:clamp(54px,8vw,140px);
+  align-items:start;
+}
+
+.projectDetailLabel{
+  margin:0;
+  color:var(--navy);
+}
+
+.projectDetailGoldLine{
+  width:100%;
+  height:1px;
+  margin-top:22px;
+  background:var(--oniria-gold);
+}
+
+.projectDetailBodyCopy{
+  max-width:760px;
+}
+
+.projectDetailBodyCopy>p{
+  margin:0;
+  font-family:var(--sans);
+  font-size:clamp(17px,1.45vw,22px);
+  line-height:1.75;
+  color:var(--navy);
+}
+
+@media(max-width:900px){
+  .businessPremiumProjectsNoIntro .projectEditorialRow,
+  .businessPremiumProjectsNoIntro .projectEditorialRow.reverse{
+    grid-template-columns:1fr;
+    min-height:0;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialRow.reverse .projectEditorialMedia,
+  .businessPremiumProjectsNoIntro .projectEditorialRow.reverse .projectEditorialCopy{
+    order:initial;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialMedia{
+    min-height:62vw;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialCopy{
+    padding:54px 28px 64px;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialNumber{
+    margin-bottom:30px;
+  }
+  .projectDetailBodyGrid{
+    grid-template-columns:1fr;
+    gap:38px;
+  }
+  .businessPremiumGroupLogoWrap{
+    min-height:320px;
+  }
+}
+
+@media(max-width:620px){
+  .businessPremiumProjectsNoIntro .projectEditorialMedia{
+    min-height:78vw;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialCopy{
+    padding:44px 22px 52px;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialCopy h3{
+    font-size:clamp(42px,12vw,58px);
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialSubheading{
+    margin-top:16px;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialRule{
+    margin:28px 0;
+  }
+  .projectDetailHero{
+    min-height:70svh;
+  }
+  .projectDetailHeroCopy{
+    left:22px;
+    right:22px;
+    bottom:8%;
+  }
+  .projectDetailHeroCopy h1{
+    font-size:clamp(50px,14vw,72px);
+  }
+  .businessPremiumGroupLogoWrap{
+    min-height:270px;
+  }
+}
+
+/* =========================================================
+   AUG 27, 2026 — PROJECT IMAGE SCALE + CONTACT REFERENCE PAGE
+   ========================================================= */
+
+/* Projects: keep the editorial picture/text split, but make the image panel
+   visibly smaller and more refined than the previous half-page treatment. */
+.businessPremiumProjectsNoIntro .projectEditorialRow{
+  grid-template-columns:minmax(300px,.82fr) minmax(0,1.18fr);
+  min-height:clamp(430px,42vw,540px);
+}
+.businessPremiumProjectsNoIntro .projectEditorialRow.reverse{
+  grid-template-columns:minmax(0,1.18fr) minmax(300px,.82fr);
+}
+.businessPremiumProjectsNoIntro .projectEditorialMedia{
+  min-height:clamp(430px,42vw,540px);
+}
+.businessPremiumProjectsNoIntro .projectEditorialCopy{
+  padding:clamp(40px,5vw,72px);
+}
+.businessPremiumProjectsNoIntro .projectEditorialNumber{
+  margin-bottom:clamp(24px,3vw,38px);
+}
+.businessPremiumProjectsNoIntro .projectEditorialCopy h3{
+  font-size:clamp(44px,4.6vw,70px);
+}
+
+/* Contact route uses the dark header treatment seen in the reference image. */
+.siteHeader.contactRoute.overlay .wordmark,
+.siteHeader.contactRoute.overlay .desktopNav{
+  color:var(--navy);
+}
+.siteHeader.contactRoute.overlay .desktopNav a::after{
+  background:var(--navy);
+}
+.siteHeader.contactRoute.overlay .menuButton span{
+  background:var(--navy);
+}
+
+.contactReferencePage{
+  --contact-gold:#b69d72;
+  background:#f1ede8;
+  color:var(--navy);
+}
+
+.contactReferenceHero{
+  position:relative;
+  min-height:clamp(620px,66vw,820px);
+  overflow:hidden;
+  background:#e9e3dc;
+}
+.contactReferenceHeroImage{
+  object-fit:cover;
+  object-position:68% center;
+}
+.contactReferenceHeroWash{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:
+    linear-gradient(90deg,rgba(241,237,232,.98) 0%,rgba(241,237,232,.96) 27%,rgba(241,237,232,.74) 44%,rgba(241,237,232,.17) 63%,rgba(241,237,232,0) 78%),
+    linear-gradient(0deg,rgba(241,237,232,.08),rgba(241,237,232,.08));
+}
+.contactReferenceHeroCopy{
+  position:relative;
+  z-index:2;
+  width:min(660px,48vw);
+  padding:clamp(190px,16vw,240px) 0 84px 6vw;
+}
+.contactReferenceKicker{
+  margin:0;
+  font-family:var(--montserrat-medium);
+  font-size:10px;
+  font-weight:500;
+  line-height:1.2;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--navy);
+}
+.contactReferenceShortRule{
+  display:block;
+  width:30px;
+  height:1px;
+  margin:17px 0 28px;
+  background:var(--contact-gold);
+}
+.contactReferenceHeroCopy h1{
+  max-width:630px;
+  margin:0;
+  font-family:var(--canela-light);
+  font-size:clamp(52px,5.25vw,78px);
+  font-weight:300;
+  line-height:1.07;
+  letter-spacing:-.035em;
+  color:#16202b;
+}
+.contactReferenceShortRuleLower{
+  margin-top:30px;
+  margin-bottom:28px;
+}
+.contactReferenceIntro{
+  margin:0;
+  font-family:var(--montserrat-medium);
+  font-size:clamp(11px,.9vw,13px);
+  font-weight:500;
+  line-height:1.8;
+  letter-spacing:.005em;
+  color:#3f4650;
+}
+
+.contactReferenceDetails{
+  display:grid;
+  grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);
+  gap:0;
+  padding:clamp(64px,7vw,96px) 6vw clamp(70px,8vw,112px);
+  background:#f4f1ed;
+}
+.contactReferenceInfo{
+  position:relative;
+  padding-right:clamp(50px,7vw,100px);
+}
+.contactReferenceInfo h2{
+  margin:0 0 44px;
+  font-family:var(--canela-light);
+  font-size:clamp(27px,2.35vw,38px);
+  font-weight:300;
+  line-height:1.28;
+  letter-spacing:-.025em;
+  color:#36404a;
+}
+.contactReferenceInfoList{
+  display:grid;
+  gap:24px;
+  max-width:360px;
+}
+.contactReferenceInfoRow{
+  display:grid;
+  grid-template-columns:28px minmax(0,1fr);
+  gap:16px;
+  align-items:start;
+  font-family:var(--montserrat-medium);
+  color:#474d55;
+}
+.contactReferenceIcon{
+  display:grid;
+  place-items:center;
+  width:24px;
+  height:24px;
+  color:var(--contact-gold);
+}
+.contactReferenceIcon svg{
+  width:22px;
+  height:22px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.3;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.contactReferenceInfoRow div{
+  display:grid;
+  gap:4px;
+}
+.contactReferenceInfoRow strong{
+  font-size:10px;
+  font-weight:500;
+  line-height:1.4;
+}
+.contactReferenceInfoRow span,
+.contactReferenceInfoRow a{
+  font-size:10px;
+  font-weight:400;
+  line-height:1.55;
+  color:inherit;
+}
+.contactReferenceWorld{
+  width:min(280px,80%);
+  height:auto;
+  margin-top:36px;
+  opacity:.12;
+  fill:var(--contact-gold);
+}
+.contactReferenceWorld circle{
+  fill:var(--contact-gold);
+  opacity:1;
+}
+
+.contactReferenceFormColumn{
+  padding-left:clamp(52px,7vw,96px);
+  border-left:1px solid rgba(22,32,43,.16);
+}
+.contactReferenceForm{
+  display:grid;
+  gap:27px;
+  margin-top:25px;
+}
+.contactReferenceForm label{
+  display:grid;
+  gap:10px;
+}
+.contactReferenceForm label>span{
+  font-family:var(--montserrat-medium);
+  font-size:10px;
+  font-weight:500;
+  line-height:1.2;
+  letter-spacing:.01em;
+  color:#4a4f56;
+}
+.contactReferenceNameFields{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:34px;
+}
+.contactReferenceForm input,
+.contactReferenceForm textarea{
+  width:100%;
+  border:0;
+  border-bottom:1px solid rgba(22,32,43,.18);
+  border-radius:0;
+  outline:none;
+  background:transparent;
+  color:var(--navy);
+  font-family:var(--montserrat-medium);
+  font-size:13px;
+  font-weight:400;
+  box-shadow:none;
+}
+.contactReferenceForm input{
+  height:34px;
+  padding:0 0 8px;
+}
+.contactReferenceForm textarea{
+  min-height:142px;
+  padding:0 0 10px;
+  resize:vertical;
+}
+.contactReferenceForm input:focus,
+.contactReferenceForm textarea:focus{
+  border-bottom-color:var(--contact-gold);
+}
+.contactReferenceMessageField{
+  margin-top:4px;
+}
+.contactReferenceSubmit{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  width:100%;
+  min-height:48px;
+  margin-top:2px;
+  padding:0 26px;
+  border:0;
+  border-radius:0;
+  background:#17191b;
+  color:#fff;
+  cursor:pointer;
+  font-family:var(--montserrat-medium);
+  font-size:10px;
+  font-weight:500;
+  line-height:1;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+}
+.contactReferenceSubmit span:first-child{
+  justify-self:center;
+}
+.contactReferenceSubmit span:last-child{
+  font-size:19px;
+  font-weight:300;
+  letter-spacing:0;
+}
+.contactReferenceSubmit:disabled{
+  cursor:wait;
+  opacity:.7;
+}
+.contactReferencePrivacy{
+  margin:-7px 0 0;
+  font-family:var(--montserrat-medium);
+  font-size:9px;
+  line-height:1.5;
+  color:#676c72;
+}
+.contactReferencePrivacy span{
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
+.contactReferenceStatus{
+  margin-top:-10px;
+}
+
+.contactReferenceClosing{
+  position:relative;
+  min-height:clamp(270px,29vw,390px);
+  overflow:hidden;
+  background:#c4b4a2;
+}
+.contactReferenceClosing>img{
+  object-fit:cover;
+  object-position:center 54%;
+}
+.contactReferenceClosingShade{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:linear-gradient(90deg,rgba(232,224,214,.94) 0%,rgba(232,224,214,.84) 31%,rgba(232,224,214,.24) 55%,rgba(232,224,214,0) 74%);
+}
+.contactReferenceClosingCopy{
+  position:relative;
+  z-index:2;
+  width:min(520px,45vw);
+  padding:clamp(52px,6vw,82px) 0 46px 6vw;
+}
+.contactReferenceClosingCopy h2{
+  margin:0 0 18px;
+  font-family:var(--canela-light);
+  font-size:clamp(34px,3.5vw,52px);
+  font-weight:300;
+  line-height:1.08;
+  letter-spacing:-.03em;
+  color:#37404a;
+}
+.contactReferenceClosingCopy p{
+  margin:0;
+  font-family:var(--montserrat-medium);
+  font-size:9px;
+  font-weight:500;
+  line-height:1.3;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:#4f545b;
+}
+.contactReferenceClosingCopy .contactReferenceShortRule{
+  margin:15px 0 0;
+}
+
+@media(max-width:900px){
+  .businessPremiumProjectsNoIntro .projectEditorialRow,
+  .businessPremiumProjectsNoIntro .projectEditorialRow.reverse{
+    grid-template-columns:1fr;
+    min-height:0;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialMedia{
+    min-height:52vw;
+  }
+  .contactReferenceHero{
+    min-height:720px;
+  }
+  .contactReferenceHeroImage{
+    object-position:70% center;
+  }
+  .contactReferenceHeroWash{
+    background:linear-gradient(90deg,rgba(241,237,232,.98) 0%,rgba(241,237,232,.91) 42%,rgba(241,237,232,.34) 70%,rgba(241,237,232,.08) 100%);
+  }
+  .contactReferenceHeroCopy{
+    width:min(620px,76vw);
+    padding-left:7vw;
+  }
+  .contactReferenceDetails{
+    grid-template-columns:1fr;
+  }
+  .contactReferenceInfo{
+    padding:0 0 60px;
+  }
+  .contactReferenceFormColumn{
+    padding:58px 0 0;
+    border-left:0;
+    border-top:1px solid rgba(22,32,43,.16);
+  }
+  .contactReferenceClosingCopy{
+    width:min(600px,72vw);
+  }
+}
+
+@media(max-width:620px){
+  .businessPremiumProjectsNoIntro .projectEditorialMedia{
+    min-height:64vw;
+  }
+  .contactReferenceHero{
+    min-height:660px;
+  }
+  .contactReferenceHeroImage{
+    object-position:72% center;
+  }
+  .contactReferenceHeroWash{
+    background:linear-gradient(90deg,rgba(241,237,232,.97) 0%,rgba(241,237,232,.88) 58%,rgba(241,237,232,.28) 100%);
+  }
+  .contactReferenceHeroCopy{
+    width:auto;
+    padding:160px 22px 58px;
+  }
+  .contactReferenceHeroCopy h1{
+    font-size:clamp(48px,14vw,64px);
+  }
+  .contactReferenceDesktopBreak{
+    display:none;
+  }
+  .contactReferenceDetails{
+    padding:58px 22px 72px;
+  }
+  .contactReferenceInfo h2{
+    font-size:30px;
+  }
+  .contactReferenceNameFields{
+    grid-template-columns:1fr;
+    gap:27px;
+  }
+  .contactReferenceClosing{
+    min-height:330px;
+  }
+  .contactReferenceClosingShade{
+    background:linear-gradient(90deg,rgba(232,224,214,.94) 0%,rgba(232,224,214,.75) 65%,rgba(232,224,214,.22) 100%);
+  }
+  .contactReferenceClosingCopy{
+    width:auto;
+    padding:64px 22px 40px;
+  }
+  .contactReferenceClosingCopy h2{
+    font-size:40px;
+  }
+}
+
+/* =========================================================
+   AUG 27, 2026 — PROJECT IMAGE SCALE + CONTACT REFERENCE PAGE
+   ========================================================= */
+
+/* Projects: keep the editorial picture/text split, but make the image panel
+   visibly smaller and more refined than the previous half-page treatment. */
+.businessPremiumProjectsNoIntro .projectEditorialRow{
+  grid-template-columns:minmax(300px,.82fr) minmax(0,1.18fr);
+  min-height:clamp(430px,42vw,540px);
+}
+.businessPremiumProjectsNoIntro .projectEditorialRow.reverse{
+  grid-template-columns:minmax(0,1.18fr) minmax(300px,.82fr);
+}
+.businessPremiumProjectsNoIntro .projectEditorialMedia{
+  min-height:clamp(430px,42vw,540px);
+}
+.businessPremiumProjectsNoIntro .projectEditorialCopy{
+  padding:clamp(40px,5vw,72px);
+}
+.businessPremiumProjectsNoIntro .projectEditorialNumber{
+  margin-bottom:clamp(24px,3vw,38px);
+}
+.businessPremiumProjectsNoIntro .projectEditorialCopy h3{
+  font-size:clamp(44px,4.6vw,70px);
+}
+
+/* Contact route uses the dark header treatment seen in the reference image. */
+.siteHeader.contactRoute.overlay .wordmark,
+.siteHeader.contactRoute.overlay .desktopNav{
+  color:var(--navy);
+}
+.siteHeader.contactRoute.overlay .desktopNav a::after{
+  background:var(--navy);
+}
+.siteHeader.contactRoute.overlay .menuButton span{
+  background:var(--navy);
+}
+
+.contactReferencePage{
+  --contact-gold:#b69d72;
+  background:#f1ede8;
+  color:var(--navy);
+}
+
+.contactReferenceHero{
+  position:relative;
+  min-height:clamp(620px,66vw,820px);
+  overflow:hidden;
+  background:#e9e3dc;
+}
+.contactReferenceHeroImage{
+  object-fit:cover;
+  object-position:68% center;
+}
+.contactReferenceHeroWash{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:
+    linear-gradient(90deg,rgba(241,237,232,.98) 0%,rgba(241,237,232,.96) 27%,rgba(241,237,232,.74) 44%,rgba(241,237,232,.17) 63%,rgba(241,237,232,0) 78%),
+    linear-gradient(0deg,rgba(241,237,232,.08),rgba(241,237,232,.08));
+}
+.contactReferenceHeroCopy{
+  position:relative;
+  z-index:2;
+  width:min(660px,48vw);
+  padding:clamp(190px,16vw,240px) 0 84px 6vw;
+}
+.contactReferenceKicker{
+  margin:0;
+  font-family:var(--montserrat-medium);
+  font-size:10px;
+  font-weight:500;
+  line-height:1.2;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--navy);
+}
+.contactReferenceShortRule{
+  display:block;
+  width:30px;
+  height:1px;
+  margin:17px 0 28px;
+  background:var(--contact-gold);
+}
+.contactReferenceHeroCopy h1{
+  max-width:630px;
+  margin:0;
+  font-family:var(--canela-light);
+  font-size:clamp(52px,5.25vw,78px);
+  font-weight:300;
+  line-height:1.07;
+  letter-spacing:-.035em;
+  color:#16202b;
+}
+.contactReferenceShortRuleLower{
+  margin-top:30px;
+  margin-bottom:28px;
+}
+.contactReferenceIntro{
+  margin:0;
+  font-family:var(--montserrat-medium);
+  font-size:clamp(11px,.9vw,13px);
+  font-weight:500;
+  line-height:1.8;
+  letter-spacing:.005em;
+  color:#3f4650;
+}
+
+.contactReferenceDetails{
+  display:grid;
+  grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);
+  gap:0;
+  padding:clamp(64px,7vw,96px) 6vw clamp(70px,8vw,112px);
+  background:#f4f1ed;
+}
+.contactReferenceInfo{
+  position:relative;
+  padding-right:clamp(50px,7vw,100px);
+}
+.contactReferenceInfo h2{
+  margin:0 0 44px;
+  font-family:var(--canela-light);
+  font-size:clamp(27px,2.35vw,38px);
+  font-weight:300;
+  line-height:1.28;
+  letter-spacing:-.025em;
+  color:#36404a;
+}
+.contactReferenceInfoList{
+  display:grid;
+  gap:24px;
+  max-width:360px;
+}
+.contactReferenceInfoRow{
+  display:grid;
+  grid-template-columns:28px minmax(0,1fr);
+  gap:16px;
+  align-items:start;
+  font-family:var(--montserrat-medium);
+  color:#474d55;
+}
+.contactReferenceIcon{
+  display:grid;
+  place-items:center;
+  width:24px;
+  height:24px;
+  color:var(--contact-gold);
+}
+.contactReferenceIcon svg{
+  width:22px;
+  height:22px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.3;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.contactReferenceInfoRow div{
+  display:grid;
+  gap:4px;
+}
+.contactReferenceInfoRow strong{
+  font-size:10px;
+  font-weight:500;
+  line-height:1.4;
+}
+.contactReferenceInfoRow span,
+.contactReferenceInfoRow a{
+  font-size:10px;
+  font-weight:400;
+  line-height:1.55;
+  color:inherit;
+}
+.contactReferenceWorld{
+  width:min(280px,80%);
+  height:auto;
+  margin-top:36px;
+  opacity:.12;
+  fill:var(--contact-gold);
+}
+.contactReferenceWorld circle{
+  fill:var(--contact-gold);
+  opacity:1;
+}
+
+.contactReferenceFormColumn{
+  padding-left:clamp(52px,7vw,96px);
+  border-left:1px solid rgba(22,32,43,.16);
+}
+.contactReferenceForm{
+  display:grid;
+  gap:27px;
+  margin-top:25px;
+}
+.contactReferenceForm label{
+  display:grid;
+  gap:10px;
+}
+.contactReferenceForm label>span{
+  font-family:var(--montserrat-medium);
+  font-size:10px;
+  font-weight:500;
+  line-height:1.2;
+  letter-spacing:.01em;
+  color:#4a4f56;
+}
+.contactReferenceNameFields{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:34px;
+}
+.contactReferenceForm input,
+.contactReferenceForm textarea{
+  width:100%;
+  border:0;
+  border-bottom:1px solid rgba(22,32,43,.18);
+  border-radius:0;
+  outline:none;
+  background:transparent;
+  color:var(--navy);
+  font-family:var(--montserrat-medium);
+  font-size:13px;
+  font-weight:400;
+  box-shadow:none;
+}
+.contactReferenceForm input{
+  height:34px;
+  padding:0 0 8px;
+}
+.contactReferenceForm textarea{
+  min-height:142px;
+  padding:0 0 10px;
+  resize:vertical;
+}
+.contactReferenceForm input:focus,
+.contactReferenceForm textarea:focus{
+  border-bottom-color:var(--contact-gold);
+}
+.contactReferenceMessageField{
+  margin-top:4px;
+}
+.contactReferenceSubmit{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  width:100%;
+  min-height:48px;
+  margin-top:2px;
+  padding:0 26px;
+  border:0;
+  border-radius:0;
+  background:#17191b;
+  color:#fff;
+  cursor:pointer;
+  font-family:var(--montserrat-medium);
+  font-size:10px;
+  font-weight:500;
+  line-height:1;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+}
+.contactReferenceSubmit span:first-child{
+  justify-self:center;
+}
+.contactReferenceSubmit span:last-child{
+  font-size:19px;
+  font-weight:300;
+  letter-spacing:0;
+}
+.contactReferenceSubmit:disabled{
+  cursor:wait;
+  opacity:.7;
+}
+.contactReferencePrivacy{
+  margin:-7px 0 0;
+  font-family:var(--montserrat-medium);
+  font-size:9px;
+  line-height:1.5;
+  color:#676c72;
+}
+.contactReferencePrivacy span{
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
+.contactReferenceStatus{
+  margin-top:-10px;
+}
+
+.contactReferenceClosing{
+  position:relative;
+  min-height:clamp(270px,29vw,390px);
+  overflow:hidden;
+  background:#c4b4a2;
+}
+.contactReferenceClosing>img{
+  object-fit:cover;
+  object-position:center 54%;
+}
+.contactReferenceClosingShade{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:linear-gradient(90deg,rgba(232,224,214,.94) 0%,rgba(232,224,214,.84) 31%,rgba(232,224,214,.24) 55%,rgba(232,224,214,0) 74%);
+}
+.contactReferenceClosingCopy{
+  position:relative;
+  z-index:2;
+  width:min(520px,45vw);
+  padding:clamp(52px,6vw,82px) 0 46px 6vw;
+}
+.contactReferenceClosingCopy h2{
+  margin:0 0 18px;
+  font-family:var(--canela-light);
+  font-size:clamp(34px,3.5vw,52px);
+  font-weight:300;
+  line-height:1.08;
+  letter-spacing:-.03em;
+  color:#37404a;
+}
+.contactReferenceClosingCopy p{
+  margin:0;
+  font-family:var(--montserrat-medium);
+  font-size:9px;
+  font-weight:500;
+  line-height:1.3;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:#4f545b;
+}
+.contactReferenceClosingCopy .contactReferenceShortRule{
+  margin:15px 0 0;
+}
+
+@media(max-width:900px){
+  .businessPremiumProjectsNoIntro .projectEditorialRow,
+  .businessPremiumProjectsNoIntro .projectEditorialRow.reverse{
+    grid-template-columns:1fr;
+    min-height:0;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialMedia{
+    min-height:52vw;
+  }
+  .contactReferenceHero{
+    min-height:720px;
+  }
+  .contactReferenceHeroImage{
+    object-position:70% center;
+  }
+  .contactReferenceHeroWash{
+    background:linear-gradient(90deg,rgba(241,237,232,.98) 0%,rgba(241,237,232,.91) 42%,rgba(241,237,232,.34) 70%,rgba(241,237,232,.08) 100%);
+  }
+  .contactReferenceHeroCopy{
+    width:min(620px,76vw);
+    padding-left:7vw;
+  }
+  .contactReferenceDetails{
+    grid-template-columns:1fr;
+  }
+  .contactReferenceInfo{
+    padding:0 0 60px;
+  }
+  .contactReferenceFormColumn{
+    padding:58px 0 0;
+    border-left:0;
+    border-top:1px solid rgba(22,32,43,.16);
+  }
+  .contactReferenceClosingCopy{
+    width:min(600px,72vw);
+  }
+}
+
+@media(max-width:620px){
+  .businessPremiumProjectsNoIntro .projectEditorialMedia{
+    min-height:64vw;
+  }
+  .contactReferenceHero{
+    min-height:660px;
+  }
+  .contactReferenceHeroImage{
+    object-position:72% center;
+  }
+  .contactReferenceHeroWash{
+    background:linear-gradient(90deg,rgba(241,237,232,.97) 0%,rgba(241,237,232,.88) 58%,rgba(241,237,232,.28) 100%);
+  }
+  .contactReferenceHeroCopy{
+    width:auto;
+    padding:160px 22px 58px;
+  }
+  .contactReferenceHeroCopy h1{
+    font-size:clamp(48px,14vw,64px);
+  }
+  .contactReferenceDesktopBreak{
+    display:none;
+  }
+  .contactReferenceDetails{
+    padding:58px 22px 72px;
+  }
+  .contactReferenceInfo h2{
+    font-size:30px;
+  }
+  .contactReferenceNameFields{
+    grid-template-columns:1fr;
+    gap:27px;
+  }
+  .contactReferenceClosing{
+    min-height:330px;
+  }
+  .contactReferenceClosingShade{
+    background:linear-gradient(90deg,rgba(232,224,214,.94) 0%,rgba(232,224,214,.75) 65%,rgba(232,224,214,.22) 100%);
+  }
+  .contactReferenceClosingCopy{
+    width:auto;
+    padding:64px 22px 40px;
+  }
+  .contactReferenceClosingCopy h2{
+    font-size:40px;
+  }
+}
+
+
+/* =========================================================
+   AUG 27, 2026 — PROJECTS REFERENCE COMPOSITION
+   Match the supplied editorial reference: compact landscape imagery on the
+   left and a restrained information column on the right for every project.
+   ========================================================= */
+.businessPremiumProjectsNoIntro{
+  padding-top:clamp(42px,5vw,72px);
+  padding-left:clamp(28px,5vw,72px);
+  padding-right:clamp(28px,5vw,72px);
+  background:#EDE9E5;
+}
+
+.businessPremiumProjectsNoIntro .businessPremiumProjectStack{
+  width:100%;
+  max-width:1180px;
+  margin:0 auto;
+  gap:0;
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialRow,
+.businessPremiumProjectsNoIntro .projectEditorialRow.reverse{
+  display:grid;
+  grid-template-columns:minmax(0,1.45fr) minmax(300px,.95fr);
+  column-gap:clamp(38px,5vw,72px);
+  align-items:center;
+  min-height:0;
+  padding:clamp(24px,2.5vw,34px) 0;
+  border-top:1px solid rgba(36,43,49,.12);
+  border-bottom:0;
+  background:transparent;
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialRow:first-child{
+  border-top:0;
+  padding-top:0;
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialRow:last-child{
+  border-bottom:1px solid rgba(36,43,49,.12);
+}
+
+/* All projects use the same left-image / right-copy arrangement. */
+.businessPremiumProjectsNoIntro .projectEditorialRow.reverse .projectEditorialMedia,
+.businessPremiumProjectsNoIntro .projectEditorialRow.reverse .projectEditorialCopy{
+  order:initial;
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialMedia{
+  position:relative;
+  width:100%;
+  min-height:0;
+  aspect-ratio:2.15 / 1;
+  overflow:hidden;
+  background:#d9d4ce;
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialMedia>img{
+  object-fit:cover;
+  object-position:center;
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialCopy{
+  min-width:0;
+  padding:clamp(8px,1.2vw,18px) 0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+  background:transparent;
+  color:var(--navy);
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialNumber{
+  display:block;
+  margin:0 0 clamp(23px,2.2vw,32px);
+  font-family:var(--montserrat-medium);
+  font-size:10px;
+  font-weight:500;
+  line-height:1;
+  letter-spacing:.08em;
+  color:var(--navy);
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialCopy h3{
+  max-width:100%;
+  margin:0;
+  font-family:var(--canela-light);
+  font-size:clamp(31px,2.55vw,42px);
+  font-weight:300;
+  line-height:1.05;
+  letter-spacing:-.025em;
+  color:var(--navy);
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialSubheading{
+  margin:12px 0 0;
+  font-family:var(--montserrat-medium);
+  font-size:clamp(9px,.72vw,11px);
+  font-weight:500;
+  line-height:1.4;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--oniria-gold);
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialRule{
+  width:30px;
+  height:1px;
+  margin:clamp(18px,1.8vw,25px) 0;
+  background:var(--oniria-gold);
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialSummary{
+  max-width:430px;
+  margin:0;
+  font-family:var(--sans);
+  font-size:clamp(12px,.9vw,14px);
+  font-weight:400;
+  line-height:1.72;
+  letter-spacing:0;
+  color:#4d5258;
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialDiscover{
+  display:inline-flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:clamp(14px,1.5vw,24px);
+  width:max-content;
+  margin-top:clamp(25px,2.4vw,34px);
+  padding:0;
+  border:0;
+  background:transparent;
+  font-family:var(--montserrat-medium);
+  font-size:9px;
+  font-weight:500;
+  line-height:1.2;
+  letter-spacing:.19em;
+  text-transform:uppercase;
+  color:var(--navy);
+  transition:gap .25s ease,opacity .25s ease;
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialDiscover>span:last-child{
+  display:inline-block;
+  font-family:var(--montserrat-medium);
+  font-size:18px;
+  font-weight:400;
+  line-height:.8;
+  letter-spacing:0;
+  transition:transform .25s ease;
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialDiscover:hover{
+  gap:clamp(20px,2vw,30px);
+  opacity:.72;
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialDiscover:hover>span:last-child{
+  transform:translateX(4px);
+}
+
+@media(max-width:900px){
+  .businessPremiumProjectsNoIntro{
+    padding-left:28px;
+    padding-right:28px;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialRow,
+  .businessPremiumProjectsNoIntro .projectEditorialRow.reverse{
+    grid-template-columns:1fr;
+    row-gap:32px;
+    padding:34px 0 42px;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialRow:first-child{
+    padding-top:0;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialMedia{
+    min-height:0;
+    aspect-ratio:1.85 / 1;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialCopy{
+    padding:0;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialNumber{
+    margin-bottom:20px;
+  }
+}
+
+@media(max-width:620px){
+  .businessPremiumProjectsNoIntro{
+    padding-left:22px;
+    padding-right:22px;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialMedia{
+    min-height:0;
+    aspect-ratio:1.55 / 1;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialCopy h3{
+    font-size:clamp(34px,10vw,46px);
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialSubheading{
+    margin-top:10px;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialRule{
+    margin:18px 0;
+  }
+  .businessPremiumProjectsNoIntro .projectEditorialSummary{
+    font-size:13px;
+  }
+}
+
+/* =========================================================
+   AUG 27, 2026 — REMAINING PUBLIC-PAGE EDITORIAL TEXT SYSTEM
+   Keep Home, Contact and the Projects listing unchanged. Apply the
+   approved Projects typography/color hierarchy to Vision, About and News.
+   ========================================================= */
+:root{
+  --editorial-body:#4d5258;
+}
+
+/* Light content surfaces: Canela names/headings, Montserrat gold labels,
+   dark body copy and restrained gold rules. */
+.vision2026Page .vision2026Statement,
+.vision2026Page .vision2026Principles,
+.about2026Page .about2026Opening,
+.about2026Page .about2026Pillars,
+.newsroomExperiencePage .newsroomCompactSection,
+.newsroomArticleTaupe{
+  color:var(--navy);
+}
+
+.vision2026Page .vision2026Statement h2,
+.vision2026Page .vision2026PrinciplesHead h2,
+.vision2026Page .vision2026PrincipleCard h3,
+.about2026Page .story2026OpeningGrid h2,
+.about2026Page .story2026PillarsHeader h2,
+.about2026Page .story2026PillarCard h3,
+.newsroomExperiencePage .newsroomCompactBody h3,
+.newsroomArticleTaupe .newsroomArticleHeader h1,
+.newsroomArticleTaupe .newsroomArticleBody h2{
+  font-family:var(--canela-light);
+  font-weight:300;
+  color:var(--navy);
+}
+
+/* Small editorial labels follow the project subheading treatment. */
+.vision2026Page .vision2026Statement .eyebrow,
+.vision2026Page .vision2026PrinciplesHead .eyebrow,
+.vision2026Page .vision2026PrincipleTop,
+.about2026Page .story2026Opening .eyebrow,
+.about2026Page .story2026PillarsHeader .eyebrow,
+.about2026Page .story2026PillarLabel,
+.newsroomExperiencePage .newsDate,
+.newsroomArticleTaupe .newsroomArticleMeta,
+.newsroomArticleTaupe .newsroomArticleFooter>span{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+  text-transform:uppercase;
+  letter-spacing:.18em;
+  color:var(--oniria-gold);
+}
+
+/* Short gold rule beneath section labels, echoing the Projects page. */
+.vision2026Page .vision2026Statement .eyebrow::after,
+.vision2026Page .vision2026PrinciplesHead .eyebrow::after,
+.about2026Page .story2026Opening .eyebrow::after,
+.about2026Page .story2026PillarsHeader .eyebrow::after{
+  content:"";
+  display:block;
+  width:30px;
+  height:1px;
+  margin-top:14px;
+  background:var(--oniria-gold);
+}
+
+/* Body copy uses the same restrained dark grey as project descriptions. */
+.vision2026Page .vision2026StatementCopy p,
+.vision2026Page .vision2026PrincipleCard p,
+.about2026Page .story2026OpeningCopy p,
+.about2026Page .story2026PillarsLead,
+.about2026Page .story2026PillarCard p,
+.newsroomExperiencePage .newsroomCompactBody p,
+.newsroomExperiencePage .newsroomEmptyCompact p,
+.newsroomArticleTaupe .newsroomArticleHeader>p,
+.newsroomArticleTaupe .newsroomArticleBody p{
+  font-family:var(--sans);
+  font-weight:400;
+  color:var(--editorial-body);
+}
+
+/* Gold separators retain the same visual language as each project row. */
+.vision2026Page .vision2026Principles,
+.vision2026Page .vision2026PrinciplesGrid,
+.vision2026Page .vision2026PrinciplesGrid>div,
+.about2026Page .about2026Pillars,
+.about2026Page .story2026PillarsGrid,
+.about2026Page .story2026PillarsGrid>div,
+.newsroomExperiencePage .newsroomCompactCard,
+.newsroomArticleTaupe .newsroomArticleFooter{
+  border-color:color-mix(in srgb,var(--oniria-gold) 58%,transparent);
+}
+
+.about2026Page .story2026PillarMark{
+  border-color:var(--oniria-gold);
+  color:var(--oniria-gold);
+}
+
+/* News calls-to-action follow DISCOVER PROJECT: Montserrat, uppercase, arrow. */
+.newsroomExperiencePage .textLink,
+.newsroomArticleTaupe .textLink{
+  display:inline-flex;
+  align-items:center;
+  gap:14px;
+  width:max-content;
+  padding:0;
+  border:0;
+  background:transparent;
+  font-family:var(--montserrat-medium);
+  font-size:9px;
+  font-weight:500;
+  line-height:1.2;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--navy);
+}
+
+.newsroomExperiencePage .textLink span,
+.newsroomArticleTaupe .textLink span{
+  font-size:17px;
+  line-height:.8;
+  letter-spacing:0;
+}
+
+/* Keep text over photography legible while retaining the same font hierarchy. */
+.vision2026Page .vision2026HeroCopyEditorial h1,
+.about2026Page .about2026HeroFullCopy h1,
+.newsroomExperiencePage .newsroomImageHeroCopy h1{
+  font-family:var(--canela-light);
+  font-weight:300;
+  color:var(--white);
+}
+
+.vision2026Page .vision2026HeroCopyEditorial .eyebrow,
+.about2026Page .about2026HeroFullCopy .eyebrow,
+.newsroomExperiencePage .newsroomImageHeroCopy .eyebrow{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+  text-transform:uppercase;
+  letter-spacing:.18em;
+  color:var(--oniria-gold);
+}
+
+/* Preserve the original light hero support copy for contrast on images. */
+.vision2026Page .premiumUnifiedHeroLead,
+.about2026Page .premiumUnifiedHeroLead,
+.newsroomExperiencePage .newsroomImageHeroCopy>p:last-child{
+  color:rgba(255,255,255,.88);
+}
+
+/* Do not invert the approved text colors on the informational cards. */
+.vision2026Page .vision2026PrincipleCard:hover,
+.about2026Page .story2026PillarCard:hover{
+  background:transparent;
+  color:var(--navy);
+}
+
+/* =========================================================
+   AUG 27, 2026 — ADMIN EDITORIAL SYSTEM
+   Align the staff workspace with the public ONIRIA visual language
+   without changing routes, data loading, forms, permissions or actions.
+   ========================================================= */
+.adminStandalone,
+.adminLoginPage{
+  --admin-paper:#EDE9E5;
+  --admin-paper-soft:#F7F4F0;
+  --admin-paper-deep:#E6E0DA;
+  --admin-ink:#031B35;
+  --admin-gold:#B8A37C;
+  --admin-body:#4D5258;
+  --admin-line:rgba(184,163,124,.48);
+  --admin-line-soft:rgba(3,27,53,.12);
+  background:var(--admin-paper);
+  color:var(--admin-ink);
+  font-family:var(--sans);
+}
+
+/* Core page surfaces */
+.adminStandalone .adminMain,
+.adminStandalone .adminContent,
+.adminStandalone .adminContentPremium,
+.adminStandalone .adminTopbar,
+.adminStandalone .adminTopbarPremium{
+  background:var(--admin-paper);
+  color:var(--admin-ink);
+}
+.adminStandalone .adminTopbar{
+  min-height:146px;
+  padding:36px clamp(28px,4.5vw,68px) 26px;
+  border-bottom:1px solid var(--admin-line);
+  background:var(--admin-paper);
+}
+.adminStandalone .adminContent{
+  padding:clamp(30px,3.4vw,48px) clamp(28px,4.5vw,68px) 84px;
+}
+
+/* Typography follows the public site: Canela headings, Montserrat labels. */
+.adminStandalone h1,
+.adminStandalone h2,
+.adminStandalone h3,
+.adminStandalone h4,
+.adminStandalone .adminPanelHead h2,
+.adminStandalone .adminSectionTitle h2,
+.adminStandalone .adminEditorialToolbar h2,
+.adminStandalone .adminSettingsHeader h2,
+.adminStandalone .adminSettingsPanelHead h3,
+.adminStandalone .adminNewsCardMain h3,
+.adminStandalone .adminStaffIdentity strong,
+.adminStandalone .adminProfileBlock strong,
+.adminStandalone .adminToggleRow strong,
+.adminStandalone .adminSettingsCard h4,
+.adminStandalone .adminSettingsCard strong,
+.adminStandalone .adminSystemGrid strong,
+.adminStandalone .adminImageUploadCopy strong,
+.adminStandalone .adminNotificationsPanel strong{
+  font-family:var(--canela-light);
+  font-weight:300;
+  color:var(--admin-ink);
+}
+.adminStandalone .adminTopbar h1{
+  margin:4px 0 0;
+  font-family:var(--canela-light);
+  font-size:clamp(42px,4.2vw,60px);
+  font-weight:300;
+  line-height:.98;
+  letter-spacing:-.035em;
+}
+.adminStandalone .adminWelcomeStrip h2{
+  max-width:720px;
+  margin:7px 0 0;
+  font-family:var(--canela-light);
+  font-size:clamp(34px,3.5vw,50px);
+  font-weight:300;
+  line-height:1.02;
+  letter-spacing:-.032em;
+}
+.adminStandalone .adminSectionTitle h2,
+.adminStandalone .adminEditorialToolbar h2,
+.adminStandalone .adminSettingsHeader h2{
+  font-size:clamp(30px,2.8vw,42px);
+  line-height:1.03;
+  letter-spacing:-.025em;
+}
+.adminStandalone .adminPanelHead h2,
+.adminStandalone .adminListToolbar h2{
+  font-family:var(--canela-light);
+  font-size:clamp(25px,2.3vw,33px);
+  font-weight:300;
+  line-height:1.05;
+  letter-spacing:-.02em;
+}
+.adminStandalone .eyebrow,
+.adminStandalone .adminPanelHead span,
+.adminStandalone .adminPanelHead a,
+.adminStandalone .adminMetrics span,
+.adminStandalone .adminMetrics small,
+.adminStandalone .adminForm label>span,
+.adminStandalone .adminForm legend,
+.adminStandalone .adminSettingsFormGrid label>span,
+.adminStandalone .adminSettingsCard>span,
+.adminStandalone .adminBrandReference>span,
+.adminStandalone .adminSystemGrid span,
+.adminStandalone .adminImageUploadCopy>span,
+.adminStandalone .adminNewsCardMain small,
+.adminStandalone .adminTopMeta,
+.adminStandalone .adminPopularRow>span,
+.adminStandalone .adminPopularRow>b{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+}
+.adminStandalone .eyebrow,
+.adminStandalone .adminPanelHead>div>span,
+.adminStandalone .adminSectionTitle .eyebrow,
+.adminStandalone .adminEditorialToolbar .eyebrow,
+.adminStandalone .adminSettingsHeader .eyebrow,
+.adminStandalone .adminSettingsPanelHead .eyebrow{
+  color:var(--admin-gold);
+}
+.adminStandalone .eyebrow{
+  font-size:9px;
+  margin-bottom:12px;
+}
+.adminStandalone .eyebrow::after{
+  content:"";
+  display:block;
+  width:28px;
+  height:1px;
+  margin-top:11px;
+  background:var(--admin-gold);
+}
+
+/* Body copy: same restrained charcoal used on the public editorial pages. */
+.adminStandalone p,
+.adminStandalone .adminWelcomeStrip>p,
+.adminStandalone .adminSectionTitle>p:not(.eyebrow),
+.adminStandalone .adminSectionTitle div+p,
+.adminStandalone .adminEditorialToolbar p:not(.eyebrow),
+.adminStandalone .adminPanelIntro,
+.adminStandalone .adminSettingsHint,
+.adminStandalone .adminSettingsCard p,
+.adminStandalone .adminToggleRow small,
+.adminStandalone .adminImageUploadCopy p,
+.adminStandalone .adminNewsCardMain p,
+.adminStandalone .adminChartEmpty{
+  color:var(--admin-body);
+}
+.adminStandalone .adminWelcomeStrip>p{
+  font-size:13px;
+  line-height:1.75;
+}
+
+/* Sidebar remains dark for clear workspace orientation, using the same brand palette. */
+.adminStandalone .adminSidebar{
+  background:var(--admin-ink);
+  color:#fff;
+  border-right:0;
+  padding:30px 26px 24px;
+}
+.adminStandalone .adminBrandLockup{
+  border-bottom:1px solid rgba(184,163,124,.34);
+  padding-bottom:23px;
+}
+.adminStandalone .adminBrandLockup small{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+  color:var(--admin-gold);
+  letter-spacing:.23em;
+}
+.adminStandalone .adminSidebar nav{
+  gap:2px;
+  margin-top:24px;
+}
+.adminStandalone .adminSidebar nav a{
+  grid-template-columns:30px 1fr;
+  min-height:46px;
+  padding:11px 12px;
+  border:0;
+  border-bottom:1px solid rgba(255,255,255,.09);
+  border-radius:0;
+  font-family:var(--montserrat-medium);
+  font-size:10px;
+  font-weight:500;
+  line-height:1.2;
+  letter-spacing:.055em;
+  text-transform:none;
+  color:rgba(255,255,255,.78);
+  opacity:1;
+}
+.adminStandalone .adminSidebar nav a span{
+  font-family:var(--montserrat-medium);
+  font-size:8px;
+  font-weight:500;
+  letter-spacing:.1em;
+  color:var(--admin-gold);
+}
+.adminStandalone .adminSidebar nav a:hover{
+  background:rgba(184,163,124,.08);
+  color:#fff;
+  transform:translateX(2px);
+}
+.adminStandalone .adminSidebar nav a.active{
+  background:transparent;
+  color:#fff;
+  border-bottom-color:var(--admin-gold);
+}
+.adminStandalone .adminSidebar nav a.active::after{
+  content:"";
+  width:34px;
+  height:1px;
+  background:var(--admin-gold);
+  position:absolute;
+  right:12px;
+  bottom:-1px;
+}
+.adminStandalone .adminSidebar nav a{position:relative}
+.adminStandalone .adminSidebarBottom{
+  border-top:1px solid rgba(184,163,124,.28);
+  padding-top:16px;
+}
+.adminStandalone .adminSidebarBottom button{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+  color:rgba(255,255,255,.8);
+  border-top:0;
+}
+.adminStandalone .adminSidebarAvatar,
+.adminStandalone .adminAvatar,
+.adminStandalone .adminProfileAvatar{
+  background:var(--admin-gold);
+  color:var(--admin-ink);
+  border-color:rgba(184,163,124,.62);
+}
+.adminStandalone .adminSidebarUserText strong{
+  font-family:var(--canela-light);
+  font-size:18px;
+  font-weight:300;
+  color:#fff;
+}
+.adminStandalone .adminSidebarUserText small,
+.adminStandalone .adminSidebarUserText em{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+}
+
+/* Gold rules replace heavy navy dividers. */
+.adminStandalone .adminWelcomeStrip,
+.adminStandalone .adminEditorialToolbar,
+.adminStandalone .adminSettingsHeader,
+.adminStandalone .adminListToolbar,
+.adminStandalone .adminPanel,
+.adminStandalone .adminPanelHead,
+.adminStandalone .adminCompactRow,
+.adminStandalone .adminTableRow,
+.adminStandalone .adminToggleRow,
+.adminStandalone .adminNewsActions,
+.adminStandalone .adminNotificationsPanel>div,
+.adminStandalone .adminNotificationsPanel>a{
+  border-color:var(--admin-line);
+}
+
+/* Cards and panels use the public site's warm off-white surface. */
+.adminStandalone .adminMetricsModern article,
+.adminStandalone .adminPanelModern,
+.adminStandalone .adminFeatureCard,
+.adminStandalone .adminChartCard,
+.adminStandalone .adminTablePremium,
+.adminStandalone .adminProjectGrid article,
+.adminStandalone .adminNewsCard,
+.adminStandalone .adminEditorPanel,
+.adminStandalone .adminSettingsNav,
+.adminStandalone .adminSettingsPanel,
+.adminStandalone .adminSettingsCard,
+.adminStandalone .adminBrandReference,
+.adminStandalone .adminSystemGrid article,
+.adminStandalone .adminImageUploadField,
+.adminStandalone .adminRoleOption,
+.adminStandalone .adminStaffRow{
+  background:var(--admin-paper-soft);
+  border-color:var(--admin-line-soft);
+  box-shadow:none;
+}
+.adminStandalone .adminPanelModern,
+.adminStandalone .adminFeatureCard,
+.adminStandalone .adminChartCard,
+.adminStandalone .adminSettingsPanel,
+.adminStandalone .adminNewsCard,
+.adminStandalone .adminEditorPanel{
+  border-top:1px solid var(--admin-gold);
+}
+.adminStandalone .adminMetricsModern{
+  gap:12px;
+}
+.adminStandalone .adminMetricsModern article{
+  min-height:148px;
+  padding:20px 22px;
+  border:1px solid var(--admin-line-soft)!important;
+  border-top:1px solid var(--admin-gold)!important;
+}
+.adminStandalone .adminMetricsModern strong{
+  font-family:var(--canela-light);
+  font-size:clamp(38px,3.6vw,48px);
+  font-weight:300;
+  color:var(--admin-ink);
+}
+.adminStandalone .adminMetricsModern span,
+.adminStandalone .adminMetricsModern small{
+  font-size:8px;
+  color:var(--admin-body);
+}
+
+/* Actions echo DISCOVER PROJECT: Montserrat, uppercase, clean arrow. */
+.adminStandalone .adminPrimaryButton,
+.adminStandalone .adminGhostButton,
+.adminStandalone .adminReportButtons button,
+.adminStandalone .adminSettingsCard button,
+.adminStandalone .adminDownloadGrid button,
+.adminStandalone .adminNewsActions button,
+.adminStandalone .adminNewsActions a,
+.adminStandalone .adminRecoveryLink,
+.adminStandalone .adminUploadButton,
+.adminStandalone .adminSegmented button,
+.adminStandalone .adminSettingsNav button{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+  text-transform:uppercase;
+  letter-spacing:.15em;
+}
+.adminStandalone .adminPrimaryButton,
+.adminStandalone .adminSettingsCard button,
+.adminStandalone .adminDownloadGrid button,
+.adminStandalone .adminReportButtons button{
+  background:var(--admin-ink);
+  color:#fff;
+  border-color:var(--admin-ink);
+}
+.adminStandalone .adminPrimaryButton:hover,
+.adminStandalone .adminSettingsCard button:hover,
+.adminStandalone .adminDownloadGrid button:hover,
+.adminStandalone .adminReportButtons button:hover{
+  background:transparent;
+  color:var(--admin-ink);
+}
+.adminStandalone .adminGhostButton{
+  color:var(--admin-ink);
+  border-color:var(--admin-line);
+}
+.adminStandalone .adminQuickActions a{
+  min-height:110px;
+  background:transparent;
+  border:0;
+  border-top:1px solid var(--admin-gold);
+  border-bottom:1px solid var(--admin-line-soft);
+  padding:18px 4px;
+}
+.adminStandalone .adminQuickActions a:hover{
+  background:transparent;
+  color:var(--admin-ink);
+  transform:none;
+}
+.adminStandalone .adminQuickActions a>span,
+.adminStandalone .adminQuickActions small{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+  color:var(--admin-gold);
+}
+.adminStandalone .adminQuickActions strong{
+  font-family:var(--canela-light);
+  font-size:19px;
+  font-weight:300;
+  color:var(--admin-ink);
+}
+.adminStandalone .adminQuickActions b{
+  color:var(--admin-gold);
+  transition:transform .2s ease;
+}
+.adminStandalone .adminQuickActions a:hover b{transform:translateX(4px)}
+
+/* Forms stay functionally identical; only their visual language changes. */
+.adminStandalone .adminForm input,
+.adminStandalone .adminForm select,
+.adminStandalone .adminForm textarea,
+.adminStandalone .adminSettingsFormGrid input,
+.adminStandalone .adminSettingsFormGrid select{
+  background:transparent;
+  color:var(--admin-ink);
+  border-bottom:1px solid var(--admin-line);
+  font-family:var(--sans);
+  font-size:13px;
+}
+.adminStandalone .adminForm input:focus,
+.adminStandalone .adminForm select:focus,
+.adminStandalone .adminForm textarea:focus,
+.adminStandalone .adminSettingsFormGrid input:focus,
+.adminStandalone .adminSettingsFormGrid select:focus{
+  border-bottom-color:var(--admin-gold);
+  box-shadow:0 1px 0 var(--admin-gold);
+}
+.adminStandalone .adminForm label>span,
+.adminStandalone .adminForm legend,
+.adminStandalone .adminSettingsFormGrid label>span{
+  color:var(--admin-body);
+  font-size:8px;
+}
+.adminStandalone .adminRoleOption input{accent-color:var(--admin-gold)}
+.adminStandalone .adminRoleOption strong{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+  color:var(--admin-ink);
+}
+
+/* Tables, statuses and analytical graphics. */
+.adminStandalone .statusPill,
+.adminStandalone .adminStatusDot{
+  border-color:var(--admin-gold);
+  color:var(--admin-ink);
+  background:rgba(184,163,124,.1);
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+}
+.adminStandalone .adminBarTrack,
+.adminStandalone .adminMonthRow>div{
+  background:rgba(3,27,53,.07);
+}
+.adminStandalone .adminBarTrack i,
+.adminStandalone .adminMonthRow i{
+  background:var(--admin-gold);
+}
+.adminStandalone .adminBarValue,
+.adminStandalone .adminMonthRow strong,
+.adminStandalone .adminPopularRow>b{
+  color:var(--admin-ink);
+}
+.adminStandalone .adminPopularRow strong,
+.adminStandalone .adminCompactRow strong{
+  font-family:var(--canela-light);
+  font-weight:300;
+  color:var(--admin-ink);
+}
+.adminStandalone .adminTableHead,
+.adminStandalone .adminTableRow>span,
+.adminStandalone .adminTableRow>small{
+  font-family:var(--montserrat-medium);
+}
+
+/* Settings and notifications */
+.adminStandalone .adminSettingsNav button{
+  text-transform:none;
+  letter-spacing:.04em;
+  font-size:10px;
+}
+.adminStandalone .adminSettingsNav button.active,
+.adminStandalone .adminSegmented button.active{
+  background:var(--admin-ink);
+  color:#fff;
+}
+.adminStandalone .adminToggleRow input:checked+i{
+  background:var(--admin-gold);
+}
+.adminStandalone .adminToggleRow input:checked+i:after{
+  background:var(--admin-ink);
+}
+.adminStandalone .adminNotifications>button{
+  background:transparent;
+  border-color:var(--admin-line);
+  color:var(--admin-ink);
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+}
+.adminStandalone .adminNotifications>button b{
+  background:var(--admin-gold);
+  color:var(--admin-ink);
+}
+.adminStandalone .adminNotificationsPanel{
+  background:var(--admin-paper-soft);
+  border-color:var(--admin-line);
+  color:var(--admin-ink);
+}
+.adminStandalone .adminNotificationsPanel>a.unread{
+  background:rgba(184,163,124,.13);
+}
+
+/* Login and password-reset screens use the same customer-facing palette. */
+.adminLoginPage.adminLoginPremium,
+.adminLoginPage.adminLoginRefined{
+  background:var(--admin-paper);
+  color:var(--admin-ink);
+}
+.adminLoginPremium .adminLoginBrand,
+.adminLoginRefined .adminLoginBrand{
+  background:var(--admin-paper)!important;
+  color:var(--admin-ink);
+  border-right:1px solid var(--admin-line);
+}
+.adminLoginPremium .adminLoginBrand::before{
+  background:radial-gradient(circle,rgba(184,163,124,.18),rgba(184,163,124,0) 68%);
+}
+.adminLoginPremium .adminLoginBrand h1,
+.adminLoginRefined .adminLoginStory h1{
+  max-width:9ch;
+  font-family:var(--canela-light);
+  font-size:clamp(50px,5.4vw,82px);
+  font-weight:300;
+  line-height:.96;
+  letter-spacing:-.04em;
+  color:var(--admin-ink);
+}
+.adminLoginPremium .adminLoginStory .eyebrow,
+.adminLoginRefined .adminLoginStory .eyebrow,
+.adminLoginCard .eyebrow{
+  font-family:var(--montserrat-medium);
+  font-size:9px;
+  font-weight:500;
+  letter-spacing:.16em;
+  color:var(--admin-gold);
+}
+.adminLoginPremium .adminLoginPanel,
+.adminLoginRefined .adminLoginPanel{
+  background:var(--admin-paper-deep)!important;
+}
+.adminLoginCard,
+.adminLoginCardRefined{
+  background:var(--admin-paper-soft);
+  border:1px solid var(--admin-line-soft);
+  border-top:1px solid var(--admin-gold);
+  box-shadow:0 24px 60px rgba(3,27,53,.08);
+}
+.adminLoginCard h2,
+.adminLoginCardRefined h2{
+  font-family:var(--canela-light);
+  font-size:clamp(42px,4vw,56px);
+  font-weight:300;
+  line-height:1;
+  color:var(--admin-ink);
+}
+.adminLoginCard label>span,
+.adminLoginHelp span,
+.adminRecoveryLink{
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+}
+.adminLoginCard input{
+  border-bottom-color:var(--admin-line);
+  color:var(--admin-ink);
+  font-size:13px;
+}
+.adminLoginCard input:focus{border-bottom-color:var(--admin-gold)}
+.adminLoginSubmit{
+  background:var(--admin-ink);
+  color:#fff;
+  border-color:var(--admin-ink);
+  font-family:var(--montserrat-medium);
+  font-weight:500;
+}
+.adminLoginSubmit:hover{
+  background:transparent;
+  color:var(--admin-ink);
+}
+.adminLoginError{
+  background:var(--admin-ink);
+  color:#fff;
+}
+.adminLoginNotice{
+  background:rgba(184,163,124,.1);
+  border-color:var(--admin-line);
+}
+
+/* Refined responsive proportions. */
+@media(max-width:1180px){
+  .adminStandalone .adminLayout{grid-template-columns:240px minmax(0,1fr)}
+}
+@media(max-width:900px){
+  .adminLoginPremium .adminLoginBrand,
+  .adminLoginRefined .adminLoginBrand{border-right:0;border-bottom:1px solid var(--admin-line)}
+}
+@media(max-width:760px){
+  .adminStandalone .adminSidebar{padding:18px 18px 16px}
+  .adminStandalone .adminSidebar nav{margin-top:14px}
+  .adminStandalone .adminSidebar nav a{
+    min-width:122px;
+    border:1px solid rgba(184,163,124,.22);
+    padding:10px 11px;
+  }
+  .adminStandalone .adminSidebar nav a.active{border-color:var(--admin-gold)}
+  .adminStandalone .adminSidebar nav a.active::after{display:none}
+  .adminStandalone .adminTopbar{padding:26px 22px 20px}
+  .adminStandalone .adminContent{padding:24px 22px 58px}
+  .adminStandalone .adminTopbar h1{font-size:42px}
+  .adminStandalone .adminWelcomeStrip h2{font-size:36px}
+  .adminStandalone .adminQuickActions a{min-height:92px}
+}
+
+.homeHeroEditorial h1{
+  max-width:none;
+}
+
+.homeHeroEditorial h1 span{
+  display:block;
+  white-space:nowrap;
 }
