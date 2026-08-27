@@ -8574,3 +8574,487 @@ body,
     padding:0 20px 22px;
   }
 }
+
+/* =========================================================
+   AUG 27, 2026 — ADMIN MOBILE UX + PERFORMANCE-SAFE LAYOUT
+   Admin-only overrides. Public website styles remain unchanged.
+   ========================================================= */
+@media(max-width:760px){
+  .adminStandalone{
+    min-height:100svh;
+    background:var(--admin-paper,#EDE9E5);
+  }
+
+  .adminStandalone .adminLayout,
+  .adminStandalone .adminLayoutPremium{
+    display:block;
+    min-height:100svh;
+  }
+
+  .adminStandalone .adminSidebar,
+  .adminStandalone .adminSidebarPremium{
+    position:sticky;
+    top:0;
+    z-index:80;
+    height:auto;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:8px 12px;
+    padding:11px 14px 10px;
+    background:var(--admin-ink,#031B35);
+    box-shadow:0 10px 28px rgba(3,27,53,.16);
+  }
+
+  .adminStandalone .adminBrandLockup,
+  .adminStandalone .adminSidebarPremium .adminBrandLockup{
+    min-width:0;
+    display:flex;
+    align-items:center;
+    border:0;
+    padding:0;
+  }
+
+  .adminStandalone .adminBrandLockup .adminBrandWordmark,
+  .adminStandalone .adminSidebarPremium .adminBrandLockup .adminBrandWordmark{
+    width:112px;
+    height:38px;
+  }
+
+  .adminStandalone .adminBrandLockup>small{display:none}
+
+  .adminStandalone .adminSidebarBottom,
+  .adminStandalone .adminSidebarPremium .adminSidebarBottom{
+    margin:0;
+    padding:0;
+    border:0;
+    display:flex;
+    align-items:center;
+    gap:7px;
+  }
+
+  .adminStandalone .adminSidebarBottom .adminUserProfileLink,
+  .adminStandalone .adminSidebarPremium .adminSidebarBottom .adminUserProfileLink{
+    width:38px;
+    min-width:38px;
+    height:38px;
+    margin:0;
+    padding:0;
+    display:grid;
+    place-items:center;
+    border:0;
+  }
+
+  .adminStandalone .adminSidebarAvatar{
+    width:36px;
+    height:36px;
+  }
+
+  .adminStandalone .adminSidebarUserText{display:none}
+
+  .adminStandalone .adminSidebarBottom button,
+  .adminStandalone .adminSidebarPremium .adminSidebarBottom button{
+    width:auto;
+    min-height:36px;
+    margin:0;
+    padding:0 9px;
+    border:1px solid rgba(184,163,124,.35);
+    color:rgba(255,255,255,.86);
+    font-size:8px;
+    letter-spacing:.08em;
+    border-radius:999px;
+  }
+  .adminStandalone .adminSidebarBottom button span{display:none}
+
+  .adminStandalone .adminSidebar nav,
+  .adminStandalone .adminSidebarPremium nav{
+    grid-column:1/-1;
+    display:flex;
+    gap:6px;
+    margin:0;
+    padding:2px 0 1px;
+    overflow-x:auto;
+    overscroll-behavior-inline:contain;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .adminStandalone .adminSidebar nav::-webkit-scrollbar{display:none}
+
+  .adminStandalone .adminSidebar nav a,
+  .adminStandalone .adminSidebarPremium nav a{
+    flex:0 0 auto;
+    min-width:auto;
+    min-height:34px;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:8px 11px;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:999px;
+    white-space:nowrap;
+    font-size:9px;
+    line-height:1;
+    letter-spacing:.03em;
+    color:rgba(255,255,255,.78);
+    background:transparent;
+  }
+  .adminStandalone .adminSidebar nav a span{
+    display:inline;
+    font-size:7px;
+  }
+  .adminStandalone .adminSidebar nav a.active{
+    color:#fff;
+    border-color:var(--admin-gold,#B8A37C);
+    background:rgba(184,163,124,.13);
+  }
+  .adminStandalone .adminSidebar nav a.active::after{display:none}
+
+  .adminStandalone .adminTopbar,
+  .adminStandalone .adminTopbarPremium{
+    min-height:auto;
+    padding:20px 15px 15px;
+    align-items:center;
+    gap:12px;
+    background:var(--admin-paper,#EDE9E5);
+  }
+  .adminStandalone .adminTopbar>div:first-child{min-width:0}
+  .adminStandalone .adminTopbar .eyebrow{margin-bottom:8px}
+  .adminStandalone .adminTopbar h1{
+    margin:0;
+    font-size:clamp(34px,10vw,44px);
+    line-height:.96;
+  }
+  .adminStandalone .adminTopMeta>span,
+  .adminStandalone .adminTopMeta>b{display:none}
+  .adminStandalone .adminNotifications>button{
+    min-width:42px;
+    height:42px;
+    padding:0 10px;
+    background:var(--admin-paper-soft,#F7F4F0);
+  }
+  .adminStandalone .adminNotificationsPanel{
+    position:fixed;
+    top:112px;
+    right:12px;
+    left:12px;
+    width:auto;
+    max-height:min(62svh,480px);
+  }
+
+  .adminStandalone .adminContent,
+  .adminStandalone .adminContentPremium{
+    padding:18px 14px 48px;
+  }
+
+  .adminStandalone .adminWelcomeStrip,
+  .adminStandalone .adminWelcomePremium{
+    margin-bottom:16px;
+    padding:18px 0 20px;
+    gap:12px;
+  }
+  .adminStandalone .adminWelcomeStrip h2,
+  .adminStandalone .adminWelcomePremium h2{
+    max-width:none;
+    font-size:clamp(29px,8.4vw,38px);
+    line-height:1.02;
+  }
+  .adminStandalone .adminWelcomeStrip>p{
+    font-size:12.5px;
+    line-height:1.62;
+  }
+
+  .adminStandalone .adminMetricsModern,
+  .adminStandalone .adminMetricsModern.adminMetricsFour,
+  .adminStandalone .adminMetricsModern.adminMetricsThree,
+  .adminStandalone .newsroomMetrics{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+    margin-bottom:16px;
+    border:0;
+  }
+  .adminStandalone .adminMetricsModern article{
+    min-height:112px;
+    padding:15px 14px;
+    border-radius:12px;
+  }
+  .adminStandalone .adminMetricsModern strong{
+    font-size:34px;
+    line-height:1;
+  }
+  .adminStandalone .adminMetricsModern .metricText{font-size:20px}
+
+  .adminStandalone .adminAnalyticsGrid,
+  .adminStandalone .adminLowerGrid,
+  .adminStandalone .adminDashboardGrid,
+  .adminStandalone .adminDashboardGridModern,
+  .adminStandalone .adminSplitWorkspace{
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+  .adminStandalone .adminChartCard,
+  .adminStandalone .adminPanelModern,
+  .adminStandalone .adminFeatureCard,
+  .adminStandalone .adminReportsPanel,
+  .adminStandalone .adminPopularPanel{
+    min-height:0;
+    padding:0 14px 14px;
+    border-radius:12px;
+    overflow:hidden;
+  }
+  .adminStandalone .adminChartCard{padding-top:14px}
+  .adminStandalone .adminBarChart{
+    height:190px;
+    gap:5px;
+    overflow-x:auto;
+    padding-bottom:4px;
+    scrollbar-width:none;
+  }
+  .adminStandalone .adminBarChart::-webkit-scrollbar{display:none}
+  .adminStandalone .adminBarItem{min-width:30px}
+  .adminStandalone .adminMonthRow{grid-template-columns:48px minmax(0,1fr) 32px}
+
+  .adminStandalone .adminQuickActions,
+  .adminStandalone .adminQuickActionsPremium{
+    grid-template-columns:1fr;
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .adminStandalone .adminQuickActions a,
+  .adminStandalone .adminQuickActionsPremium a{
+    min-height:78px;
+    padding:14px;
+    border-radius:12px;
+  }
+  .adminStandalone .adminQuickActions strong{font-size:18px}
+
+  .adminStandalone .adminPanelHead{
+    align-items:flex-start;
+    gap:10px;
+  }
+  .adminStandalone .adminPanelHead h2{font-size:26px}
+  .adminStandalone .adminPanelHead>a{padding-top:4px;white-space:nowrap}
+  .adminStandalone .adminCompactRow{
+    align-items:flex-start;
+    gap:10px;
+  }
+  .adminStandalone .adminCompactRow>div{min-width:0}
+  .adminStandalone .adminCompactRow strong{overflow-wrap:anywhere}
+
+  .adminStandalone .adminEditorialToolbar{
+    grid-template-columns:1fr;
+    gap:16px;
+    padding:19px 0;
+    margin-bottom:14px;
+  }
+  .adminStandalone .adminEditorialToolbar h2{
+    font-size:clamp(31px,8.7vw,39px);
+  }
+  .adminStandalone .adminEditorialToolbar .adminPrimaryButton{width:100%}
+
+  .adminStandalone .adminNewsWorkspace{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+  .adminStandalone .adminEditorPanel{
+    order:-1;
+    position:relative;
+    top:auto;
+    padding:18px 14px;
+    border-radius:12px;
+    box-shadow:none;
+  }
+  .adminStandalone .adminNewsList{gap:8px}
+  .adminStandalone .adminNewsCard{border-radius:12px;overflow:hidden}
+  .adminStandalone .adminNewsCardMain{
+    grid-template-columns:82px minmax(0,1fr)!important;
+    gap:12px;
+    padding:12px;
+  }
+  .adminStandalone .adminNewsCardThumb{min-height:96px;border-radius:9px}
+  .adminStandalone .adminNewsCardCopy h3{
+    margin:8px 0 5px;
+    font-size:20px;
+  }
+  .adminStandalone .adminNewsCardCopy p{
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    overflow:hidden;
+    margin-bottom:4px;
+  }
+  .adminStandalone .adminNewsActions{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:6px;
+    padding:9px 10px 10px;
+  }
+  .adminStandalone .adminNewsActions button,
+  .adminStandalone .adminNewsActions a{
+    min-height:38px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid rgba(3,27,53,.15);
+    border-radius:8px;
+    padding:8px;
+  }
+  .adminStandalone .adminNewsActions .danger{margin-left:0}
+  .adminStandalone .adminForm,
+  .adminStandalone .adminFormTwo,
+  .adminStandalone .adminSettingsFormGrid{
+    grid-template-columns:1fr;
+  }
+  .adminStandalone .adminForm input,
+  .adminStandalone .adminForm select,
+  .adminStandalone .adminForm textarea,
+  .adminStandalone .adminSettingsFormGrid input,
+  .adminStandalone .adminSettingsFormGrid select{
+    font-size:16px;
+  }
+  .adminStandalone .adminEditorFooter{
+    align-items:stretch;
+    flex-direction:column;
+  }
+  .adminStandalone .adminEditorFooter .adminPrimaryButton{width:100%}
+  .adminStandalone .adminToast{
+    right:12px;
+    left:12px;
+    bottom:12px;
+    max-width:none;
+    border-radius:10px;
+  }
+
+  .adminStandalone .adminListToolbar{
+    align-items:stretch;
+    flex-direction:column;
+    gap:14px;
+  }
+  .adminStandalone .adminReportButtons,
+  .adminStandalone .adminReportButtons.compact{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    width:100%;
+  }
+  .adminStandalone .adminReportButtons button{min-width:0;width:100%}
+
+  .adminStandalone .adminLeadTable{
+    padding:0;
+    border:0;
+    background:transparent;
+    overflow:visible;
+  }
+  .adminStandalone .adminLeadTable .adminTableHead{display:none}
+  .adminStandalone .adminLeadEntry{
+    margin-bottom:10px;
+    border:1px solid var(--admin-line-soft,rgba(3,27,53,.12));
+    border-top:1px solid var(--admin-gold,#B8A37C);
+    border-radius:12px;
+    background:var(--admin-paper-soft,#F7F4F0);
+    overflow:hidden;
+  }
+  .adminStandalone .adminLeadTable .adminTableRow{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px 18px;
+    padding:16px 14px 13px;
+  }
+  .adminStandalone .adminLeadTable .adminTableRow>div,
+  .adminStandalone .adminLeadTable .adminTableRow>span{
+    display:grid;
+    gap:5px;
+    min-width:0;
+    text-transform:none;
+    letter-spacing:0;
+    overflow-wrap:anywhere;
+  }
+  .adminStandalone .adminLeadTable .adminTableRow>[data-label]::before{
+    content:attr(data-label);
+    font-family:var(--montserrat-medium);
+    font-size:7px;
+    font-weight:500;
+    line-height:1;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+    color:var(--admin-gold,#B8A37C);
+  }
+  .adminStandalone .adminLeadTable .adminTableRow>div:first-child{grid-column:1/-1}
+  .adminStandalone .adminLeadTable .statusPill{
+    display:grid!important;
+    width:100%;
+    gap:5px;
+    align-content:start;
+    justify-content:start;
+  }
+  .adminStandalone .adminLeadMessage{
+    grid-template-columns:1fr;
+    gap:7px;
+    padding:13px 14px 16px;
+    border-top:1px solid var(--admin-line-soft,rgba(3,27,53,.12));
+  }
+
+  .adminStandalone .adminProjectGrid article{
+    padding:16px;
+    border-radius:12px;
+  }
+  .adminStandalone .adminProjectGrid h2{font-size:27px}
+
+  .adminStandalone .adminSettingsNav{
+    margin-left:-14px;
+    margin-right:-14px;
+    padding:8px 14px;
+    border-left:0;
+    border-right:0;
+    scrollbar-width:none;
+  }
+  .adminStandalone .adminSettingsNav::-webkit-scrollbar{display:none}
+  .adminStandalone .adminSettingsNav button{min-width:max-content}
+  .adminStandalone .adminSettingsPanel{border-radius:12px;overflow:hidden}
+  .adminStandalone .adminSettingsPanelHead,
+  .adminStandalone .adminSettingsFormGrid,
+  .adminStandalone .adminToggleList,
+  .adminStandalone .adminSettingsCards,
+  .adminStandalone .adminDownloadGrid,
+  .adminStandalone .adminSystemGrid{
+    padding-left:14px;
+    padding-right:14px;
+  }
+
+  .adminLoginPage.adminLoginPremium,
+  .adminLoginPage.adminLoginRefined{
+    display:block;
+    min-height:100svh;
+  }
+  .adminLoginPremium .adminLoginBrand,
+  .adminLoginRefined .adminLoginBrand{
+    min-height:auto!important;
+    padding:28px 18px 24px;
+  }
+  .adminLoginLogo{width:132px}
+  .adminLoginPremium .adminLoginBrand h1,
+  .adminLoginRefined .adminLoginStory h1{
+    margin-top:24px;
+    font-size:48px!important;
+  }
+  .adminLoginStory>p:not(.eyebrow){font-size:14px!important}
+  .adminLoginPremium .adminLoginPanel,
+  .adminLoginRefined .adminLoginPanel{
+    padding:22px 14px 34px!important;
+  }
+  .adminLoginCard,
+  .adminLoginCardRefined{
+    padding:26px 18px!important;
+    border-radius:12px;
+  }
+  .adminLoginCard h2,
+  .adminLoginCardRefined h2{font-size:43px}
+  .adminLoginCard input{font-size:16px}
+}
+
+@media(max-width:370px){
+  .adminStandalone .adminMetricsModern,
+  .adminStandalone .adminMetricsModern.adminMetricsFour,
+  .adminStandalone .adminMetricsModern.adminMetricsThree,
+  .adminStandalone .newsroomMetrics{grid-template-columns:1fr}
+  .adminStandalone .adminLeadTable .adminTableRow{grid-template-columns:1fr}
+  .adminStandalone .adminLeadTable .adminTableRow>div:first-child{grid-column:auto}
+}

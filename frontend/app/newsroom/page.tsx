@@ -3,15 +3,17 @@ import EditorialImage from '@/components/EditorialImage';
 import { getNews } from '@/lib/api';
 import { formatNewsDate, truncateText } from '@/lib/newsroom';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 export const metadata = { title: 'News' };
 
 export default async function Page() {
   let news: any[] = [];
+  let loadError = false;
   try {
     news = (await getNews(1, 30)).items;
   } catch {
-    news = [];
+    loadError = true;
   }
 
   return (
@@ -62,7 +64,9 @@ export default async function Page() {
           </div>
         ) : (
           <div className="newsroomEmptyCompact">
-            <p>No published updates yet. Publish from the administration portal and the story will appear here automatically.</p>
+            <p>{loadError
+              ? 'News updates are temporarily unavailable. Please refresh shortly; published stories remain stored and have not been removed.'
+              : 'No published updates yet. Publish from the administration portal and the story will appear here automatically.'}</p>
           </div>
         )}
       </section>

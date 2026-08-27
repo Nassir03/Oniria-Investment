@@ -4,7 +4,8 @@ import EditorialImage from '@/components/EditorialImage';
 import { getArticle } from '@/lib/api';
 import { formatNewsDate } from '@/lib/newsroom';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 function textFromNode(node: any): string {
   if (!node) return '';

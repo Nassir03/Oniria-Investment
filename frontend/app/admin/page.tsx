@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { AdminFrame, AdminState, getAdminAccessToken, readableRoles, useAdminSession, useProtectedData } from '@/components/AdminData';
 
-type PageResult<T> = { items: T[]; meta: { total: number } };
 type NewsItem = { id:string; title:string; status:string; updated_at:string };
 type Lead = { id:string; reference_no:string; first_name:string; last_name:string; status:string; created_at:string };
 type Analytics = {
@@ -13,6 +12,11 @@ type Analytics = {
   daily: { label:string; views:number; visitors:number }[];
   monthly: { label:string; views:number; visitors:number }[];
   top_pages: { path:string; views:number }[];
+};
+type Overview = {
+  news: { items: NewsItem[]; total: number | null };
+  leads: { items: Lead[]; total: number | null };
+  analytics: Analytics;
 };
 
 function labelPath(path:string) {
@@ -38,14 +42,17 @@ async function downloadReport(kind:'csv'|'xlsx') {
 }
 
 export default function Page() {
-  const news = useProtectedData<PageResult<NewsItem>>('/admin/news?page_size=5');
-  const leads = useProtectedData<PageResult<Lead>>('/admin/leads?page_size=5');
+  const overview = useProtectedData<Overview>('/admin/overview');
   const { profile } = useAdminSession();
-  const analytics = useProtectedData<Analytics>('/admin/analytics?days=30');
+  const analytics = overview.data?.analytics;
+  const news = overview.data?.news;
+  const leads = overview.data?.leads;
   const isAdmin = profile?.roles?.includes('admin');
-  const maxDaily = Math.max(1, ...(analytics.data?.daily.map((item)=>item.views) || [1]));
-  const recentDaily = analytics.data?.daily.slice(-14) || [];
-  const maxMonthly = Math.max(1, ...(analytics.data?.monthly.map((item)=>item.views) || [1]));
+  const canUseNewsroom = Boolean(profile?.roles?.some((role)=>['admin','editor','content_manager'].includes(role)));
+  const canUseLeads = Boolean(profile?.roles?.some((role)=>['admin','sales'].includes(role)));
+  const maxDaily = Math.max(1, ...(analytics?.daily.map((item)=>item.views) || [1]));
+  const recentDaily = analytics?.daily.slice(-14) || [];
+  const maxMonthly = Math.max(1, ...(analytics?.monthly.map((item)=>item.views) || [1]));
 
   return <AdminFrame title="Overview" kicker="ONIRIA administration">
     <section className="adminWelcomeStrip adminWelcomePremium">
@@ -56,11 +63,13 @@ export default function Page() {
       <p>Keep the team aligned, respond to new interest quickly and understand how people are engaging with ONIRIA online.</p>
     </section>
 
+    <AdminState loading={overview.loading} error={overview.error}/>
+
     <div className="adminMetrics adminMetricsModern adminMetricsFour">
-      <article><span>Website visits</span><strong>{analytics.data?.total_views ?? '—'}</strong><small>Last 30 days</small></article>
-      <article><span>Visitors</span><strong>{analytics.data?.unique_visitors ?? '—'}</strong><small>Last 30 days</small></article>
-      <article><span>Enquiries</span><strong>{leads.data?.meta?.total ?? '—'}</strong><small>Customer interest</small></article>
-      <article><span>Newsroom</span><strong>{news.data?.meta?.total ?? '—'}</strong><small>Published & draft stories</small></article>
+      <article><span>Website visits</span><strong>{analytics?.total_views ?? '—'}</strong><small>Last 30 days</small></article>
+      <article><span>Visitors</span><strong>{analytics?.unique_visitors ?? '—'}</strong><small>Last 30 days</small></article>
+      <article><span>Enquiries</span><strong>{leads?.total ?? '—'}</strong><small>{canUseLeads ? 'Customer interest' : 'Restricted access'}</small></article>
+      <article><span>Newsroom</span><strong>{news?.total ?? '—'}</strong><small>{canUseNewsroom ? 'Published & draft stories' : 'Restricted access'}</small></article>
     </div>
 
     <section className="adminAnalyticsGrid">
@@ -68,7 +77,6 @@ export default function Page() {
         <div className="adminPanelHead compact">
           <div><span>Audience activity</span><h2>Daily visits</h2></div><small>Recent 14 days</small>
         </div>
-        <AdminState loading={analytics.loading} error={analytics.error}/>
         <div className="adminBarChart" aria-label="Daily website visits">
           {recentDaily.length ? recentDaily.map((item)=><div className="adminBarItem" key={item.label} title={`${item.label}: ${item.views} visits`}>
             <span className="adminBarValue">{item.views}</span>
@@ -83,12 +91,12 @@ export default function Page() {
           <div><span>Longer view</span><h2>Monthly visits</h2></div><small>Up to 12 months</small>
         </div>
         <div className="adminMonthChart">
-          {(analytics.data?.monthly || []).slice(-12).map((item)=><div key={item.label} className="adminMonthRow">
+          {(analytics?.monthly || []).slice(-12).map((item)=><div key={item.label} className="adminMonthRow">
             <span>{new Date(`${item.label}-01T00:00:00`).toLocaleDateString('en-GB',{month:'short',year:'2-digit'})}</span>
             <div><i style={{width:`${Math.max(4,(item.views/maxMonthly)*100)}%`}} /></div>
             <strong>{item.views}</strong>
           </div>)}
-          {!analytics.loading && !analytics.data?.monthly.length ? <div className="adminChartEmpty">Monthly activity will build automatically over time.</div> : null}
+          {!overview.loading && !analytics?.monthly.length ? <div className="adminChartEmpty">Monthly activity will build automatically over time.</div> : null}
         </div>
       </article>
     </section>
@@ -96,11 +104,11 @@ export default function Page() {
     <section className="adminLowerGrid">
       <article className="adminPanel adminPanelModern adminPopularPanel">
         <div className="adminPanelHead"><div><span>Most viewed</span><h2>Popular pages</h2></div><small>Last 30 days</small></div>
-        {(analytics.data?.top_pages || []).map((item,index)=><div className="adminPopularRow" key={item.path}><span>{String(index+1).padStart(2,'0')}</span><strong>{labelPath(item.path)}</strong><b>{item.views}</b></div>)}
-        {!analytics.loading && !analytics.data?.top_pages.length ? <div className="adminNotice">Page activity will appear here as visitors use the website.</div> : null}
+        {(analytics?.top_pages || []).map((item,index)=><div className="adminPopularRow" key={item.path}><span>{String(index+1).padStart(2,'0')}</span><strong>{labelPath(item.path)}</strong><b>{item.views}</b></div>)}
+        {!overview.loading && !analytics?.top_pages.length ? <div className="adminNotice">Page activity will appear here as visitors use the website.</div> : null}
       </article>
 
-      <article className="adminPanel adminPanelModern adminReportsPanel">
+      {canUseLeads ? <article className="adminPanel adminPanelModern adminReportsPanel">
         <div className="adminPanelHead"><div><span>Reports</span><h2>Download enquiries</h2></div></div>
         <p className="adminPanelIntro">Take customer enquiry records with you for meetings, follow-up and internal reporting.</p>
         <div className="adminReportButtons">
@@ -108,26 +116,28 @@ export default function Page() {
           <button onClick={()=>void downloadReport('csv')}>CSV report <span>↓</span></button>
         </div>
         <div className="adminAccessSummary"><span>Your access</span><strong>{readableRoles(profile?.roles) || 'Staff member'}</strong></div>
-      </article>
+      </article> : <article className="adminPanel adminPanelModern adminReportsPanel">
+        <div className="adminPanelHead"><div><span>Your access</span><h2>Staff workspace</h2></div></div>
+        <p className="adminPanelIntro">Your dashboard only shows the areas assigned to your staff role.</p>
+        <div className="adminAccessSummary"><span>Responsibilities</span><strong>{readableRoles(profile?.roles) || 'Staff member'}</strong></div>
+      </article>}
     </section>
 
     <section className="adminQuickActions adminQuickActionsPremium">
-      <Link href="/admin/news" prefetch><span>01</span><div><small>Newsroom</small><strong>Create or publish an update</strong></div><b>↗</b></Link>
-      <Link href="/admin/leads" prefetch><span>02</span><div><small>Enquiries</small><strong>Review customer interest and follow-up</strong></div><b>↗</b></Link>
-      {isAdmin && <Link href="/admin/staff" prefetch><span>03</span><div><small>Team</small><strong>Add staff and manage access</strong></div><b>↗</b></Link>}
+      {canUseNewsroom && <Link href="/admin/news" prefetch={false}><span>01</span><div><small>Newsroom</small><strong>Create or publish an update</strong></div><b>↗</b></Link>}
+      {canUseLeads && <Link href="/admin/leads" prefetch={false}><span>02</span><div><small>Enquiries</small><strong>Review customer interest and follow-up</strong></div><b>↗</b></Link>}
+      {isAdmin && <Link href="/admin/staff" prefetch={false}><span>03</span><div><small>Team</small><strong>Add staff and manage access</strong></div><b>↗</b></Link>}
     </section>
 
     <div className="adminDashboardGrid adminDashboardGridModern">
-      <section className="adminPanel adminPanelModern">
-        <div className="adminPanelHead"><div><span>Recent enquiries</span><h2>Customer activity</h2></div><Link href="/admin/leads" prefetch>View all →</Link></div>
-        <AdminState loading={leads.loading} error={leads.error}/>
-        {leads.data?.items?.map((lead)=><div className="adminCompactRow" key={lead.id}><div><strong>{lead.first_name} {lead.last_name}</strong><span>{lead.reference_no}</span></div><span className="statusPill">{lead.status}</span></div>)}
-      </section>
-      <section className="adminPanel adminPanelModern">
-        <div className="adminPanelHead"><div><span>Latest stories</span><h2>Newsroom activity</h2></div><Link href="/admin/news" prefetch>Open newsroom →</Link></div>
-        <AdminState loading={news.loading} error={news.error}/>
-        {news.data?.items?.map((item)=><div className="adminCompactRow" key={item.id}><div><strong>{item.title}</strong><span>{new Date(item.updated_at).toLocaleDateString()}</span></div><span className="statusPill">{item.status}</span></div>)}
-      </section>
+      {canUseLeads && <section className="adminPanel adminPanelModern">
+        <div className="adminPanelHead"><div><span>Recent enquiries</span><h2>Customer activity</h2></div><Link href="/admin/leads" prefetch={false}>View all →</Link></div>
+        {leads?.items?.map((lead)=><div className="adminCompactRow" key={lead.id}><div><strong>{lead.first_name} {lead.last_name}</strong><span>{lead.reference_no}</span></div><span className="statusPill">{lead.status}</span></div>)}
+      </section>}
+      {canUseNewsroom && <section className="adminPanel adminPanelModern">
+        <div className="adminPanelHead"><div><span>Latest stories</span><h2>Newsroom activity</h2></div><Link href="/admin/news" prefetch={false}>Open newsroom →</Link></div>
+        {news?.items?.map((item)=><div className="adminCompactRow" key={item.id}><div><strong>{item.title}</strong><span>{new Date(item.updated_at).toLocaleDateString()}</span></div><span className="statusPill">{item.status}</span></div>)}
+      </section>}
     </div>
   </AdminFrame>;
 }

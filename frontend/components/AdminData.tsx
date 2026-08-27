@@ -183,9 +183,12 @@ async function loadAdminSession(force = false): Promise<AdminSessionSnapshot> {
 }
 
 export async function getAdminAccessToken(): Promise<string> {
-  const session = await loadAdminSession();
-  if (!session.token) throw new Error('Your staff session has expired. Please sign in again.');
-  return session.token;
+  if (adminSessionCache?.token) return adminSessionCache.token;
+  if (!supabase) throw new Error('Staff sign-in is not available yet. Please contact the administrator.');
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token || null;
+  if (!token) throw new Error('Your staff session has expired. Please sign in again.');
+  return token;
 }
 
 function staffInitials(profile?: StaffProfile | null) {
@@ -241,12 +244,13 @@ export function useAdminSession() {
   return { token, profile, loading, error };
 }
 
-const baseNav = [
-  ['/admin', 'Overview'],
-  ['/admin/news', 'Newsroom'],
-  ['/admin/leads', 'Enquiries'],
-  ['/admin/projects', 'Projects'],
-  ['/admin/settings', 'Settings'],
+const adminNav = [
+  { href: '/admin', label: 'Overview' },
+  { href: '/admin/news', label: 'Newsroom', roles: ['admin', 'editor', 'content_manager'] },
+  { href: '/admin/leads', label: 'Enquiries', roles: ['admin', 'sales'] },
+  { href: '/admin/projects', label: 'Projects' },
+  { href: '/admin/staff', label: 'Team', roles: ['admin'] },
+  { href: '/admin/settings', label: 'Settings' },
 ];
 
 export function AdminFrame({ title, kicker = 'Staff workspace', children }: { title: string; kicker?: string; children?: ReactNode }) {
@@ -286,15 +290,18 @@ export function AdminFrame({ title, kicker = 'Staff workspace', children }: { ti
 
   useEffect(() => {
     if (!token) return;
-    void refreshNotifications();
+    const initial = window.setTimeout(() => void refreshNotifications(), 1200);
     const timer = window.setInterval(() => void refreshNotifications(), 60000);
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearTimeout(initial);
+      window.clearInterval(timer);
+    };
   }, [token]);
 
   if (loading) return <main className="adminStandalone"><div className="adminLoading"><span className="adminPulse"/>Preparing your workspace…</div></main>;
-  if (error) return <main className="adminStandalone"><div className="adminErrorPanel"><p className="eyebrow gold">Staff access</p><h1>We could not open your workspace.</h1><p>{error}</p><Link className="button buttonNavy" href="/admin/login" prefetch>Return to sign in <span>→</span></Link></div></main>;
+  if (error) return <main className="adminStandalone"><div className="adminErrorPanel"><p className="eyebrow gold">Staff access</p><h1>We could not open your workspace.</h1><p>{error}</p><Link className="button buttonNavy" href="/admin/login" prefetch={false}>Return to sign in <span>→</span></Link></div></main>;
 
-  const nav = profile?.roles?.includes('admin') ? [...baseNav.slice(0, 4), ['/admin/staff', 'Team'], baseNav[4]] : baseNav;
+  const nav = adminNav.filter((item) => !item.roles || item.roles.some((role) => profile?.roles?.includes(role)));
 
   return <main className="adminStandalone">
     <div
@@ -305,13 +312,13 @@ export function AdminFrame({ title, kicker = 'Staff workspace', children }: { ti
       suppressHydrationWarning
     >
       <aside className="adminSidebar adminSidebarPremium">
-        <Link href="/admin" prefetch className="adminBrandLockup" aria-label="ONIRIA administration home">
+        <Link href="/admin" prefetch={false} className="adminBrandLockup" aria-label="ONIRIA administration home">
           <span className="wordmarkLogo adminBrandWordmark" aria-hidden="true" />
           <small>ADMINISTRATION</small>
         </Link>
-        <nav>{nav.map(([href,label], index)=><Link key={href} href={href} prefetch title={label} aria-label={label} className={path === href ? 'active' : ''}><span>{String(index + 1).padStart(2,'0')}</span>{label}</Link>)}</nav>
+        <nav aria-label="Administration sections">{nav.map((item, index)=><Link key={item.href} href={item.href} prefetch={false} title={item.label} aria-label={item.label} className={path === item.href ? 'active' : ''}><span>{String(index + 1).padStart(2,'0')}</span>{item.label}</Link>)}</nav>
         <div className="adminSidebarBottom">
-          <Link href="/admin/settings?section=profile" prefetch className="adminUser adminUserProfileLink" aria-label="Open your profile settings">
+          <Link href="/admin/settings?section=profile" prefetch={false} className="adminUser adminUserProfileLink" aria-label="Open your profile settings">
             <span className="adminSidebarAvatar">
               {profile?.avatar_url ? <img src={profile.avatar_url} alt="" onError={(event)=>{event.currentTarget.style.display='none';}} /> : null}
               <b>{staffInitials(profile)}</b>
@@ -349,7 +356,7 @@ export function AdminFrame({ title, kicker = 'Staff workspace', children }: { ti
                     <Link
                       key={item.id}
                       href={item.link || '/admin'}
-                      prefetch
+                      prefetch={false}
                       className={item.is_read ? '' : 'unread'}
                       onClick={() => {
                         setNotificationsOpen(false);

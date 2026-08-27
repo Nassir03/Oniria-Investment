@@ -14,7 +14,6 @@ export default function Page() {
 
   useEffect(() => {
     if (!supabase) return;
-    router.prefetch('/admin');
     void supabase.auth.getSession().then(({ data }) => { if (data.session) router.replace('/admin'); });
   }, [router]);
 
@@ -32,7 +31,6 @@ export default function Page() {
     setLoading(false);
     if (authError) setError(authError.message);
     else {
-      router.prefetch('/admin');
       router.replace('/admin');
     }
   }

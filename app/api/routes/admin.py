@@ -32,6 +32,59 @@ from fastapi.responses import StreamingResponse
 router = APIRouter(prefix='/admin', tags=['admin'])
 
 
+async def _analytics_summary(db: AsyncSession, days: int = 30):
+    now = datetime.now(timezone.utc)
+    start = now - timedelta(days=days - 1)
+    month_start = now - timedelta(days=365)
+
+    daily_rows = (await db.execute(
+        select(
+            cast(SiteVisit.created_at, Date).label('day'),
+            func.count(SiteVisit.id).label('views'),
+            func.count(func.distinct(SiteVisit.session_id)).label('visitors'),
+        )
+        .where(SiteVisit.created_at >= start)
+        .group_by(cast(SiteVisit.created_at, Date))
+        .order_by(cast(SiteVisit.created_at, Date))
+    )).all()
+
+    month_expr = func.date_trunc(literal_column("'month'"), SiteVisit.created_at)
+    monthly_rows = (await db.execute(
+        select(
+            month_expr.label('month'),
+            func.count(SiteVisit.id).label('views'),
+            func.count(func.distinct(SiteVisit.session_id)).label('visitors'),
+        )
+        .where(SiteVisit.created_at >= month_start)
+        .group_by(month_expr)
+        .order_by(month_expr)
+    )).all()
+
+    top_pages = (await db.execute(
+        select(SiteVisit.path, func.count(SiteVisit.id).label('views'))
+        .where(SiteVisit.created_at >= start)
+        .group_by(SiteVisit.path)
+        .order_by(func.count(SiteVisit.id).desc())
+        .limit(6)
+    )).all()
+
+    totals = (await db.execute(
+        select(
+            func.count(SiteVisit.id).label('views'),
+            func.count(func.distinct(SiteVisit.session_id)).label('visitors'),
+        ).where(SiteVisit.created_at >= start)
+    )).one()
+
+    return {
+        'period_days': days,
+        'total_views': totals.views or 0,
+        'unique_visitors': totals.visitors or 0,
+        'daily': [{'label': row.day.isoformat(), 'views': row.views, 'visitors': row.visitors} for row in daily_rows],
+        'monthly': [{'label': row.month.strftime('%Y-%m'), 'views': row.views, 'visitors': row.visitors} for row in monthly_rows],
+        'top_pages': [{'path': row.path, 'views': row.views} for row in top_pages],
+    }
+
+
 @router.get('/me', response_model=CurrentStaff)
 async def me(db: AsyncSession = Depends(get_db), staff: StaffPrincipal = Depends(get_current_staff)):
     profile = await db.scalar(select(Profile).where(Profile.id == staff.id))
@@ -118,6 +171,69 @@ async def admin_notifications_read_all(
 ):
     await mark_all_notifications_read(db, staff.id)
     return Response(status_code=204)
+
+
+@router.get('/overview')
+async def admin_overview(
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(get_current_staff),
+):
+    news_items = []
+    news_total = None
+    if staff.roles.intersection({'admin', 'editor', 'content_manager'}):
+        rows = (await db.execute(
+            select(
+                NewsArticle.id,
+                NewsArticle.title,
+                NewsArticle.status,
+                NewsArticle.updated_at,
+                func.count().over().label('total'),
+            )
+            .where(NewsArticle.deleted_at.is_(None))
+            .order_by(NewsArticle.updated_at.desc())
+            .limit(5)
+        )).all()
+        news_total = int(rows[0].total) if rows else 0
+        news_items = [
+            {'id': row.id, 'title': row.title, 'status': row.status, 'updated_at': row.updated_at}
+            for row in rows
+        ]
+
+    lead_items = []
+    lead_total = None
+    if staff.roles.intersection({'admin', 'sales'}):
+        rows = (await db.execute(
+            select(
+                Lead.id,
+                Lead.reference_no,
+                Lead.first_name,
+                Lead.last_name,
+                Lead.status,
+                Lead.created_at,
+                func.count().over().label('total'),
+            )
+            .where(Lead.deleted_at.is_(None))
+            .order_by(Lead.created_at.desc())
+            .limit(5)
+        )).all()
+        lead_total = int(rows[0].total) if rows else 0
+        lead_items = [
+            {
+                'id': row.id,
+                'reference_no': row.reference_no,
+                'first_name': row.first_name,
+                'last_name': row.last_name,
+                'status': row.status,
+                'created_at': row.created_at,
+            }
+            for row in rows
+        ]
+
+    return {
+        'news': {'items': news_items, 'total': news_total},
+        'leads': {'items': lead_items, 'total': lead_total},
+        'analytics': await _analytics_summary(db, 30),
+    }
 
 
 @router.get('/staff', response_model=list[StaffOut])
@@ -378,58 +494,7 @@ async def admin_analytics(
     db: AsyncSession = Depends(get_db),
     _: StaffPrincipal = Depends(require_roles('admin','sales','editor','content_manager')),
 ):
-    now = datetime.now(timezone.utc)
-    start = now - timedelta(days=days - 1)
-    month_start = now - timedelta(days=365)
-
-    daily_rows = (await db.execute(
-        select(
-            cast(SiteVisit.created_at, Date).label('day'),
-            func.count(SiteVisit.id).label('views'),
-            func.count(func.distinct(SiteVisit.session_id)).label('visitors'),
-        )
-        .where(SiteVisit.created_at >= start)
-        .group_by(cast(SiteVisit.created_at, Date))
-        .order_by(cast(SiteVisit.created_at, Date))
-    )).all()
-
-    # Use a literal SQL date-trunc unit so PostgreSQL sees the exact same
-    # expression in SELECT/GROUP BY/ORDER BY. Parameterising 'month' in each
-    # clause can produce separate bind parameters and PostgreSQL then rejects
-    # the grouping even though the expressions look equivalent.
-    month_expr = func.date_trunc(literal_column("'month'"), SiteVisit.created_at)
-    monthly_rows = (await db.execute(
-        select(
-            month_expr.label('month'),
-            func.count(SiteVisit.id).label('views'),
-            func.count(func.distinct(SiteVisit.session_id)).label('visitors'),
-        )
-        .where(SiteVisit.created_at >= month_start)
-        .group_by(month_expr)
-        .order_by(month_expr)
-    )).all()
-
-    top_pages = (await db.execute(
-        select(SiteVisit.path, func.count(SiteVisit.id).label('views'))
-        .where(SiteVisit.created_at >= start)
-        .group_by(SiteVisit.path)
-        .order_by(func.count(SiteVisit.id).desc())
-        .limit(6)
-    )).all()
-
-    total_views = await db.scalar(select(func.count()).select_from(SiteVisit).where(SiteVisit.created_at >= start)) or 0
-    unique_visitors = await db.scalar(
-        select(func.count(func.distinct(SiteVisit.session_id))).where(SiteVisit.created_at >= start)
-    ) or 0
-
-    return {
-        'period_days': days,
-        'total_views': total_views,
-        'unique_visitors': unique_visitors,
-        'daily': [{'label': row.day.isoformat(), 'views': row.views, 'visitors': row.visitors} for row in daily_rows],
-        'monthly': [{'label': row.month.strftime('%Y-%m'), 'views': row.views, 'visitors': row.visitors} for row in monthly_rows],
-        'top_pages': [{'path': row.path, 'views': row.views} for row in top_pages],
-    }
+    return await _analytics_summary(db, days)
 
 
 async def _lead_export_rows(db: AsyncSession):

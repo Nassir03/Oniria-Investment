@@ -1,9 +1,9 @@
 'use client';
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
-import { AdminFrame, AdminState, getAdminAccessToken } from '@/components/AdminData';
+import { AdminFrame, AdminState, getAdminAccessToken, useAdminSession } from '@/components/AdminData';
 import EditorialImage from '@/components/EditorialImage';
-import { authFetch, getArticle } from '@/lib/api';
+import { authFetch } from '@/lib/api';
 
 type News = {
   id:string;
@@ -58,6 +58,20 @@ export default function Page() {
   const [creating,setCreating]=useState(false);
   const [uploadingImage,setUploadingImage]=useState(false);
   const [uploadedImageUrl,setUploadedImageUrl]=useState('');
+  const { profile } = useAdminSession();
+  const canPublish = Boolean(profile?.roles?.some((role)=>role === 'admin' || role === 'editor'));
+  const canDelete = Boolean(profile?.roles?.includes('admin'));
+
+  function upsertArticle(article: News, isNew = false) {
+    setData((current) => {
+      if (!current) return { items: [article], meta: { total: 1 } };
+      const exists = current.items.some((item) => item.id === article.id);
+      return {
+        items: [article, ...current.items.filter((item) => item.id !== article.id)],
+        meta: { total: current.meta.total + (isNew && !exists ? 1 : 0) },
+      };
+    });
+  }
 
   const load=useCallback(async()=>{
     setLoading(true);setError('');
@@ -102,36 +116,40 @@ export default function Page() {
       const access=await getAdminAccessToken();
       if(editing){
         const updated=await authFetch<News>(`/admin/news/${editing.id}`,access,{method:'PATCH',body:JSON.stringify(payload)});
-        setEditing(updated);setNotice('Newsroom article saved.');
+        upsertArticle(updated);
+        setEditing(updated);
+        setUploadedImageUrl(updated.hero_image_url || '');
+        setNotice(updated.status === 'published' ? 'Changes saved. The public Newsroom will use this updated version immediately.' : 'Newsroom article saved.');
       }else{
         const created=await authFetch<News>('/admin/news',access,{method:'POST',body:JSON.stringify({...payload,category_ids:[]})});
-        setEditing(created);setCreating(false);setNotice('Draft article created.');
+        upsertArticle(created, true);
+        setEditing(created);
+        setCreating(false);
+        setUploadedImageUrl(created.hero_image_url || '');
+        setNotice('Draft article created.');
       }
-      await load();
     }catch(err){setError(err instanceof Error?err.message:'Unable to save article.');}
     finally{setSaving(false);}
   }
 
   async function action(item:News,kind:'publish'|'unpublish'|'archive'){
-    if(kind==='archive'&&!window.confirm(`Archive “${item.title}”?`))return;
+    if(kind==='archive'&&!window.confirm(`Delete “${item.title}”? It will be removed from the public Newsroom.`))return;
     setSaving(true);setError('');setNotice('');
     try{
       const access=await getAdminAccessToken();
       if(kind==='archive') {
         await authFetch<void>(`/admin/news/${item.id}`,access,{method:'DELETE'});
-        setNotice('Article archived.');
+        setData((current) => current ? { items: current.items.filter((entry)=>entry.id !== item.id), meta: { total: Math.max(0, current.meta.total - 1) } } : current);
+        setNotice('Article deleted from the Newsroom.');
       } else {
         const updated = await authFetch<News>(`/admin/news/${item.id}/${kind}`,access,{method:'POST'});
-        if (kind === 'publish') {
-          // Verify that the public endpoint can immediately read the published record.
-          await getArticle(updated.slug);
-          setNotice('Published and verified — this story is now live on the public Newsroom.');
-        } else {
-          setNotice('Moved back to draft.');
-        }
+        upsertArticle(updated);
+        if (editing?.id === item.id) setEditing(updated);
+        setNotice(kind === 'publish'
+          ? 'Published — this story is live and will remain visible until an administrator unpublishes or deletes it.'
+          : 'Moved back to draft and removed from the public Newsroom.');
       }
-      if(editing?.id===item.id)setEditing(null);
-      await load();
+      if(kind === 'archive' && editing?.id===item.id){setEditing(null);setUploadedImageUrl('');}
     }catch(err){setError(err instanceof Error?err.message:'Newsroom action failed.');}
     finally{setSaving(false);}
   }
@@ -140,12 +158,12 @@ export default function Page() {
   return <AdminFrame title="Newsroom" kicker="Editorial publishing">
     <div className="adminMetrics adminMetricsModern newsroomMetrics">
       <article><span>All stories</span><strong>{data?.meta.total??'—'}</strong><small>Draft and published</small></article>
-      <article><span>Live stories</span><strong>{published||'—'}</strong><small>Live on the public website</small></article>
-      <article><span>In preparation</span><strong>{drafts||'—'}</strong><small>Ready for review</small></article>
+      <article><span>Live stories</span><strong>{loading&&!data?'—':published}</strong><small>Live on the public website</small></article>
+      <article><span>In preparation</span><strong>{loading&&!data?'—':drafts}</strong><small>Ready for review</small></article>
     </div>
 
     <div className="adminEditorialToolbar">
-      <div><p className="eyebrow">Newsroom planning</p><h2>Shape the story. Share it with confidence.</h2><p>Published stories appear automatically in the public ONIRIA Newsroom and can also feature on the homepage.</p></div>
+      <div><p className="eyebrow">Newsroom planning</p><h2>Shape the story. Share it with confidence.</h2><p>Published stories appear automatically in the public ONIRIA Newsroom and stay live until an authorised administrator unpublishes or deletes them.</p></div>
       <button className="adminPrimaryButton" onClick={()=>{setEditing(null);setUploadedImageUrl('');setCreating(true);}}>New article <span>＋</span></button>
     </div>
 
@@ -172,9 +190,9 @@ export default function Page() {
             </span>
           </button>
           <div className="adminNewsActions">
-            {item.status==='published'?<button onClick={()=>action(item,'unpublish')} disabled={saving}>Unpublish</button>:<button onClick={()=>action(item,'publish')} disabled={saving}>Publish</button>}
-            <a href={`/newsroom/${item.slug}`} target="_blank" rel="noreferrer">Preview ↗</a>
-            <button className="danger" onClick={()=>action(item,'archive')} disabled={saving}>Archive</button>
+            {canPublish ? (item.status==='published'?<button onClick={()=>action(item,'unpublish')} disabled={saving}>Unpublish</button>:<button onClick={()=>action(item,'publish')} disabled={saving}>Publish</button>) : null}
+            {item.status === 'published' ? <a href={`/newsroom/${item.slug}`} target="_blank" rel="noreferrer">View live ↗</a> : null}
+            {canDelete ? <button className="danger" onClick={()=>action(item,'archive')} disabled={saving}>Delete</button> : null}
           </div>
         </article>)}
       </section>
@@ -190,7 +208,7 @@ export default function Page() {
             <div className="adminImageUploadCopy">
               <span>Story image</span>
               <strong>Add a strong visual for this story.</strong>
-              <p>Use a clear landscape image so the article looks polished across the homepage and Newsroom. JPG, PNG, WEBP or AVIF · maximum 10 MB.</p>
+              <p>Use a clear landscape image so the article looks polished across the public Newsroom. JPG, PNG, WEBP or AVIF · maximum 10 MB.</p>
             </div>
             <label className="adminUploadButton">
               <input
@@ -212,7 +230,7 @@ export default function Page() {
             <label><span>SEO title</span><input name="seo_title" maxLength={70} defaultValue={formItem?.seo_title||''} /></label>
             <label><span>Meta description</span><input name="meta_description" maxLength={180} defaultValue={formItem?.meta_description||''} /></label>
           </div>
-          <div className="adminEditorFooter"><span>Save as draft, then publish when approved.</span><button className="adminPrimaryButton" disabled={saving}>{saving?'Saving…':formItem?'Save changes':'Create draft'} <span>→</span></button></div>
+          <div className="adminEditorFooter"><span>{formItem?.status==='published'?'Saving changes keeps this story published.':'Save as draft, then publish when approved.'}</span><button className="adminPrimaryButton" disabled={saving}>{saving?'Saving…':formItem?'Save changes':'Create draft'} <span>→</span></button></div>
         </form>
       </section>}
     </div>

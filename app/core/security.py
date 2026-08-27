@@ -62,11 +62,16 @@ async def get_current_staff(
     except Exception as exc:
         raise AppError('invalid_token', 'Authentication token subject is invalid.', 401) from exc
 
-    profile = await db.scalar(select(Profile).where(Profile.id == user_id))
+    rows = (await db.execute(
+        select(Profile, StaffRoleAssignment.role)
+        .outerjoin(StaffRoleAssignment, StaffRoleAssignment.user_id == Profile.id)
+        .where(Profile.id == user_id)
+    )).all()
+    profile = rows[0][0] if rows else None
     if not profile or profile.status != 'active':
         raise AppError('staff_not_active', 'This staff account is not active.', 403)
 
-    roles = set((await db.scalars(select(StaffRoleAssignment.role).where(StaffRoleAssignment.user_id == user_id))).all())
+    roles = {role for _, role in rows if role}
     if not roles:
         raise AppError('staff_role_required', 'This account has no staff permissions.', 403)
 

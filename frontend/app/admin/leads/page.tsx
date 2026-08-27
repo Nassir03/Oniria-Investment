@@ -50,7 +50,7 @@ export default function Page() {
     {data?.items?.length ? <div className="adminTable adminTablePremium adminLeadTable">
       <div className="adminTableHead"><span>Customer</span><span>Reference</span><span>Interest</span><span>Date</span><span>Status</span></div>
       {data.items.map((lead)=><article className="adminLeadEntry" key={lead.id}>
-        <div className="adminTableRow"><div><strong>{lead.first_name} {lead.last_name}</strong><small>{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}</small></div><span>{lead.reference_no}</span><span>{lead.enquiry_type || 'General'}</span><span>{new Date(lead.created_at).toLocaleDateString('en-GB')}</span><span className="statusPill">{lead.status.replaceAll('_',' ')}</span></div>
+        <div className="adminTableRow"><div data-label="Customer"><strong>{lead.first_name} {lead.last_name}</strong><small>{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}</small></div><span data-label="Reference">{lead.reference_no}</span><span data-label="Interest">{lead.enquiry_type || 'General'}</span><span data-label="Date">{new Date(lead.created_at).toLocaleDateString('en-GB')}</span><span className="statusPill" data-label="Status">{lead.status.replaceAll('_',' ')}</span></div>
         <div className="adminLeadMessage"><span>Message</span><p>{lead.message}</p></div>
       </article>)}
     </div> : null}
