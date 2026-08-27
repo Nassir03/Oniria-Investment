@@ -31,7 +31,7 @@ export default function HomeHero() {
 
         <div className="heroActions heroActionsSingle">
           <Link href="/projects" prefetch className="button buttonLight">
-            Explore Our projects <span>↗</span>
+            Explore Our projects 
           </Link>
         </div>
       </motion.div>
