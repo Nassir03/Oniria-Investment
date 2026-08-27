@@ -8276,3 +8276,301 @@ body,
   display:block;
   white-space:nowrap;
 }
+
+/* =========================================================
+   AUG 27, 2026 — PROJECT IMAGE VISIBILITY REFINEMENT
+   Show the complete supplied project artwork without cover-cropping or
+   hover zoom. This applies to the Projects list, Home collection and
+   individual project hero images while preserving all existing links/data.
+   ========================================================= */
+
+/* Projects listing: keep the reference left-image/right-copy composition,
+   but use a calmer 3:2 presentation frame and reveal the complete image. */
+.businessPremiumProjectsNoIntro .projectEditorialRow,
+.businessPremiumProjectsNoIntro .projectEditorialRow.reverse{
+  grid-template-columns:minmax(0,1.35fr) minmax(300px,.92fr);
+  column-gap:clamp(42px,5vw,70px);
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialMedia{
+  width:100%;
+  max-width:640px;
+  aspect-ratio:3 / 2;
+  justify-self:start;
+  background:transparent;
+  overflow:hidden;
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialMedia>img{
+  object-fit:contain;
+  object-position:center;
+  transform:none!important;
+}
+
+.businessPremiumProjectsNoIntro .projectEditorialRow:hover .projectEditorialMedia>img{
+  transform:none!important;
+}
+
+/* Home collection: use the newly supplied project images and give each card
+   a dedicated image stage. The text remains beneath it rather than covering
+   important parts of the artwork. */
+.homeCollectionPremiumGrid{
+  align-items:start;
+}
+
+.homeCollectionPremiumCard,
+.homeCollectionPremiumCardStatic{
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  height:auto;
+  background:var(--navy);
+}
+
+.homeCollectionPremiumMedia{
+  position:relative;
+  inset:auto;
+  width:100%;
+  aspect-ratio:3 / 2;
+  flex:0 0 auto;
+  background:var(--page-ivory,#EDE9E5);
+  overflow:hidden;
+}
+
+.homeCollectionPremiumMedia img{
+  object-fit:contain;
+  object-position:center;
+  transform:none!important;
+  transition:none;
+}
+
+.homeCollectionPremiumCard:hover .homeCollectionPremiumMedia img,
+.homeCollectionPremiumCardStatic:hover .homeCollectionPremiumMedia img{
+  transform:none!important;
+}
+
+.homeCollectionPremiumShade{
+  display:none;
+}
+
+.homeCollectionPremiumBody{
+  position:relative;
+  min-height:138px;
+  padding:20px 20px 19px;
+  justify-content:space-between;
+  background:var(--navy);
+}
+
+.homeCollectionPremiumBody h4{
+  color:#fff9ef;
+}
+
+.homeCollectionPremiumBody p{
+  color:rgba(243,233,214,.92);
+}
+
+/* Individual project pages: do not enlarge/crop the supplied artwork. */
+.projectDetailHero>img{
+  object-fit:contain;
+  object-position:center;
+}
+
+.projectDetailHero{
+  background:#101c29;
+}
+
+@media(max-width:1200px){
+  .homeCollectionPremiumCard,
+  .homeCollectionPremiumBody{
+    min-height:0;
+  }
+  .homeCollectionPremiumBody{
+    min-height:132px;
+  }
+}
+
+@media(max-width:900px){
+  .businessPremiumProjectsNoIntro .projectEditorialMedia{
+    max-width:none;
+    aspect-ratio:3 / 2;
+    min-height:0;
+  }
+}
+
+@media(max-width:700px){
+  .homeCollectionPremiumCard,
+  .homeCollectionPremiumBody{
+    min-height:0;
+  }
+  .homeCollectionPremiumBody{
+    min-height:126px;
+  }
+}
+
+@media(max-width:620px){
+  .businessPremiumProjectsNoIntro .projectEditorialMedia{
+    aspect-ratio:3 / 2;
+    min-height:0;
+  }
+}
+
+/* =========================================================
+   AUG 27, 2026 — HOME PROJECT CARDS / LIGHT EDITORIAL BODY
+   Remove the navy panel beneath each project image while preserving the
+   complete-image `contain` presentation, card sizing, links and behavior.
+   ========================================================= */
+.homeCollectionPremiumCard,
+.homeCollectionPremiumCardStatic{
+  background:var(--page-ivory,#EDE9E5);
+}
+
+.homeCollectionPremiumBody{
+  background:var(--page-ivory,#EDE9E5);
+  color:var(--navy);
+}
+
+.homeCollectionPremiumBody h4{
+  color:var(--navy);
+}
+
+.homeCollectionPremiumBody p{
+  color:var(--oniria-gold,var(--taupe));
+}
+
+.homeCollectionPremiumAction{
+  color:var(--navy);
+}
+
+/* =========================================================
+   AUG 27, 2026 — HOME COLLECTION / FULL-IMAGE CARDS
+   Keep each project as an image-led card with the text over the image.
+   No separate coloured panel is used beneath the artwork.
+   ========================================================= */
+.homeCollectionPremiumGrid{
+  align-items:stretch;
+}
+
+.homeCollectionPremiumCard,
+.homeCollectionPremiumCardStatic{
+  position:relative;
+  display:block;
+  width:100%;
+  min-height:0;
+  height:auto;
+  aspect-ratio:0.64 / 1;
+  overflow:hidden;
+  border-radius:16px;
+  background:transparent;
+}
+
+.homeCollectionPremiumMedia{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  aspect-ratio:auto;
+  background:transparent;
+  overflow:hidden;
+}
+
+.homeCollectionPremiumMedia img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center center;
+  transform:none!important;
+  transition:none;
+}
+
+.homeCollectionPremiumCard1 .homeCollectionPremiumMedia img{
+  object-position:center center;
+}
+
+.homeCollectionPremiumCard2 .homeCollectionPremiumMedia img{
+  object-position:center center;
+}
+
+.homeCollectionPremiumCard3 .homeCollectionPremiumMedia img{
+  object-position:center center;
+}
+
+.homeCollectionPremiumCard4 .homeCollectionPremiumMedia img{
+  object-position:center center;
+}
+
+.homeCollectionPremiumCard:hover .homeCollectionPremiumMedia img,
+.homeCollectionPremiumCardStatic:hover .homeCollectionPremiumMedia img{
+  transform:none!important;
+}
+
+.homeCollectionPremiumShade{
+  display:block;
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    180deg,
+    rgba(3,18,35,0) 42%,
+    rgba(3,18,35,.18) 62%,
+    rgba(3,18,35,.72) 100%
+  );
+  pointer-events:none;
+}
+
+.homeCollectionPremiumBody{
+  position:absolute;
+  z-index:2;
+  inset:0;
+  min-height:0;
+  padding:0 28px 27px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  gap:12px;
+  background:transparent;
+  color:#fff9ef;
+}
+
+.homeCollectionPremiumBody h4{
+  color:#fff9ef;
+}
+
+.homeCollectionPremiumBody p{
+  color:rgba(243,233,214,.94);
+}
+
+.homeCollectionPremiumAction{
+  color:#fff9ef;
+}
+
+@media(max-width:1200px){
+  .homeCollectionPremiumCard,
+  .homeCollectionPremiumCardStatic{
+    min-height:0;
+    aspect-ratio:0.7 / 1;
+  }
+
+  .homeCollectionPremiumBody{
+    min-height:0;
+    padding:0 22px 23px;
+  }
+}
+
+@media(max-width:900px){
+  .homeCollectionPremiumCard,
+  .homeCollectionPremiumCardStatic{
+    aspect-ratio:4 / 5;
+  }
+}
+
+@media(max-width:700px){
+  .homeCollectionPremiumCard,
+  .homeCollectionPremiumCardStatic{
+    min-height:0;
+    aspect-ratio:4 / 5;
+  }
+
+  .homeCollectionPremiumBody{
+    min-height:0;
+    padding:0 20px 22px;
+  }
+}

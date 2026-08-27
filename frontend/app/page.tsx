@@ -8,28 +8,28 @@ const collection = [
   {
     name: 'ONIRIA Stone Town',
     descriptor: 'Heritage Hospitality',
-    image: '/images/stone-town-restaurant.jpg',
+    image: '/images/oniria-stone-town-attached.png',
     href: '',
     external: false,
   },
   {
     name: 'ONIRIA Michamvi',
     descriptor: 'Wellness · Nature · Longevity',
-    image: '/images/michamvi-concept.jpg',
+    image: '/images/oniria-michamvi-attached.png',
     href: '',
     external: false,
   },
   {
     name: 'ONA Towers',
     descriptor: 'Landmark Residences',
-    image: '/images/ona-tower.webp',
+    image: '/images/ona-towers-attached.png',
     href: '',
     external: false,
   },
   {
     name: 'V Town',
     descriptor: 'The Art of Living',
-    image: '/images/v-town-villa.webp',
+    image: '/images/v-town-attached.png',
     href: 'https://oniria-city-2hez.vercel.app/',
     external: true,
   },
@@ -73,6 +73,7 @@ export default function Home() {
                       src={project.image}
                       alt={`${project.name} project image`}
                       fill
+                      quality={92}
                       sizes="(max-width: 700px) 100vw, (max-width: 1200px) 50vw, 25vw"
                     />
                     <div className="homeCollectionPremiumShade" />

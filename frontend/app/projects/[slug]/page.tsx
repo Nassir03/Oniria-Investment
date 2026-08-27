@@ -19,20 +19,20 @@ const fallbackDetails: Record<string, Detail> = {
     subheading: 'Heritage Hospitality',
     summary:
       'A hospitality-led ONIRIA concept where heritage character, warm materiality and contemporary guest experience meet. First AI boutique hotel in the heart of Stone Town.',
-    hero: '/images/stone-town-restaurant.jpg',
+    hero: '/images/oniria-stone-town-attached.png',
   },
   'oniria-michamvi': {
     name: 'ONIRIA Michamvi',
     subheading: 'Wellness · Nature · Longevity',
     summary: 'A coastal destination concept focused on wellness, rejuvenation and longevity.',
-    hero: '/images/michamvi-concept.jpg',
+    hero: '/images/oniria-michamvi-attached.png',
   },
   'ona-towers': {
     name: 'ONA Towers',
     subheading: 'Landmark Residences',
     summary:
       'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
-    hero: '/images/outside-ona-tower.jpg',
+    hero: '/images/ona-towers-attached.png',
   },
 };
 

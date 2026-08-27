@@ -86,10 +86,10 @@ function projectHref(slug: string) {
 }
 
 const stableProjectHero: Record<string, string> = {
-  'oniria-stone-town': '/images/stone-town-restaurant.jpg',
-  'oniria-michamvi': '/images/michamvi-concept.jpg',
-  'ona-towers': '/images/outside-ona-tower.jpg',
-  'v-town': '/images/v-town-villa.webp',
+  'oniria-stone-town': '/images/oniria-stone-town-attached.png',
+  'oniria-michamvi': '/images/oniria-michamvi-attached.png',
+  'ona-towers': '/images/ona-towers-attached.png',
+  'v-town': '/images/v-town-attached.png',
 };
 
 function projectHero(slug: string, mediaUrl?: string | null, fallback?: string) {
@@ -153,7 +153,8 @@ export default async function Page() {
                       src={hero}
                       alt={project.media?.[0]?.alt_text || `${displayName} project`}
                       fill
-                      sizes="(max-width: 900px) 100vw, 58vw"
+                      quality={92}
+                      sizes="(max-width: 900px) calc(100vw - 44px), 640px"
                     />
                   </div>
 
