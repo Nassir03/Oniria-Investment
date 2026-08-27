@@ -32,8 +32,8 @@ export default function Page() {
     <main className="publicPage vision2026Page">
       <section className="vision2026HeroEditorial vision2026HeroImage">
         <Image
-          src="/images/vision-ocean.webp"
-          alt="Oceanfront ONIRIA destination vision in Zanzibar"
+          src="/images/restaurant-vision-attached.png"
+          alt="ONIRIA restaurant and lounge interior with warm lighting"
           fill
           priority
           sizes="100vw"

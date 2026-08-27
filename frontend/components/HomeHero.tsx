@@ -11,8 +11,8 @@ export default function HomeHero() {
     <section className="homeHero homeHeroSingle" aria-label="ONIRIA Investments introduction">
       <div className="homeHeroMedia">
         <Image
-          src="/images/oniria-home-hero.webp"
-          alt="ONIRIA hospitality interior in Zanzibar"
+          src="/images/home-page-light-attached.png"
+          alt="Oceanfront ONIRIA residence with pool and palm trees"
           fill
           priority
           sizes="100vw"
