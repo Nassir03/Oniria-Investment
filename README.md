@@ -131,7 +131,6 @@ Public routes:
 - `/`
 - `/our-story`
 - `/projects`
-- `/projects/[slug]`
 - `/business`
 - `/newsroom`
 - `/newsroom/[slug]`

@@ -9,6 +9,13 @@ export function resolveNewsImageUrl(src?: string | null): string | null {
   try {
     const url = new URL(value);
 
+    // Older local records may contain an absolute backend media URL. Route
+    // those through the frontend so the image keeps working when the site
+    // host changes and the browser never depends on localhost directly.
+    if ((url.hostname === '127.0.0.1' || url.hostname === 'localhost') && url.pathname.startsWith('/media/')) {
+      return url.pathname;
+    }
+
     if (url.hostname.includes('drive.google.com')) {
       const fileMatch = url.pathname.match(/\/file\/d\/([^/]+)/i);
       if (fileMatch?.[1]) {

@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 const socialLinks = [
   {
     label: 'WhatsApp',
@@ -45,8 +47,10 @@ export default function Footer() {
     <footer className="siteFooter compactFooter">
       <div className="compactFooterTop">
         <div className="compactFooterBrand">
-          <strong>ONIRIA Investments</strong>
-          <span>Creating places with lasting presence.</span>
+          <Link href="/" prefetch className="footerWordmark" aria-label="ONIRIA Investments home">
+            <span className="wordmarkLogo" aria-hidden="true" />
+          </Link>
+          <span>We create what does not exist yet</span>
         </div>
 
         <div className="compactFooterRight">

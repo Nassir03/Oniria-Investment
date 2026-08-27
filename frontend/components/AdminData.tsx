@@ -130,6 +130,64 @@ export function readableRoles(roles?: string[]) {
   return (roles || []).map((role) => roleLabels[role] || role).join(' · ');
 }
 
+
+type AdminSessionSnapshot = {
+  token: string | null;
+  profile: StaffProfile | null;
+  error: string;
+  loadedAt: number;
+};
+
+let adminSessionCache: AdminSessionSnapshot | null = null;
+let adminSessionPromise: Promise<AdminSessionSnapshot> | null = null;
+const ADMIN_SESSION_CACHE_MS = 30_000;
+
+function clearAdminSessionCache() {
+  adminSessionCache = null;
+  adminSessionPromise = null;
+}
+
+async function loadAdminSession(force = false): Promise<AdminSessionSnapshot> {
+  const now = Date.now();
+  if (!force && adminSessionCache && now - adminSessionCache.loadedAt < ADMIN_SESSION_CACHE_MS) {
+    return adminSessionCache;
+  }
+  if (!force && adminSessionPromise) return adminSessionPromise;
+
+  adminSessionPromise = (async () => {
+    if (!supabase) {
+      return { token: null, profile: null, error: 'Staff sign-in is not available yet. Please contact the administrator.', loadedAt: Date.now() };
+    }
+    const { data } = await supabase.auth.getSession();
+    const accessToken = data.session?.access_token || null;
+    if (!accessToken) return { token: null, profile: null, error: '', loadedAt: Date.now() };
+    try {
+      const profile = await authFetch<StaffProfile>('/admin/me', accessToken);
+      return { token: accessToken, profile, error: '', loadedAt: Date.now() };
+    } catch (err) {
+      return {
+        token: accessToken,
+        profile: null,
+        error: err instanceof Error ? err.message : 'Unable to verify your staff access.',
+        loadedAt: Date.now(),
+      };
+    }
+  })();
+
+  try {
+    adminSessionCache = await adminSessionPromise;
+    return adminSessionCache;
+  } finally {
+    adminSessionPromise = null;
+  }
+}
+
+export async function getAdminAccessToken(): Promise<string> {
+  const session = await loadAdminSession();
+  if (!session.token) throw new Error('Your staff session has expired. Please sign in again.');
+  return session.token;
+}
+
 function staffInitials(profile?: StaffProfile | null) {
   const source = profile?.full_name || profile?.email || 'ONIRIA Staff';
   return source
@@ -142,39 +200,39 @@ function staffInitials(profile?: StaffProfile | null) {
 
 export function useAdminSession() {
   const router = useRouter();
-  const [token, setToken] = useState<string | null>(null);
-  const [profile, setProfile] = useState<StaffProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [token, setToken] = useState<string | null>(adminSessionCache?.token || null);
+  const [profile, setProfile] = useState<StaffProfile | null>(adminSessionCache?.profile || null);
+  const [loading, setLoading] = useState(!adminSessionCache);
+  const [error, setError] = useState(adminSessionCache?.error || '');
 
   useEffect(() => {
-    void (async () => {
-      if (!supabase) {
-        setError('Staff sign-in is not available yet. Please contact the administrator.');
-        setLoading(false);
-        return;
-      }
-      const { data } = await supabase.auth.getSession();
-      const accessToken = data.session?.access_token;
-      if (!accessToken) {
-        router.replace('/admin/login');
-        return;
-      }
-      setToken(accessToken);
-      try {
-        setProfile(await authFetch<StaffProfile>('/admin/me', accessToken));
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unable to verify your staff access.');
-      } finally {
-        setLoading(false);
-      }
-    })();
+    let active = true;
+    void loadAdminSession().then((session) => {
+      if (!active) return;
+      setToken(session.token);
+      setProfile(session.profile);
+      setError(session.error);
+      setLoading(false);
+      if (!session.token) router.replace('/admin/login');
+    });
+    return () => { active = false; };
   }, [router]);
+
+  useEffect(() => {
+    if (!supabase) return;
+    const { data } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') clearAdminSessionCache();
+    });
+    return () => data.subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     function onProfileUpdate(event: Event) {
       const updated = (event as CustomEvent<StaffProfile>).detail;
-      if (updated?.id) setProfile(updated);
+      if (updated?.id) {
+        setProfile(updated);
+        if (adminSessionCache?.token) adminSessionCache = { ...adminSessionCache, profile: updated, loadedAt: Date.now() };
+      }
     }
     window.addEventListener('oniria:staff-profile-updated', onProfileUpdate);
     return () => window.removeEventListener('oniria:staff-profile-updated', onProfileUpdate);
@@ -201,6 +259,7 @@ export function AdminFrame({ title, kicker = 'Staff workspace', children }: { ti
 
   async function signOut() {
     if (supabase) await supabase.auth.signOut();
+    clearAdminSessionCache();
     router.replace('/admin/login');
   }
 
@@ -233,7 +292,7 @@ export function AdminFrame({ title, kicker = 'Staff workspace', children }: { ti
   }, [token]);
 
   if (loading) return <main className="adminStandalone"><div className="adminLoading"><span className="adminPulse"/>Preparing your workspace…</div></main>;
-  if (error) return <main className="adminStandalone"><div className="adminErrorPanel"><p className="eyebrow gold">Staff access</p><h1>We could not open your workspace.</h1><p>{error}</p><Link className="button buttonNavy" href="/admin/login">Return to sign in <span>→</span></Link></div></main>;
+  if (error) return <main className="adminStandalone"><div className="adminErrorPanel"><p className="eyebrow gold">Staff access</p><h1>We could not open your workspace.</h1><p>{error}</p><Link className="button buttonNavy" href="/admin/login" prefetch>Return to sign in <span>→</span></Link></div></main>;
 
   const nav = profile?.roles?.includes('admin') ? [...baseNav.slice(0, 4), ['/admin/staff', 'Team'], baseNav[4]] : baseNav;
 
@@ -246,13 +305,13 @@ export function AdminFrame({ title, kicker = 'Staff workspace', children }: { ti
       suppressHydrationWarning
     >
       <aside className="adminSidebar adminSidebarPremium">
-        <Link href="/admin" className="adminBrandLockup" aria-label="ONIRIA administration home">
-          <img src="/oniria-admin-mark.png" alt="" />
-          <span><strong>ONIRIA</strong><small>ADMINISTRATION</small></span>
+        <Link href="/admin" prefetch className="adminBrandLockup" aria-label="ONIRIA administration home">
+          <span className="wordmarkLogo adminBrandWordmark" aria-hidden="true" />
+          <small>ADMINISTRATION</small>
         </Link>
-        <nav>{nav.map(([href,label], index)=><Link key={href} href={href} title={label} aria-label={label} className={path === href ? 'active' : ''}><span>{String(index + 1).padStart(2,'0')}</span>{label}</Link>)}</nav>
+        <nav>{nav.map(([href,label], index)=><Link key={href} href={href} prefetch title={label} aria-label={label} className={path === href ? 'active' : ''}><span>{String(index + 1).padStart(2,'0')}</span>{label}</Link>)}</nav>
         <div className="adminSidebarBottom">
-          <Link href="/admin/settings?section=profile" className="adminUser adminUserProfileLink" aria-label="Open your profile settings">
+          <Link href="/admin/settings?section=profile" prefetch className="adminUser adminUserProfileLink" aria-label="Open your profile settings">
             <span className="adminSidebarAvatar">
               {profile?.avatar_url ? <img src={profile.avatar_url} alt="" onError={(event)=>{event.currentTarget.style.display='none';}} /> : null}
               <b>{staffInitials(profile)}</b>
@@ -290,6 +349,7 @@ export function AdminFrame({ title, kicker = 'Staff workspace', children }: { ti
                     <Link
                       key={item.id}
                       href={item.link || '/admin'}
+                      prefetch
                       className={item.is_read ? '' : 'unread'}
                       onClick={() => {
                         setNotificationsOpen(false);
@@ -318,15 +378,17 @@ export function useProtectedData<T>(endpoint: string) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let active = true;
     void (async () => {
-      if (!supabase) { setError('Staff access is not available.'); setLoading(false); return; }
-      const { data: sessionData } = await supabase.auth.getSession();
-      const token = sessionData.session?.access_token;
-      if (!token) { setError('Your staff session has expired. Please sign in again.'); setLoading(false); return; }
-      try { setData(await authFetch<T>(endpoint, token)); }
-      catch (err) { setError(err instanceof Error ? err.message : 'Unable to load this information.'); }
-      finally { setLoading(false); }
+      try {
+        const token = await getAdminAccessToken();
+        const result = await authFetch<T>(endpoint, token);
+        if (active) setData(result);
+      }
+      catch (err) { if (active) setError(err instanceof Error ? err.message : 'Unable to load this information.'); }
+      finally { if (active) setLoading(false); }
     })();
+    return () => { active = false; };
   }, [endpoint]);
 
   return { data, error, loading };

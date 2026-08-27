@@ -2338,13 +2338,13 @@ em{font-weight:400;font-style:italic}
   background:var(--navy);
   color:var(--white);
 }
-.businessPremiumHero>img{object-fit:cover;transition:transform 10s cubic-bezier(.22,1,.36,1)}
+.businessPremiumHero>img{object-fit:cover;object-position:center 52%;filter:saturate(1.04) contrast(1.03);transition:transform 10s cubic-bezier(.22,1,.36,1)}
 .businessPremiumHero:hover>img{transform:scale(1.025)}
 .businessPremiumHeroShade{
   position:absolute;
   inset:0;
   z-index:1;
-  background:linear-gradient(90deg,rgba(3,27,53,.82) 0%,rgba(3,27,53,.42) 46%,rgba(3,27,53,.12) 78%),linear-gradient(0deg,rgba(3,27,53,.52),transparent 62%);
+  background:linear-gradient(90deg,rgba(3,27,53,.72) 0%,rgba(3,27,53,.34) 46%,rgba(3,27,53,.08) 80%),linear-gradient(0deg,rgba(3,27,53,.62) 0%,rgba(3,27,53,.1) 58%,rgba(3,27,53,.08) 100%);
 }
 .businessPremiumHeroCopy{
   position:absolute;
@@ -2403,6 +2403,16 @@ em{font-weight:400;font-style:italic}
 .businessPremiumOverview{
   padding-top:clamp(96px,8vw,132px);
   padding-bottom:clamp(100px,9vw,144px);
+}
+.businessPremiumCreating{
+  padding-top:clamp(92px,8vw,128px);
+  padding-bottom:clamp(72px,6vw,104px);
+}
+.businessPremiumCreating h2{
+  margin:0;
+  max-width:1100px;
+  font:400 clamp(56px,6.4vw,100px)/.94 var(--serif);
+  letter-spacing:-.052em;
 }
 .businessPremiumIntro,
 .businessPremiumProjectsHead,
@@ -2650,6 +2660,7 @@ em{font-weight:400;font-style:italic}
 @media(max-width:850px){
   .businessPremiumHero{height:84svh;min-height:680px}
   .businessPremiumHeroCopy{left:22px;right:22px;bottom:8%;width:auto}
+  .businessPremiumHero>img{object-position:61% center}
   .businessPremiumHeroCopy h1{font-size:clamp(52px,12vw,76px)}
   .businessPremiumNav{top:78px;overflow-x:auto;justify-content:flex-start;padding:0 22px;gap:28px}
   .businessPremiumIntro,.businessPremiumProjectsHead,.businessPremiumGroupHead,.businessPremiumPartnershipsGrid{grid-template-columns:1fr;gap:30px}
@@ -2668,6 +2679,7 @@ em{font-weight:400;font-style:italic}
 @media(max-width:560px){
   .businessPremiumHero{min-height:630px}
   .businessPremiumHeroCopy h1{font-size:50px}
+  .businessPremiumCreating h2{font-size:clamp(46px,12vw,62px)}
   .businessPremiumHeroCopy>p:not(.eyebrow){font-size:14px;line-height:1.72}
   .businessPremiumCapability{padding:24px 22px 28px}
   .businessPremiumCapability h3{font-size:42px}
@@ -2697,17 +2709,7 @@ em{font-weight:400;font-style:italic}
 .businessPremiumProjectMedia{
   cursor:default;
 }
-.businessPremiumProjectNameWatermark{
-  position:absolute;
-  left:28px;
-  bottom:24px;
-  z-index:2;
-  max-width:82%;
-  font:400 clamp(30px,3vw,48px)/.96 var(--serif);
-  letter-spacing:-.035em;
-  color:rgba(255,255,255,.96);
-  text-shadow:0 8px 30px rgba(3,27,53,.45);
-}
+
 .businessPremiumProjectLink{
   display:inline-flex;
   align-items:center;
@@ -2744,16 +2746,26 @@ em{font-weight:400;font-style:italic}
   gap:clamp(42px,7vw,104px);
   align-items:center;
 }
+.businessPremiumGroupLogoLink{
+  display:block;
+}
 .businessPremiumGroupLogoWrap{
   position:relative;
-  min-height:clamp(260px,28vw,380px);
-  background:rgba(255,255,255,.76);
-  border:1px solid rgba(3,27,53,.14);
+  width:100%;
+  max-width:520px;
+  aspect-ratio:1 / 1;
+  min-height:0;
+  background:transparent;
+  border:0;
   overflow:hidden;
 }
 .businessPremiumGroupLogoWrap>img{
   object-fit:contain;
-  padding:clamp(28px,4vw,54px);
+  padding:0;
+  transition:transform .7s cubic-bezier(.22,1,.36,1);
+}
+.businessPremiumGroupLogoLink:hover .businessPremiumGroupLogoWrap>img{
+  transform:scale(1.02);
 }
 .businessPremiumGroupIdentityCopy{
   max-width:760px;
@@ -2832,14 +2844,13 @@ em{font-weight:400;font-style:italic}
 
 @media(max-width:980px){
   .businessPremiumGroupIdentity{grid-template-columns:1fr;gap:34px}
-  .businessPremiumGroupLogoWrap{min-height:320px}
+  .businessPremiumGroupLogoWrap{min-height:0}
   .businessPremiumGroupSectors{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:620px){
   .businessPremiumNav{justify-content:flex-start;gap:28px}
   .businessPremiumCapability{min-height:300px}
-  .businessPremiumProjectNameWatermark{left:20px;bottom:20px}
-  .businessPremiumGroupLogoWrap{min-height:250px}
+  .businessPremiumGroupLogoWrap{min-height:0}
   .businessPremiumGroupSectors{grid-template-columns:1fr}
   .businessPremiumGroupSector{min-height:190px;padding:22px}
 }
@@ -2912,10 +2923,10 @@ em{font-weight:400;font-style:italic}
   gap:clamp(32px,5vw,72px);
 }
 .businessPremiumGroupLogoWrap{
-  min-height:clamp(210px,22vw,300px);
+  min-height:0;
 }
 .businessPremiumGroupLogoWrap>img{
-  padding:clamp(22px,3vw,38px);
+  padding:0;
 }
 .businessPremiumGroupIdentityCopy h3{
   font-size:clamp(42px,4.5vw,66px);
@@ -2935,7 +2946,7 @@ em{font-weight:400;font-style:italic}
   .businessPremiumPartnerships,
   .businessPremiumPartnershipsIntegrated{padding-top:64px;padding-bottom:72px}
   .businessPremiumGroupIdentity{grid-template-columns:1fr;gap:28px}
-  .businessPremiumGroupLogoWrap{min-height:260px}
+  .businessPremiumGroupLogoWrap{min-height:0}
 }
 @media(max-width:620px){
   .businessPremiumCapability{min-height:245px}
@@ -2943,7 +2954,7 @@ em{font-weight:400;font-style:italic}
   .businessPremiumProject,
   .businessPremiumProjectMedia{min-height:400px}
   .businessPremiumProjectStack{gap:38px}
-  .businessPremiumGroupLogoWrap{min-height:220px}
+  .businessPremiumGroupLogoWrap{min-height:0}
 }
 
 
@@ -4307,4 +4318,1537 @@ em{font-weight:400;font-style:italic}
   .homeCollectionPremiumCard,.homeCollectionPremiumBody{min-height:410px}
   .homeCollectionPremiumBody{padding:18px 17px 17px}
   .homeCollectionPremiumBody h4{font-size:clamp(28px,8.5vw,38px)}
+}
+
+/* =========================================================
+   HOME REFINEMENT — premium composition without changing copy
+   ========================================================= */
+/* Keep the existing hero typography and copy; refine only the visual framing. */
+.homeHeroSingle .homeHeroOverlay{
+  background:
+    radial-gradient(circle at 74% 42%, rgba(15,12,9,0) 0%, rgba(15,12,9,.06) 38%, rgba(15,12,9,.18) 100%),
+    linear-gradient(90deg,rgba(15,12,9,.70) 0%,rgba(15,12,9,.42) 38%,rgba(15,12,9,.11) 72%,rgba(15,12,9,.04) 100%),
+    linear-gradient(0deg,rgba(15,12,9,.38) 0%,rgba(15,12,9,.04) 55%,rgba(15,12,9,.08) 100%);
+}
+.homeHeroEditorial{
+  padding-left:clamp(18px,1.6vw,28px);
+  border-left:1px solid rgba(243,235,221,.42);
+}
+.homeHeroEditorial .heroActionsSingle{margin-top:32px}
+
+/* Refine the life-feels section as a calmer premium editorial split. */
+.hospitalityFeatureRefined{
+  min-height:680px;
+  align-items:stretch;
+}
+.hospitalityFeatureRefined .hospitalityMedia{
+  min-height:680px;
+  background:var(--taupe);
+}
+.hospitalityFeatureRefined .hospitalityImage{
+  inset:6% 3% 6% 7%;
+  box-shadow:0 26px 70px rgba(3,27,53,.10);
+}
+.hospitalityCopyRefined{
+  position:relative;
+  justify-content:center;
+  padding-top:clamp(80px,8vw,130px);
+  padding-bottom:clamp(80px,8vw,130px);
+}
+.hospitalityCopyRefined::before{
+  content:"";
+  width:54px;
+  height:1px;
+  margin-bottom:30px;
+  background:rgba(3,27,53,.46);
+}
+.hospitalityCopyRefined h2{
+  max-width:620px;
+  margin-top:0;
+}
+.hospitalityCopyRefined>p:not(.eyebrow){
+  max-width:560px;
+  margin-top:24px;
+  margin-bottom:32px;
+}
+.hospitalityCopyRefined .buttonNavy{
+  margin-top:2px;
+}
+
+/* Use exactly the same supplied ONIRIA wordmark treatment in the footer. */
+.footerWordmark{
+  display:block;
+  width:clamp(150px,12vw,190px);
+  height:58px;
+  color:var(--cream);
+}
+.footerWordmark .wordmarkLogo{
+  width:100%;
+  height:100%;
+}
+.compactFooterBrand>span{
+  margin-top:2px;
+}
+
+@media(max-width:850px){
+  .homeHeroEditorial{
+    padding-left:18px;
+  }
+  .hospitalityFeatureRefined,
+  .hospitalityFeatureRefined .hospitalityMedia{min-height:auto}
+  .hospitalityFeatureRefined .hospitalityMedia{min-height:520px}
+  .hospitalityFeatureRefined .hospitalityImage{inset:24px}
+  .hospitalityCopyRefined{padding:72px 22px 82px}
+  .footerWordmark{width:152px;height:52px}
+}
+
+@media(max-width:520px){
+  .homeHeroEditorial{
+    padding-left:14px;
+    border-left-color:rgba(243,235,221,.34);
+  }
+  .hospitalityFeatureRefined .hospitalityMedia{min-height:440px}
+  .hospitalityFeatureRefined .hospitalityImage{inset:18px}
+  .hospitalityCopyRefined::before{margin-bottom:24px}
+  .footerWordmark{width:140px;height:48px}
+}
+
+/* =========================================================
+   ABOUT + VISION — DISTINCT PREMIUM EDITORIAL EXPERIENCES
+   ========================================================= */
+.about2026Hero{
+  min-height:76svh;
+}
+.about2026HeroOverlay{
+  background:
+    linear-gradient(90deg,rgba(3,27,53,.86) 0%,rgba(3,27,53,.58) 46%,rgba(3,27,53,.12) 100%),
+    linear-gradient(0deg,rgba(3,27,53,.34),transparent 58%);
+}
+.about2026HeroCopy{
+  width:min(1120px,88vw);
+  bottom:8vh;
+}
+.about2026HeroCopy h1{
+  max-width:1100px;
+  font-size:clamp(62px,7vw,112px);
+  line-height:.89;
+}
+.about2026HeroCopy h1 em{
+  color:#eadfc9;
+}
+.about2026Opening{
+  background:#c1af8d;
+}
+.about2026Pillars{
+  background:#c1af8d;
+}
+.story2026PillarsLead{
+  max-width:none;
+  white-space:nowrap;
+  font-size:clamp(14px,1.12vw,17px);
+}
+
+.vision2026Page{
+  background:#c1af8d;
+  color:var(--navy);
+}
+.vision2026Hero{
+  position:relative;
+  min-height:82svh;
+  overflow:hidden;
+  background:var(--navy);
+  color:var(--white);
+}
+.vision2026Hero>img{
+  object-fit:cover;
+  object-position:center 56%;
+  transition:transform 9s cubic-bezier(.22,1,.36,1);
+}
+.vision2026Hero:hover>img{transform:scale(1.035)}
+.vision2026HeroOverlay{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:
+    linear-gradient(90deg,rgba(3,27,53,.86) 0%,rgba(3,27,53,.5) 48%,rgba(3,27,53,.12) 100%),
+    linear-gradient(0deg,rgba(3,27,53,.4),transparent 62%);
+}
+.vision2026HeroCopy{
+  position:absolute;
+  z-index:2;
+  left:6vw;
+  bottom:8vh;
+  width:min(960px,88vw);
+}
+.vision2026HeroCopy h1{
+  margin:0;
+  font:400 clamp(64px,7.1vw,116px)/.88 var(--serif);
+  letter-spacing:-.055em;
+}
+.vision2026HeroCopy h1 em{
+  color:#eadfc9;
+  font-weight:400;
+}
+.vision2026HeroCopy>p:not(.eyebrow){
+  max-width:680px;
+  margin:26px 0 0;
+  font-size:17px;
+  line-height:1.75;
+  color:rgba(255,255,255,.88);
+}
+.vision2026Statement{
+  padding-top:clamp(88px,8vw,132px);
+  padding-bottom:clamp(88px,8vw,132px);
+}
+.vision2026StatementGrid{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(340px,.74fr);
+  gap:clamp(52px,8vw,125px);
+  align-items:end;
+}
+.vision2026StatementGrid h2{
+  margin:0;
+  max-width:840px;
+  font:400 clamp(54px,5.9vw,92px)/.92 var(--serif);
+  letter-spacing:-.05em;
+}
+.vision2026StatementCopy{
+  padding-bottom:8px;
+}
+.vision2026StatementCopy p{
+  margin:0 0 22px;
+  font-size:16px;
+  line-height:1.82;
+}
+.vision2026StatementCopy p:last-child{margin-bottom:0}
+
+.vision2026Principles{
+  border-top:1px solid rgba(3,27,53,.25);
+  border-bottom:1px solid rgba(3,27,53,.25);
+  background:#c1af8d;
+}
+.vision2026PrinciplesHead{
+  padding-top:72px;
+  padding-bottom:40px;
+  text-align:center;
+}
+.vision2026PrinciplesHead h2{
+  margin:0;
+  font:400 clamp(50px,5.4vw,82px)/.94 var(--serif);
+  letter-spacing:-.045em;
+}
+.vision2026PrinciplesGrid{
+  width:min(1440px,calc(100% - 12vw));
+  margin:0 auto 82px;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  border-top:1px solid rgba(3,27,53,.28);
+  border-bottom:1px solid rgba(3,27,53,.28);
+}
+.vision2026PrinciplesGrid>div{
+  border-right:1px solid rgba(3,27,53,.28);
+}
+.vision2026PrinciplesGrid>div:last-child{border-right:0}
+.vision2026PrincipleCard{
+  min-height:390px;
+  padding:34px 32px 30px;
+  display:flex;
+  flex-direction:column;
+  transition:background .35s ease,color .35s ease,transform .35s ease;
+}
+.vision2026PrincipleCard:hover{
+  background:var(--navy);
+  color:#eadfc9;
+  transform:translateY(-5px);
+}
+.vision2026PrincipleTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+}
+.vision2026PrincipleCard h3{
+  margin:auto 0 22px;
+  font:400 clamp(38px,3.5vw,56px)/.98 var(--serif);
+  letter-spacing:-.04em;
+}
+.vision2026PrincipleCard p{
+  margin:0;
+  max-width:390px;
+  font-size:15px;
+  line-height:1.76;
+}
+.vision2026Closing{
+  position:relative;
+  min-height:660px;
+  overflow:hidden;
+  color:var(--white);
+  background:var(--navy);
+}
+.vision2026ClosingMedia{
+  position:absolute;
+  inset:0;
+}
+.vision2026ClosingMedia>img{
+  object-fit:cover;
+  transition:transform 8s cubic-bezier(.22,1,.36,1);
+}
+.vision2026Closing:hover .vision2026ClosingMedia>img{transform:scale(1.035)}
+.vision2026ClosingShade{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,rgba(3,27,53,.84),rgba(3,27,53,.38) 62%,rgba(3,27,53,.18));
+}
+.vision2026ClosingCopy{
+  position:absolute;
+  z-index:2;
+  left:6vw;
+  bottom:10%;
+  width:min(760px,88vw);
+}
+.vision2026ClosingCopy h2{
+  margin:0 0 32px;
+  font:400 clamp(52px,5.8vw,88px)/.94 var(--serif);
+  letter-spacing:-.048em;
+}
+
+@media(max-width:980px){
+  .story2026PillarsLead{white-space:normal;max-width:680px}
+  .vision2026Hero{min-height:700px}
+  .vision2026StatementGrid{grid-template-columns:1fr;gap:40px}
+  .vision2026StatementCopy{max-width:760px}
+  .vision2026PrinciplesGrid{grid-template-columns:1fr;width:calc(100% - 44px)}
+  .vision2026PrinciplesGrid>div{border-right:0;border-bottom:1px solid rgba(3,27,53,.28)}
+  .vision2026PrinciplesGrid>div:last-child{border-bottom:0}
+  .vision2026PrincipleCard{min-height:285px}
+}
+
+@media(max-width:620px){
+  .about2026Hero{min-height:620px}
+  .about2026HeroCopy h1{font-size:clamp(49px,13vw,68px)}
+  .vision2026Hero{min-height:620px}
+  .vision2026HeroCopy{left:22px;right:22px;bottom:54px;width:auto}
+  .vision2026HeroCopy h1{font-size:clamp(50px,13vw,72px)}
+  .vision2026HeroCopy>p:not(.eyebrow){font-size:15px}
+  .vision2026Statement{padding:64px 22px}
+  .vision2026StatementGrid h2{font-size:clamp(48px,12vw,64px)}
+  .vision2026PrinciplesHead{padding:54px 22px 30px}
+  .vision2026PrinciplesGrid{margin-bottom:52px}
+  .vision2026PrincipleCard{min-height:250px;padding:28px 22px 24px}
+  .vision2026PrincipleCard h3{font-size:40px}
+  .vision2026Closing{min-height:560px}
+  .vision2026ClosingCopy{left:22px;right:22px;bottom:58px;width:auto}
+  .vision2026ClosingCopy h2{font-size:48px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .vision2026Hero>img,.vision2026ClosingMedia>img,.vision2026PrincipleCard{transition:none!important;transform:none!important}
+}
+
+
+/* v9 — refined About/Vision hero hierarchy */
+.about2026HeroCopy h1{
+  max-width:980px;
+  margin:0;
+  color:var(--cream);
+  font-family:var(--sans);
+  font-size:clamp(58px,6.25vw,104px);
+  font-weight:300;
+  line-height:.94;
+  letter-spacing:-.048em;
+  text-wrap:balance;
+}
+.about2026HeroCopy h1 em{
+  display:block;
+  max-width:680px;
+  margin-top:28px;
+  color:var(--cream);
+  font-family:var(--sans);
+  font-size:clamp(16px,1.35vw,20px);
+  font-style:italic;
+  font-weight:300;
+  line-height:1.6;
+  letter-spacing:.015em;
+}
+
+/* Keep the Vision page aligned with the premium home-page typography. */
+.vision2026HeroCopy{
+  width:min(900px,88vw);
+}
+.vision2026HeroCopy h1{
+  max-width:13ch;
+  font-family:var(--sans);
+  font-size:clamp(58px,6.25vw,104px);
+  font-weight:300;
+  line-height:.94;
+  letter-spacing:-.048em;
+}
+.vision2026HeroCopy h1 em{
+  color:#eadfc9;
+  font-family:var(--sans);
+  font-weight:300;
+}
+.vision2026HeroCopy>p:not(.eyebrow){
+  max-width:650px;
+  font-family:var(--sans);
+  font-size:clamp(16px,1.18vw,19px);
+  font-weight:300;
+  line-height:1.7;
+}
+
+@media(max-width:850px){
+  .about2026HeroCopy h1,
+  .vision2026HeroCopy h1{
+    font-size:clamp(48px,12vw,72px);
+    line-height:.96;
+  }
+  .about2026HeroCopy h1 em{
+    margin-top:20px;
+    font-size:16px;
+    line-height:1.55;
+  }
+}
+
+@media(max-width:520px){
+  .about2026HeroCopy h1,
+  .vision2026HeroCopy h1{font-size:47px}
+  .about2026HeroCopy h1 em{font-size:16px}
+}
+
+/* =========================================================
+   v10 — distinct Vision and About positioning
+   ========================================================= */
+/* Vision is deliberately image-free: a clean editorial opening that keeps
+   the message separate from About and removes the previous large visual hero. */
+.vision2026HeroEditorial{
+  min-height:72svh;
+  display:flex;
+  align-items:flex-end;
+  position:relative;
+  overflow:hidden;
+  padding:0 6vw 9vh;
+  background:#d2c2a2;
+  color:var(--navy);
+  border-bottom:1px solid rgba(3,27,53,.22);
+}
+.vision2026HeroEditorial::before{
+  content:"";
+  position:absolute;
+  right:-7vw;
+  top:-18vw;
+  width:46vw;
+  aspect-ratio:1;
+  border:1px solid rgba(3,27,53,.13);
+  border-radius:50%;
+}
+.vision2026HeroAccent{
+  position:absolute;
+  right:9vw;
+  top:20%;
+  width:clamp(110px,11vw,180px);
+  height:1px;
+  background:rgba(3,27,53,.42);
+}
+.vision2026HeroAccent::after{
+  content:"";
+  position:absolute;
+  right:0;
+  top:50%;
+  width:9px;
+  height:9px;
+  border:1px solid var(--navy);
+  border-radius:50%;
+  transform:translateY(-50%);
+  background:#d2c2a2;
+}
+.vision2026HeroCopyEditorial{
+  position:relative;
+  left:auto;
+  bottom:auto;
+  z-index:2;
+  width:min(1050px,88vw);
+}
+.vision2026HeroCopyEditorial h1{
+  max-width:13ch;
+  margin:0;
+  color:var(--navy);
+  font-family:var(--sans);
+  font-size:clamp(58px,6.25vw,104px);
+  font-weight:300;
+  line-height:.94;
+  letter-spacing:-.048em;
+  text-wrap:balance;
+}
+.vision2026HeroCopyEditorial h1 span{
+  display:block;
+}
+.vision2026HeroCopyEditorial h1 em{
+  display:block;
+  max-width:700px;
+  margin-top:28px;
+  color:var(--navy);
+  font-family:var(--sans);
+  font-size:clamp(16px,1.35vw,20px);
+  font-style:italic;
+  font-weight:300;
+  line-height:1.6;
+  letter-spacing:.015em;
+}
+
+/* About now speaks to identity and operating character rather than repeating Vision. */
+.about2026HeroCopy h1 em{
+  color:#eadfc9;
+}
+
+@media(max-width:850px){
+  .vision2026HeroEditorial{
+    min-height:620px;
+    padding:0 24px 72px;
+  }
+  .vision2026HeroEditorial::before{
+    width:78vw;
+    right:-28vw;
+    top:-12vw;
+  }
+  .vision2026HeroAccent{
+    right:24px;
+    top:24%;
+  }
+  .vision2026HeroCopyEditorial{
+    left:auto;
+    right:auto;
+    bottom:auto;
+    width:100%;
+  }
+  .vision2026HeroCopyEditorial h1{
+    font-size:clamp(48px,12vw,72px);
+    line-height:.96;
+  }
+  .vision2026HeroCopyEditorial h1 em{
+    margin-top:20px;
+    font-size:16px;
+    line-height:1.55;
+  }
+}
+
+@media(max-width:520px){
+  .vision2026HeroEditorial{
+    min-height:560px;
+    padding:0 22px 62px;
+  }
+  .vision2026HeroCopyEditorial h1{font-size:47px}
+  .vision2026HeroCopyEditorial h1 em{font-size:16px}
+  .vision2026HeroAccent{width:90px;right:22px}
+}
+
+/* v11 — final Vision cleanup: image-free, distinct from About, premium editorial composition */
+.vision2026HeroEditorial{
+  min-height:68svh;
+  padding-bottom:clamp(64px,8vh,96px);
+}
+.vision2026HeroCopyEditorial h1{
+  max-width:15ch;
+}
+.vision2026HeroCopyEditorial h1 span{
+  max-width:14ch;
+}
+.vision2026HeroCopyEditorial h1 em{
+  max-width:760px;
+  margin-top:24px;
+}
+.vision2026Statement{
+  background:#c1af8d;
+}
+.vision2026StatementGrid h2{
+  max-width:760px;
+}
+.vision2026PrinciplesHead h2{
+  max-width:1000px;
+  margin-left:auto;
+  margin-right:auto;
+}
+.vision2026PrincipleCard{
+  min-height:360px;
+}
+
+@media(max-width:850px){
+  .vision2026HeroEditorial{min-height:560px}
+  .vision2026HeroCopyEditorial h1{max-width:100%}
+  .vision2026HeroCopyEditorial h1 span{max-width:100%}
+  .vision2026PrincipleCard{min-height:260px}
+}
+
+
+/* NEWS + CONTACT — focused public refinements */
+.newsPageStream{
+  padding-top:clamp(64px,6vw,88px);
+}
+.newsPageStream .newsroomCompactGrid{
+  border-top:1px solid rgba(3,27,53,.24);
+  padding-top:28px;
+}
+.newsroomImageHeroCopy{max-width:720px}
+.newsroomImageHeroCopy h1{max-width:11ch}
+.contactDirectBody{
+  padding-top:clamp(64px,5.5vw,86px);
+}
+.contactDirectFormShell{
+  width:min(1040px,100%);
+}
+@media(max-width:680px){
+  .newsPageStream{padding-top:54px}
+  .newsPageStream .newsroomCompactGrid{padding-top:22px}
+  .contactDirectBody{padding-top:52px}
+}
+
+/* =========================================================
+   v13 — visual refresh requested: home / vision / about / news
+   ========================================================= */
+
+/* Home: use the supplied ONA Towers arrival image in the life-feels feature. */
+.hospitalityFeatureRefined .hospitalityImage{
+  background-image:url('/images/home-life-ona.webp');
+  background-position:center center;
+}
+
+/* News: keep the short headline elegant and on one line. */
+.newsroomImageHeroCopy{
+  width:min(980px,88vw);
+  max-width:none;
+}
+.newsroomImageHeroCopy h1{
+  max-width:none;
+  white-space:nowrap;
+  font-size:clamp(48px,5.8vw,84px);
+  letter-spacing:-.045em;
+}
+
+/* Vision: restore a premium visual hero using the supplied ocean image. */
+.vision2026HeroEditorial.vision2026HeroImage{
+  min-height:78svh;
+  display:flex;
+  align-items:flex-end;
+  position:relative;
+  overflow:hidden;
+  padding:0 6vw clamp(68px,8vh,98px);
+  background:var(--navy);
+  color:var(--white);
+  border-bottom:0;
+}
+.vision2026HeroImage>img{
+  object-fit:cover;
+  object-position:center center;
+  z-index:0;
+  transition:transform 9s cubic-bezier(.22,1,.36,1);
+}
+.vision2026HeroImage:hover>img{
+  transform:scale(1.025);
+}
+.vision2026HeroEditorial.vision2026HeroImage::before{
+  display:none;
+}
+.vision2026HeroEditorialShade{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:
+    linear-gradient(90deg,rgba(3,27,53,.82) 0%,rgba(3,27,53,.45) 46%,rgba(3,27,53,.08) 78%),
+    linear-gradient(0deg,rgba(3,27,53,.48) 0%,rgba(3,27,53,.08) 58%,rgba(3,27,53,.05) 100%);
+}
+.vision2026HeroImage .vision2026HeroCopyEditorial{
+  position:relative;
+  z-index:2;
+  width:min(1080px,90vw);
+}
+.vision2026HeroImage .vision2026HeroCopyEditorial h1{
+  max-width:14ch;
+  color:#fffaf2;
+}
+.vision2026HeroImage .vision2026HeroCopyEditorial h1 span{
+  max-width:14ch;
+  color:#fffaf2;
+}
+.vision2026HeroImage .vision2026HeroCopyEditorial h1 em{
+  color:#eadfc9;
+}
+
+/* About: wider rooftop visual for a premium full-page feel consistent with the rest of the site. */
+.about2026HeroSplit{
+  min-height:78svh;
+  display:grid;
+  grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);
+  align-items:center;
+  gap:clamp(44px,6vw,88px);
+  padding:clamp(118px,11vw,170px) 5vw clamp(82px,8vw,120px);
+  background:#c1af8d;
+  color:var(--navy);
+  border-bottom:1px solid rgba(3,27,53,.2);
+}
+.about2026HeroSplitCopy{
+  max-width:720px;
+}
+.about2026HeroSplitCopy>.eyebrow{
+  margin:0 0 26px;
+}
+.about2026HeroSplitCopy h1{
+  margin:0;
+  font-family:var(--sans);
+  font-size:clamp(58px,6.25vw,104px);
+  font-weight:300;
+  line-height:.94;
+  letter-spacing:-.048em;
+}
+.about2026HeroSplitCopy h1 em{
+  display:block;
+  margin-top:24px;
+  max-width:620px;
+  font-family:var(--sans);
+  font-size:clamp(16px,1.35vw,20px);
+  font-style:italic;
+  font-weight:300;
+  line-height:1.6;
+  letter-spacing:.015em;
+}
+.about2026HeroSplitVisual{
+  justify-self:stretch;
+  width:100%;
+}
+.about2026HeroSplitImage{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/10;
+  overflow:hidden;
+  background:var(--navy);
+  border-radius:0;
+  box-shadow:0 26px 70px rgba(3,27,53,.16);
+}
+.about2026HeroSplitImage::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(8,24,46,.06) 0%,rgba(8,24,46,.02) 42%,rgba(8,24,46,.16) 100%);
+  pointer-events:none;
+}
+.about2026HeroSplitImage>img{
+  object-fit:cover;
+  object-position:center center;
+  transition:transform 8s cubic-bezier(.22,1,.36,1);
+}
+.about2026HeroSplitVisual:hover .about2026HeroSplitImage>img{
+  transform:scale(1.035);
+}
+.about2026HeroSplitCaption{
+  display:block;
+  margin-top:15px;
+  padding-top:12px;
+  border-top:1px solid rgba(3,27,53,.34);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+}
+
+@media(max-width:850px){
+  .newsroomImageHeroCopy h1{
+    white-space:nowrap;
+    font-size:clamp(36px,10vw,54px);
+  }
+  .vision2026HeroEditorial.vision2026HeroImage{
+    min-height:680px;
+    padding:0 24px 68px;
+  }
+  .vision2026HeroImage .vision2026HeroCopyEditorial h1{
+    max-width:100%;
+  }
+  .vision2026HeroImage .vision2026HeroCopyEditorial h1 span{
+    max-width:100%;
+  }
+  .about2026HeroSplit{
+    min-height:auto;
+    grid-template-columns:1fr;
+    gap:48px;
+    padding:112px 24px 72px;
+  }
+  .about2026HeroSplitVisual{
+    justify-self:stretch;
+    width:100%;
+  }
+}
+
+@media(max-width:520px){
+  .newsroomImageHeroCopy h1{
+    font-size:clamp(32px,9.7vw,44px);
+    letter-spacing:-.035em;
+  }
+  .vision2026HeroEditorial.vision2026HeroImage{
+    min-height:620px;
+    padding:0 22px 60px;
+  }
+  .vision2026HeroImage .vision2026HeroCopyEditorial h1{
+    font-size:47px;
+  }
+  .vision2026HeroImage .vision2026HeroCopyEditorial h1 em{
+    font-size:16px;
+  }
+  .about2026HeroSplit{
+    padding:98px 22px 62px;
+  }
+  .about2026HeroSplitCopy h1{
+    font-size:47px;
+  }
+  .about2026HeroSplitCopy h1 em{
+    font-size:16px;
+  }
+  .about2026HeroSplitVisual{
+    width:100%;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .vision2026HeroImage>img,
+  .about2026HeroSplitImage>img{
+    transition:none!important;
+    transform:none!important;
+  }
+}
+
+/* v15 — About hero aligned with the full-width visual language used across Home and Vision. */
+.about2026HeroFull{
+  position:relative;
+  min-height:82svh;
+  display:flex;
+  align-items:flex-end;
+  overflow:hidden;
+  padding:0 6vw clamp(70px,9vh,106px);
+  background:var(--navy);
+  color:var(--cream);
+}
+.about2026HeroFull>img{
+  object-fit:cover;
+  object-position:center center;
+  z-index:0;
+  transition:transform 9s cubic-bezier(.22,1,.36,1);
+}
+.about2026HeroFull:hover>img{
+  transform:scale(1.02);
+}
+.about2026HeroFullShade{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:
+    linear-gradient(90deg,rgba(3,27,53,.78) 0%,rgba(3,27,53,.42) 43%,rgba(3,27,53,.08) 76%),
+    linear-gradient(0deg,rgba(3,27,53,.48) 0%,rgba(3,27,53,.06) 58%,rgba(3,27,53,.04) 100%);
+}
+.about2026HeroFullCopy{
+  position:relative;
+  z-index:2;
+  width:min(980px,90vw);
+}
+.about2026HeroFullCopy>.eyebrow{
+  margin:0 0 24px;
+  color:var(--cream);
+}
+.about2026HeroFullCopy h1{
+  margin:0;
+  max-width:13ch;
+  font-family:var(--sans);
+  font-size:clamp(58px,6.25vw,104px);
+  font-weight:300;
+  line-height:.94;
+  letter-spacing:-.048em;
+  color:var(--cream);
+}
+.about2026HeroFullCopy h1 span{
+  display:block;
+}
+.about2026HeroFullCopy h1 em{
+  display:block;
+  margin-top:24px;
+  max-width:620px;
+  font-family:var(--sans);
+  font-size:clamp(16px,1.35vw,20px);
+  font-style:italic;
+  font-weight:300;
+  line-height:1.6;
+  letter-spacing:.015em;
+  color:#eadfc9;
+}
+
+@media(max-width:850px){
+  .about2026HeroFull{
+    min-height:700px;
+    padding:0 24px 74px;
+  }
+  .about2026HeroFull>img{object-position:60% center}
+  .about2026HeroFullCopy{width:100%}
+  .about2026HeroFullCopy h1{
+    max-width:11ch;
+    font-size:clamp(48px,12vw,72px);
+    line-height:.96;
+  }
+  .about2026HeroFullCopy h1 em{
+    margin-top:20px;
+    font-size:16px;
+    line-height:1.55;
+  }
+}
+
+@media(max-width:520px){
+  .about2026HeroFull{
+    min-height:640px;
+    padding:0 22px 62px;
+  }
+  .about2026HeroFull>img{object-position:64% center}
+  .about2026HeroFullCopy h1{font-size:47px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .about2026HeroFull>img{
+    transition:none!important;
+    transform:none!important;
+  }
+}
+
+/* PROJECTS — remove the former section introduction spacing */
+.businessPremiumProjectsNoIntro .businessPremiumProjectStack{
+  margin-top:0;
+}
+
+/* =========================================================
+   v17 — unified premium hero styling, original copy preserved
+   Uses the Home hero as the typography reference.
+   ========================================================= */
+.businessPremiumHeroCopy,
+.newsroomImageHeroCopy,
+.contactPremiumHeroContent,
+.vision2026HeroCopyEditorial,
+.about2026HeroFullCopy{
+  color:var(--cream);
+  padding-left:clamp(18px,1.6vw,28px);
+  border-left:1px solid rgba(243,235,221,.42);
+}
+
+.businessPremiumHeroCopy>.eyebrow,
+.newsroomImageHeroCopy>.eyebrow,
+.contactPremiumHeroContent>.eyebrow,
+.about2026HeroFullCopy>.eyebrow{
+  margin:0 0 20px;
+  color:var(--cream);
+  font-family:var(--sans);
+  font-weight:500;
+  letter-spacing:.18em;
+}
+
+/* Main page statements: same light editorial character as the Home hero. */
+.businessPremiumHeroCopy h1,
+.newsroomImageHeroCopy h1,
+.contactPremiumHeroContent h1,
+.vision2026HeroCopyEditorial h1,
+.about2026HeroFullCopy h1{
+  margin:0;
+  color:var(--cream);
+  font-family:var(--sans);
+  font-size:clamp(58px,6.25vw,104px);
+  font-weight:300;
+  font-style:normal;
+  line-height:.94;
+  letter-spacing:-.048em;
+  text-wrap:balance;
+}
+
+/* Preserve the original emphasis words while making them visually consistent. */
+.contactPremiumHeroContent h1 em,
+.about2026HeroFullCopy h1 em{
+  color:inherit;
+  font:inherit;
+  letter-spacing:inherit;
+}
+
+.about2026HeroFullCopy h1 span,
+.about2026HeroFullCopy h1 em{
+  display:block;
+  max-width:none;
+  margin:0;
+}
+
+/* Vision has two original statements; keep each as one strong editorial line on wide screens. */
+.vision2026HeroCopyEditorial{
+  width:min(1180px,88vw);
+}
+.vision2026HeroCopyEditorial h1{
+  max-width:none;
+  font-size:clamp(50px,4.8vw,78px);
+}
+.vision2026HeroCopyEditorial h1 span,
+.vision2026HeroCopyEditorial h1 em{
+  display:block;
+  max-width:none;
+  margin:0;
+  color:inherit;
+  font:inherit;
+  letter-spacing:inherit;
+  white-space:nowrap;
+}
+
+.businessPremiumHeroCopy{
+  width:min(1080px,88vw);
+}
+.businessPremiumHeroCopy h1{
+  max-width:19ch;
+}
+
+.newsroomImageHeroCopy{
+  width:min(980px,88vw);
+  max-width:min(980px,88vw);
+}
+.newsroomImageHeroCopy h1{
+  max-width:18ch;
+}
+
+.contactPremiumHeroContent{
+  width:min(1080px,88vw);
+}
+.contactPremiumHeroContent h1{
+  max-width:18ch;
+}
+
+.about2026HeroFullCopy{
+  width:min(1080px,90vw);
+}
+.about2026HeroFullCopy h1{
+  max-width:18ch;
+}
+
+/* Original supporting sentences remain untouched; wider measure keeps them to a clean two-line rhythm. */
+.businessPremiumHeroCopy>p:not(.eyebrow),
+.newsroomImageHeroCopy>p:last-child,
+.contactPremiumHeroContent>p:last-child{
+  width:auto;
+  max-width:900px;
+  margin:28px 0 0;
+  color:rgba(255,250,242,.92);
+  font-family:var(--sans);
+  font-size:clamp(16px,1.25vw,20px);
+  font-weight:300;
+  line-height:1.55;
+  letter-spacing:.015em;
+  text-wrap:balance;
+}
+
+/* Premium image treatment: improve readability without changing any page content. */
+.businessPremiumHeroShade,
+.vision2026HeroEditorialShade,
+.about2026HeroFullShade,
+.newsroomImageHeroOverlay,
+.contactPremiumHeroShade{
+  background:
+    linear-gradient(90deg,rgba(7,22,37,.72) 0%,rgba(7,22,37,.42) 43%,rgba(7,22,37,.10) 76%,rgba(7,22,37,.03) 100%),
+    linear-gradient(0deg,rgba(7,22,37,.42) 0%,rgba(7,22,37,.04) 58%,rgba(7,22,37,.04) 100%);
+}
+
+/* News preview copy stays visually concise without editing its source text. */
+.newsroomCompactBody h3,
+.newsroomCompactBody p{
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  -webkit-line-clamp:2;
+}
+
+@media(max-width:850px){
+  .businessPremiumHeroCopy,
+  .newsroomImageHeroCopy,
+  .contactPremiumHeroContent,
+  .vision2026HeroCopyEditorial,
+  .about2026HeroFullCopy{
+    width:auto;
+    max-width:none;
+    padding-left:18px;
+  }
+  .businessPremiumHeroCopy h1,
+  .newsroomImageHeroCopy h1,
+  .contactPremiumHeroContent h1,
+  .about2026HeroFullCopy h1{
+    max-width:100%;
+    font-size:clamp(46px,11.2vw,72px);
+    line-height:.96;
+  }
+  .vision2026HeroCopyEditorial h1{
+    font-size:clamp(36px,8.2vw,58px);
+    line-height:1;
+  }
+  .vision2026HeroCopyEditorial h1 span,
+  .vision2026HeroCopyEditorial h1 em{
+    white-space:normal;
+  }
+  .businessPremiumHeroCopy>p:not(.eyebrow),
+  .newsroomImageHeroCopy>p:last-child,
+  .contactPremiumHeroContent>p:last-child{
+    max-width:92vw;
+    font-size:15px;
+    line-height:1.5;
+  }
+}
+
+@media(max-width:520px){
+  .businessPremiumHeroCopy,
+  .newsroomImageHeroCopy,
+  .contactPremiumHeroContent,
+  .vision2026HeroCopyEditorial,
+  .about2026HeroFullCopy{
+    padding-left:14px;
+    border-left-color:rgba(243,235,221,.34);
+  }
+  .businessPremiumHeroCopy h1,
+  .newsroomImageHeroCopy h1,
+  .contactPremiumHeroContent h1,
+  .about2026HeroFullCopy h1{
+    font-size:45px;
+  }
+  .vision2026HeroCopyEditorial h1{
+    font-size:36px;
+  }
+  .businessPremiumHeroCopy>p:not(.eyebrow),
+  .newsroomImageHeroCopy>p:last-child,
+  .contactPremiumHeroContent>p:last-child{
+    font-size:14px;
+  }
+}
+
+/* =========================================================
+   v18 — focused Projects + Contact refinements
+   ========================================================= */
+/* Keep the supplied Projects intro sentence on exactly two visual lines. */
+.businessPremiumHeroCopy .businessPremiumHeroLeadTwoLine{
+  max-width:none;
+  width:max-content;
+}
+.businessPremiumHeroLeadTwoLine span{
+  display:block;
+  white-space:nowrap;
+}
+
+/* The first three Home collection cards are now presentation-only, not links. */
+.homeCollectionPremiumCardStatic{
+  cursor:default;
+}
+.homeCollectionPremiumCardStatic:hover{
+  transform:none;
+  box-shadow:0 16px 38px rgba(3, 27, 53, 0.13);
+}
+.homeCollectionPremiumCardStatic:hover .homeCollectionPremiumMedia img{
+  transform:none;
+}
+
+/* New Contact hero artwork: keep the sales-lounge presentation readable and premium. */
+.contactPremiumHeroImage{
+  object-position:center center;
+}
+.contactPremiumHeroShade{
+  background:
+    linear-gradient(90deg,rgba(7,22,37,.72) 0%,rgba(7,22,37,.48) 38%,rgba(7,22,37,.16) 72%,rgba(7,22,37,.06) 100%),
+    linear-gradient(0deg,rgba(7,22,37,.42) 0%,rgba(7,22,37,.04) 58%,rgba(7,22,37,.04) 100%);
+}
+
+@media(max-width:850px){
+  .businessPremiumHeroCopy .businessPremiumHeroLeadTwoLine{
+    font-size:clamp(11px,2.8vw,15px);
+    letter-spacing:-.01em;
+  }
+}
+
+@media(max-width:520px){
+  .businessPremiumHeroCopy .businessPremiumHeroLeadTwoLine{
+    font-size:clamp(9px,2.75vw,12px);
+    line-height:1.55;
+    letter-spacing:-.02em;
+  }
+  .contactPremiumHeroImage{
+    object-position:54% center;
+  }
+}
+
+/* =========================================================
+   v19 — restore static project CTA labels + home statement fit
+   ========================================================= */
+/* Keep "View website" visible for the first three projects without making it clickable. */
+.businessPremiumProjectLinkStatic{
+  cursor:default;
+  pointer-events:none;
+}
+.businessPremiumProjectLinkStatic:hover{
+  gap:12px;
+  opacity:1;
+}
+
+/* Keep the opening Home statement together as one line. */
+.pointOfViewFirstLine{
+  display:inline-block;
+  white-space:nowrap;
+}
+
+@media(max-width:850px){
+  .pointOfViewStatement h2{
+    font-size:clamp(34px,9vw,72px);
+  }
+}
+
+
+
+/* =========================================================
+   v20 — Contact page visual refinement (content preserved)
+   ========================================================= */
+.contactPremiumHeroImage{
+  object-position:center 44%;
+  transform:scale(1.02);
+}
+.contactPremiumHeroShade{
+  background:
+    linear-gradient(90deg,rgba(7,22,37,.76) 0%,rgba(7,22,37,.52) 38%,rgba(7,22,37,.20) 72%,rgba(7,22,37,.08) 100%),
+    linear-gradient(0deg,rgba(7,22,37,.36) 0%,rgba(7,22,37,.12) 58%,rgba(7,22,37,.05) 100%);
+}
+.contactPremiumHeroContent{
+  width:min(1000px,88vw);
+}
+.contactPremiumHeroContent h1{
+  max-width:14ch;
+}
+.contactPremiumHeroContent>p:last-child{
+  max-width:760px;
+}
+
+.contactDirectBody{
+  padding-top:clamp(46px,5vw,72px);
+  padding-bottom:clamp(64px,6vw,92px);
+}
+.contactDirectFormShell,
+.contactCompactFormShell{
+  width:min(1100px,100%);
+  border-radius:28px;
+  border:1px solid rgba(3,27,53,.08);
+  background:linear-gradient(180deg,rgba(255,255,255,.97) 0%,rgba(250,247,241,.985) 100%);
+  box-shadow:0 26px 70px rgba(10,26,44,.08);
+}
+.contactCompactForm{
+  gap:0;
+}
+.contactCompactFormIntro{
+  display:block;
+  margin:0 0 34px;
+  padding:0 0 24px;
+  border-bottom:1px solid rgba(3,27,53,.10);
+}
+.contactCompactFormIntroCopy{
+  max-width:760px;
+}
+.contactCompactFormIntroCopy h3{
+  margin:0;
+  color:var(--navy);
+  font:400 clamp(34px,3.4vw,50px)/.96 var(--serif);
+  letter-spacing:-.045em;
+}
+.contactCompactFormIntroCopy p{
+  max-width:620px;
+  margin:14px 0 0;
+  color:rgba(3,27,53,.72);
+  font-size:14px;
+  line-height:1.7;
+}
+.contactCompactFields{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:22px 28px!important;
+}
+.contactCompactFields>label,
+.contactCompactPhone label{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.contactCompactFields label>span,
+.contactCompactPhone label>span{
+  color:var(--navy);
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.contactCompactFields input,
+.contactCompactFields select,
+.contactCompactFields textarea,
+.contactCompactPhone input,
+.contactCompactPhone select{
+  min-height:56px;
+  border:1px solid rgba(3,27,53,.12);
+  border-radius:16px;
+  background:rgba(255,255,255,.92);
+  padding:15px 16px;
+  color:var(--navy);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45);
+  transition:border-color .18s ease, box-shadow .18s ease, background-color .18s ease, transform .18s ease;
+}
+.contactCompactFields textarea{
+  min-height:150px!important;
+  resize:vertical;
+}
+.contactCompactFields input::placeholder,
+.contactCompactFields textarea::placeholder,
+.contactCompactPhone input::placeholder{
+  color:rgba(3,27,53,.42);
+}
+.contactCompactFields input:focus,
+.contactCompactFields select:focus,
+.contactCompactFields textarea:focus,
+.contactCompactPhone input:focus,
+.contactCompactPhone select:focus{
+  outline:none;
+  border-color:rgba(3,27,53,.32);
+  box-shadow:0 0 0 4px rgba(203,165,92,.16);
+  background:#fff;
+}
+.contactCompactPhone{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:270px minmax(0,1fr);
+  gap:22px;
+}
+.contactCompactSubmitRow{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:26px;
+  margin-top:28px;
+  padding-top:24px;
+  border-top:1px solid rgba(3,27,53,.10);
+}
+.contactCompactSubmitRow .consent{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  max-width:690px;
+  margin:0!important;
+  color:rgba(3,27,53,.78);
+  font-size:13px;
+  line-height:1.7;
+}
+.contactCompactSubmitRow .consent input{
+  margin-top:3px;
+  accent-color:#0d2239;
+}
+.contactCompactSubmitRow .button{
+  min-width:210px!important;
+  min-height:54px;
+  border-radius:999px;
+  padding:0 24px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  box-shadow:0 14px 28px rgba(3,27,53,.14);
+}
+.contactCompactForm .form-success,
+.contactCompactForm .form-error{
+  margin-top:18px;
+  border-radius:16px;
+}
+@media(max-width:900px){
+  .contactCompactPhone{
+    grid-template-columns:1fr;
+    gap:18px;
+  }
+}
+@media(max-width:760px){
+  .contactPremiumHeroImage{
+    object-position:58% center;
+    transform:scale(1.04);
+  }
+  .contactCompactFields{
+    grid-template-columns:1fr;
+  }
+  .contactCompactSubmitRow{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .contactCompactSubmitRow .button{
+    width:100%;
+  }
+}
+@media(max-width:520px){
+  .contactCompactFormShell,
+  .contactDirectFormShell{
+    border-radius:22px;
+  }
+  .contactCompactFormIntroCopy h3{
+    font-size:34px;
+    line-height:1;
+  }
+  .contactCompactFormIntroCopy p{
+    font-size:13px;
+  }
+  .contactPremiumHeroImage{
+    object-position:62% center;
+  }
+}
+
+/* =========================================================
+   v21 — Contact form blended with page background
+   No white surfaces; warm taupe / sand palette only.
+   ========================================================= */
+.contactDirectFormShell,
+.contactCompactFormShell{
+  background:linear-gradient(180deg,rgba(204,188,157,.72) 0%,rgba(195,177,143,.58) 100%);
+  border-color:rgba(3,27,53,.10);
+  box-shadow:0 22px 56px rgba(3,27,53,.07);
+}
+.contactCompactFields input,
+.contactCompactFields select,
+.contactCompactFields textarea,
+.contactCompactPhone input,
+.contactCompactPhone select{
+  background:rgba(218,204,177,.62);
+  border-color:rgba(3,27,53,.14);
+  box-shadow:none;
+}
+.contactCompactFields input:focus,
+.contactCompactFields select:focus,
+.contactCompactFields textarea:focus,
+.contactCompactPhone input:focus,
+.contactCompactPhone select:focus{
+  background:rgba(225,213,190,.82);
+  border-color:rgba(3,27,53,.34);
+  box-shadow:0 0 0 4px rgba(3,27,53,.055);
+}
+.contactCompactFormIntro,
+.contactCompactSubmitRow{
+  border-color:rgba(3,27,53,.13);
+}
+
+
+/* =========================================================
+   v14 — admin identity, enquiry detail and navigation polish
+   ========================================================= */
+.adminBrandLockup{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:7px;
+  align-items:start;
+  color:#fff;
+}
+.adminBrandLockup .adminBrandWordmark{
+  width:150px;
+  height:58px;
+  color:#fff;
+  background:currentColor;
+  -webkit-mask:url('/images/oniria-wordmark.png') left center/contain no-repeat;
+  mask:url('/images/oniria-wordmark.png') left center/contain no-repeat;
+}
+.adminBrandLockup>small{
+  color:#B8A37C;
+  font-size:7px;
+  letter-spacing:.29em;
+}
+.adminLoginLogo{
+  width:clamp(160px,15vw,210px);
+  color:#031B35;
+}
+.adminLoginLogo .adminLoginWordmarkLogo{
+  display:block;
+  width:100%;
+  height:76px;
+  color:inherit;
+  background:currentColor;
+  -webkit-mask:url('/images/oniria-wordmark.png') left center/contain no-repeat;
+  mask:url('/images/oniria-wordmark.png') left center/contain no-repeat;
+}
+.adminSidebarPremium .adminBrandLockup{
+  align-items:start;
+}
+.adminSidebarPremium .adminBrandLockup .adminBrandWordmark{
+  width:156px;
+  height:60px;
+  padding:0;
+  border-radius:0;
+}
+.adminLayoutPremium[data-sidebar="compact"] .adminBrandLockup .adminBrandWordmark{
+  width:46px;
+  height:46px;
+  -webkit-mask-position:left center;
+  mask-position:left center;
+}
+.adminLayoutPremium[data-sidebar="compact"] .adminBrandLockup>small{display:none}
+
+.adminNewsCardMain{
+  display:grid!important;
+  grid-template-columns:132px minmax(0,1fr);
+  gap:18px;
+  align-items:stretch;
+}
+.adminNewsCardThumb{
+  position:relative;
+  display:block;
+  min-height:128px;
+  overflow:hidden;
+  border-radius:12px;
+  background:#031B35;
+}
+.adminNewsCardThumb img{object-fit:cover}
+.adminNewsCardThumb .editorialFallback{min-height:128px;padding:14px}
+.adminNewsCardThumb .editorialFallbackLabel,
+.adminNewsCardThumb .editorialFallback p{display:none}
+.adminNewsCardThumb .editorialFallback strong{font-size:20px}
+.adminNewsCardCopy{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  text-align:left;
+}
+.adminNewsCardCopy h3{margin-top:12px}
+.adminNewsCardCopy small{margin-top:auto;padding-top:12px}
+
+.adminLeadTable .adminLeadEntry{
+  border-bottom:1px solid rgba(3,27,53,.13);
+}
+.adminLeadTable .adminLeadEntry .adminTableRow{border-bottom:0}
+.adminLeadMessage{
+  display:grid;
+  grid-template-columns:120px minmax(0,1fr);
+  gap:20px;
+  padding:0 18px 20px;
+}
+.adminLeadMessage>span{
+  padding-top:3px;
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:rgba(3,27,53,.58);
+}
+.adminLeadMessage p{
+  margin:0;
+  max-width:760px;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  font-size:13px;
+  line-height:1.7;
+  color:rgba(3,27,53,.82);
+}
+.adminRouteLoading{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  color:#031B35;
+}
+.adminRouteLoading>div{display:grid;gap:4px}
+.adminRouteLoading strong{font:400 22px/1.1 var(--serif)}
+.adminRouteLoading small{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.58}
+
+@media(max-width:760px){
+  .adminNewsCardMain{grid-template-columns:96px minmax(0,1fr);gap:13px}
+  .adminNewsCardThumb{min-height:108px}
+  .adminLeadMessage{grid-template-columns:1fr;gap:7px;padding-left:10px;padding-right:10px}
 }

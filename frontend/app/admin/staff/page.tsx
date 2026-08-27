@@ -1,7 +1,7 @@
 'use client';
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
-import { AdminFrame, AdminState, type StaffProfile, useAdminSession } from '@/components/AdminData';
+import { AdminFrame, AdminState, getAdminAccessToken, type StaffProfile, useAdminSession } from '@/components/AdminData';
 import { authFetch } from '@/lib/api';
 
 const roleOptions = [
@@ -17,14 +17,6 @@ type Staff = StaffProfile & {
   updated_at: string;
 };
 
-async function getToken() {
-  const { supabase } = await import('@/lib/supabase');
-  if (!supabase) throw new Error('Staff sign-in is unavailable. Please contact an administrator.');
-  const { data } = await supabase.auth.getSession();
-  const token = data.session?.access_token;
-  if (!token) throw new Error('Your staff session has expired.');
-  return token;
-}
 
 export default function Page() {
   const { profile } = useAdminSession();
@@ -41,7 +33,7 @@ export default function Page() {
     setLoading(true);
     setError('');
     try {
-      const token = await getToken();
+      const token = await getAdminAccessToken();
       setStaff(await authFetch<Staff[]>('/admin/staff', token));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to load staff.');
@@ -66,7 +58,7 @@ export default function Page() {
     const data = new FormData(form);
     const roles = roleOptions.filter((role) => data.get(`role_${role.value}`) === 'on').map((role) => role.value);
     try {
-      const token = await getToken();
+      const token = await getAdminAccessToken();
       const created = await authFetch<Staff>('/admin/staff', token, {
         method: 'POST',
         body: JSON.stringify({
@@ -96,7 +88,7 @@ export default function Page() {
     const roles = roleOptions.filter((role) => data.get(`edit_role_${role.value}`) === 'on').map((role) => role.value);
     const password = String(data.get('password') || '');
     try {
-      const token = await getToken();
+      const token = await getAdminAccessToken();
       const updated = await authFetch<Staff>(`/admin/staff/${selected.id}`, token, {
         method: 'PATCH',
         body: JSON.stringify({

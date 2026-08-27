@@ -2,32 +2,28 @@ import Image from 'next/image';
 import Link from 'next/link';
 import HomeHero from '@/components/HomeHero';
 import Reveal from '@/components/Reveal';
-import EditorialImage from '@/components/EditorialImage';
-import { formatNewsDate, truncateText } from '@/lib/newsroom';
-import { getNews } from '@/lib/api';
 
-export const dynamic = 'force-dynamic';
 
 const collection = [
   {
     name: 'ONIRIA Stone Town',
     descriptor: 'Heritage Hospitality',
-    image: '/images/stone-town-restaurant.png',
-    href: '/projects/oniria-stone-town',
+    image: '/images/stone-town-restaurant.jpg',
+    href: '',
     external: false,
   },
   {
     name: 'ONIRIA Michamvi',
     descriptor: 'Wellness · Nature · Longevity',
-    image: '/images/michamvi-concept.png',
-    href: '/projects/oniria-michamvi',
+    image: '/images/michamvi-concept.jpg',
+    href: '',
     external: false,
   },
   {
     name: 'ONA Towers',
     descriptor: 'Landmark Residences',
     image: '/images/ona-tower.webp',
-    href: '/projects/ona-towers',
+    href: '',
     external: false,
   },
   {
@@ -39,10 +35,7 @@ const collection = [
   },
 ];
 
-export default async function Home() {
-  let news: any[] = [];
-  try { news = (await getNews(1, 4)).items; } catch {}
-
+export default function Home() {
   return (
     <main className="publicPage">
       <HomeHero />
@@ -52,11 +45,11 @@ export default async function Home() {
           <p className="eyebrow">ONIRIA / Our view</p>
           <div className="pointOfViewGrid">
             <div className="pointOfViewStatement">
-              <h2>We begin with <em>place.</em><br />Then imagine what it could become.</h2>
+              <h2><span className="pointOfViewFirstLine">We begin with <em>place.</em></span><br />Then imagine what it could become.</h2>
             </div>
             <div className="pointOfViewCopy">
               <p>Every ONIRIA project begins with its place — its landscape, culture and possibilities — and evolves into an experience that could belong nowhere else.</p>
-              <Link href="/our-story" className="textLink">Discover Our Vision <span>→</span></Link>
+              <Link href="/vision" prefetch className="textLink">Discover Our Vision <span>→</span></Link>
             </div>
           </div>
         </Reveal>
@@ -90,7 +83,9 @@ export default async function Home() {
                       <h4>{project.name}</h4>
                       <p>{project.descriptor}</p>
                     </div>
-                    <span className="homeCollectionPremiumAction">Discover <b>→</b></span>
+                    {project.external ? (
+                      <span className="homeCollectionPremiumAction">Discover <b>→</b></span>
+                    ) : null}
                   </div>
                 </>
               );
@@ -107,84 +102,34 @@ export default async function Home() {
                   {CardInner}
                 </a>
               ) : (
-                <Link
+                <article
                   key={project.name}
-                  href={project.href}
-                  className={`homeCollectionPremiumCard homeCollectionPremiumCard${index + 1}`}
+                  className={`homeCollectionPremiumCard homeCollectionPremiumCardStatic homeCollectionPremiumCard${index + 1}`}
                   role="listitem"
                 >
                   {CardInner}
-                </Link>
+                </article>
               );
             })}
           </div>
 
           <div className="homeCollectionPremiumFooter">
-            <Link href="/projects" className="textLink">Explore all projects <span>→</span></Link>
+            <Link href="/projects" prefetch className="textLink">Explore all projects <span>→</span></Link>
           </div>
         </Reveal>
       </section>
 
-      <section className="dualFeature premiumBusinessFeature hospitalityFeature">
+      <section className="dualFeature premiumBusinessFeature hospitalityFeature hospitalityFeatureRefined">
         <div className="dualMedia hospitalityMedia" aria-hidden="true">
           <div className="hospitalityImage" />
         </div>
-        <Reveal className="dualCopy hospitalityCopy">
-          <p className="eyebrow">Hospitality as atmosphere</p>
-          <h2>Designed for how a place <em>feels.</em></h2>
-          <p>From arrival to dining, private rooms to shared spaces, each touchpoint is designed as part of one complete experience.</p>
-          <Link href="/business" className="button buttonNavy">Explore our business <span>↗</span></Link>
+        <Reveal className="dualCopy hospitalityCopy hospitalityCopyRefined">
+          <h2>We design for how life feels.</h2>
+          <p>Every details shapes the experience, how we arrive, move, connect retreat and belong.</p>
+          <Link href="/business" prefetch className="button buttonNavy">Explore Our Project <span>↗</span></Link>
         </Reveal>
       </section>
 
-      <section className="section homeNewsroomTeaser" aria-label="ONIRIA Newsroom preview">
-        <Reveal>
-          <div className="homeNewsTeaserHead">
-            <div>
-              <p className="eyebrow">ONIRIA Newsroom</p>
-              <h2>New & upcoming.</h2>
-            </div>
-            <Link href="/newsroom" className="textLink">Open newsroom <span>→</span></Link>
-          </div>
-
-          {news.length ? (
-            <div className="homeNewsTeaserGrid">
-              {news.slice(0, 4).map((article: any, index: number) => (
-                <Link
-                  key={article.id || article.slug}
-                  href={`/newsroom/${article.slug}`}
-                  className={`homeNewsMiniCard ${index === 0 ? 'featured' : ''}`}
-                >
-                  <div className="homeNewsMiniMedia">
-                    <EditorialImage
-                      src={article.hero_image_url}
-                      alt={article.hero_image_alt || article.title}
-                      sizes={index === 0 ? '(max-width: 900px) 100vw, 42vw' : '(max-width: 900px) 100vw, 22vw'}
-                      fallbackTitle="ONIRIA"
-                      fallbackLabel="Newsroom update"
-                    />
-                  </div>
-                  <div className="homeNewsMiniCopy">
-                    <div className="homeNewsMiniMeta">
-                      <span>{index === 0 ? 'Latest update' : 'ONIRIA update'}</span>
-                      <span>{formatNewsDate(article.published_at)}</span>
-                    </div>
-                    <h3>{article.title}</h3>
-                    <p>{truncateText(article.excerpt || article.title, index === 0 ? 128 : 92)}</p>
-                    <span className="homeNewsMiniAction">Read update <b>→</b></span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <Link href="/newsroom" className="homeNewsTeaserEmpty">
-              <span>Newsroom</span>
-              <strong>New stories and official updates will appear here.</strong>
-              <b>Explore newsroom →</b>
-            </Link>
-          )}
-        </Reveal>
-      </section>
     </main>
   );
 }

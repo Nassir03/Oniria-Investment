@@ -1,11 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 const links = [
-  ['/#vision', 'Vision'],
+  ['/vision', 'Vision'],
   ['/projects', 'Projects'],
   ['/our-story', 'About'],
   ['/newsroom', 'News'],
@@ -16,6 +16,7 @@ function routeCanOverlay(path: string) {
   return (
     path === '/' ||
     path.startsWith('/our-story') ||
+    path.startsWith('/vision') ||
     path.startsWith('/business') ||
     path.startsWith('/contact') ||
     path === '/newsroom' ||
@@ -25,7 +26,6 @@ function routeCanOverlay(path: string) {
 
 export default function Header() {
   const path = usePathname();
-  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -37,15 +37,6 @@ export default function Header() {
   }, []);
 
   useEffect(() => setOpen(false), [path]);
-
-  // Warm the primary public routes shortly after the header mounts so navigation
-  // feels immediate, while keeping the initial page render the top priority.
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      ['/projects', '/our-story', '/newsroom', '/contact'].forEach((href) => router.prefetch(href));
-    }, 350);
-    return () => window.clearTimeout(timer);
-  }, [router]);
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
@@ -59,15 +50,13 @@ export default function Header() {
 
   return (
     <header className={`siteHeader ${solid ? 'solid' : 'overlay'} ${canOverlay ? 'canOverlay' : 'surfaceOnly'} ${path === '/' ? 'homeRoute' : ''}`}>
-      <Link href="/" className="wordmark" aria-label="ONIRIA Investments home">
+      <Link href="/" prefetch className="wordmark" aria-label="ONIRIA Investments home">
         <span className="wordmarkLogo" aria-hidden="true" />
       </Link>
 
       <nav className="desktopNav desktopNavRight" aria-label="Primary navigation">
         {links.map(([href, label]) => {
-          const active = href === '/#vision'
-            ? path === '/'
-            : path === href || path.startsWith(`${href}/`);
+          const active = path === href || path.startsWith(`${href}/`);
           return (
             <Link key={href} href={href} prefetch className={active ? 'active' : ''}>
               {label}

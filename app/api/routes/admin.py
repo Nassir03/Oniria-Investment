@@ -349,8 +349,10 @@ async def upload_newsroom_image(
     _: StaffPrincipal = Depends(require_roles('admin','editor','content_manager')),
 ):
     public_path = await save_local_newsroom_image(file)
-    base = str(request.base_url).rstrip('/')
-    return {'url': f'{base}{public_path}', 'path': public_path}
+    # Store a stable relative media path rather than a localhost/backend URL.
+    # The frontend proxies /media to the configured backend, so the same DB
+    # value works locally and after deployment.
+    return {'url': public_path, 'path': public_path}
 
 
 @router.post('/uploads/profile-image')

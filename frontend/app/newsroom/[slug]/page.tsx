@@ -4,7 +4,7 @@ import EditorialImage from '@/components/EditorialImage';
 import { getArticle } from '@/lib/api';
 import { formatNewsDate } from '@/lib/newsroom';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 function textFromNode(node: any): string {
   if (!node) return '';
@@ -50,7 +50,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     <main className="publicPage newsroomArticleTaupe">
       <article className="newsroomArticleShell">
         <header className="newsroomArticleHeader">
-          <Link href="/newsroom" className="textLink">Back to newsroom <span>→</span></Link>
+          <Link href="/newsroom" prefetch className="textLink">Back to news <span>→</span></Link>
           <div className="newsroomArticleMeta">
             <span>{formatNewsDate(article.published_at)}</span>
             <span>{categories}</span>
@@ -66,7 +66,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
             priority
             sizes="(max-width: 900px) 100vw, 82vw"
             fallbackTitle={article.title}
-            fallbackLabel="ONIRIA newsroom"
+            fallbackLabel="ONIRIA news"
             fallbackTone="light"
           />
         </div>
@@ -75,7 +75,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
         <footer className="newsroomArticleFooter">
           <span>ONIRIA Investments</span>
-          <Link href="/contact" className="textLink">Start an enquiry <span>→</span></Link>
+          <Link href="/contact" prefetch className="textLink">Start an enquiry <span>→</span></Link>
         </footer>
       </article>
     </main>

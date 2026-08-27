@@ -48,7 +48,7 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   // Public pages already contain graceful fallbacks. Do not hold an entire
   // navigation for 20 seconds when the local/API service is offline.
   // Mutations and browser-side admin actions keep the longer safety window.
-  const timeoutMs = typeof window === 'undefined' && method === 'GET' ? 2_500 : 20_000;
+  const timeoutMs = typeof window === 'undefined' && method === 'GET' ? 1_500 : 20_000;
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
@@ -57,10 +57,12 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
     if (init?.body && !isFormData && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
     if (!headers.has('Accept')) headers.set('Accept', 'application/json');
 
+    const serverRead = typeof window === 'undefined' && method === 'GET';
     const res = await fetch(`${apiBase()}${path}`, {
       ...init,
       headers,
-      cache: 'no-store',
+      cache: serverRead ? 'force-cache' : 'no-store',
+      ...(serverRead ? { next: { revalidate: 60 } } : {}),
       signal: init?.signal || controller.signal,
     });
 

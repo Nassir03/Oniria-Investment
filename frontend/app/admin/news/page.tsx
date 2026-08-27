@@ -1,9 +1,9 @@
 'use client';
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
-import { AdminFrame, AdminState } from '@/components/AdminData';
+import { AdminFrame, AdminState, getAdminAccessToken } from '@/components/AdminData';
+import EditorialImage from '@/components/EditorialImage';
 import { authFetch, getArticle } from '@/lib/api';
-import { supabase } from '@/lib/supabase';
 
 type News = {
   id:string;
@@ -47,12 +47,6 @@ function textToBody(text:string) {
   };
 }
 
-async function token() {
-  if (!supabase) throw new Error('Staff sign-in is unavailable. Please contact an administrator.');
-  const { data } = await supabase.auth.getSession();
-  if (!data.session?.access_token) throw new Error('Your staff session has expired.');
-  return data.session.access_token;
-}
 
 export default function Page() {
   const [data,setData]=useState<Result|null>(null);
@@ -67,7 +61,7 @@ export default function Page() {
 
   const load=useCallback(async()=>{
     setLoading(true);setError('');
-    try{ setData(await authFetch<Result>('/admin/news?page_size=100',await token())); }
+    try{ setData(await authFetch<Result>('/admin/news?page_size=100',await getAdminAccessToken())); }
     catch(err){ setError(err instanceof Error?err.message:'Unable to load newsroom.'); }
     finally{ setLoading(false); }
   },[]);
@@ -81,7 +75,7 @@ export default function Page() {
     try{
       const fd=new FormData();
       fd.append('file',file);
-      const result=await authFetch<{url:string;path:string}>('/admin/uploads/newsroom-image',await token(),{method:'POST',body:fd});
+      const result=await authFetch<{url:string;path:string}>('/admin/uploads/newsroom-image',await getAdminAccessToken(),{method:'POST',body:fd});
       setUploadedImageUrl(result.url);
       setNotice('Image uploaded. Save the article to attach it to this story.');
     }catch(err){setError(err instanceof Error?err.message:'Unable to upload image.');}
@@ -105,7 +99,7 @@ export default function Page() {
       meta_description:String(fd.get('meta_description')||'').trim()||null,
     };
     try{
-      const access=await token();
+      const access=await getAdminAccessToken();
       if(editing){
         const updated=await authFetch<News>(`/admin/news/${editing.id}`,access,{method:'PATCH',body:JSON.stringify(payload)});
         setEditing(updated);setNotice('Newsroom article saved.');
@@ -122,7 +116,7 @@ export default function Page() {
     if(kind==='archive'&&!window.confirm(`Archive “${item.title}”?`))return;
     setSaving(true);setError('');setNotice('');
     try{
-      const access=await token();
+      const access=await getAdminAccessToken();
       if(kind==='archive') {
         await authFetch<void>(`/admin/news/${item.id}`,access,{method:'DELETE'});
         setNotice('Article archived.');
@@ -161,10 +155,21 @@ export default function Page() {
       <section className="adminNewsList">
         {data?.items.map((item)=><article key={item.id} className={`adminNewsCard ${editing?.id===item.id?'active':''}`}>
           <button className="adminNewsCardMain" onClick={()=>{setEditing(item);setUploadedImageUrl(item.hero_image_url||'');setCreating(false);}}>
-            <span className="statusPill">{item.status}</span>
-            <h3>{item.title}</h3>
-            <p>{item.excerpt||'No excerpt yet.'}</p>
-            <small>Updated {new Date(item.updated_at).toLocaleDateString()}</small>
+            <span className="adminNewsCardThumb" aria-hidden="true">
+              <EditorialImage
+                src={item.hero_image_url}
+                alt={item.hero_image_alt || item.title}
+                sizes="132px"
+                fallbackTitle="ONIRIA"
+                fallbackLabel="Story image"
+              />
+            </span>
+            <span className="adminNewsCardCopy">
+              <span className="statusPill">{item.status}</span>
+              <h3>{item.title}</h3>
+              <p>{item.excerpt||'No excerpt yet.'}</p>
+              <small>Updated {new Date(item.updated_at).toLocaleDateString()}</small>
+            </span>
           </button>
           <div className="adminNewsActions">
             {item.status==='published'?<button onClick={()=>action(item,'unpublish')} disabled={saving}>Unpublish</button>:<button onClick={()=>action(item,'publish')} disabled={saving}>Publish</button>}

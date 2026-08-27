@@ -1,8 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { AdminFrame, AdminState, readableRoles, useProtectedData, type StaffProfile } from '@/components/AdminData';
-import { supabase } from '@/lib/supabase';
+import { AdminFrame, AdminState, getAdminAccessToken, readableRoles, useAdminSession, useProtectedData } from '@/components/AdminData';
 
 type PageResult<T> = { items: T[]; meta: { total: number } };
 type NewsItem = { id:string; title:string; status:string; updated_at:string };
@@ -22,10 +21,7 @@ function labelPath(path:string) {
 }
 
 async function downloadReport(kind:'csv'|'xlsx') {
-  if (!supabase) return;
-  const { data } = await supabase.auth.getSession();
-  const token = data.session?.access_token;
-  if (!token) return;
+  const token = await getAdminAccessToken();
   const response = await fetch(`/api/backend/admin/exports/leads.${kind}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -44,9 +40,9 @@ async function downloadReport(kind:'csv'|'xlsx') {
 export default function Page() {
   const news = useProtectedData<PageResult<NewsItem>>('/admin/news?page_size=5');
   const leads = useProtectedData<PageResult<Lead>>('/admin/leads?page_size=5');
-  const me = useProtectedData<StaffProfile>('/admin/me');
+  const { profile } = useAdminSession();
   const analytics = useProtectedData<Analytics>('/admin/analytics?days=30');
-  const isAdmin = me.data?.roles?.includes('admin');
+  const isAdmin = profile?.roles?.includes('admin');
   const maxDaily = Math.max(1, ...(analytics.data?.daily.map((item)=>item.views) || [1]));
   const recentDaily = analytics.data?.daily.slice(-14) || [];
   const maxMonthly = Math.max(1, ...(analytics.data?.monthly.map((item)=>item.views) || [1]));
@@ -111,24 +107,24 @@ export default function Page() {
           <button onClick={()=>void downloadReport('xlsx')}>Excel report <span>↓</span></button>
           <button onClick={()=>void downloadReport('csv')}>CSV report <span>↓</span></button>
         </div>
-        <div className="adminAccessSummary"><span>Your access</span><strong>{readableRoles(me.data?.roles) || 'Staff member'}</strong></div>
+        <div className="adminAccessSummary"><span>Your access</span><strong>{readableRoles(profile?.roles) || 'Staff member'}</strong></div>
       </article>
     </section>
 
     <section className="adminQuickActions adminQuickActionsPremium">
-      <Link href="/admin/news"><span>01</span><div><small>Newsroom</small><strong>Create or publish an update</strong></div><b>↗</b></Link>
-      <Link href="/admin/leads"><span>02</span><div><small>Enquiries</small><strong>Review customer interest and follow-up</strong></div><b>↗</b></Link>
-      {isAdmin && <Link href="/admin/staff"><span>03</span><div><small>Team</small><strong>Add staff and manage access</strong></div><b>↗</b></Link>}
+      <Link href="/admin/news" prefetch><span>01</span><div><small>Newsroom</small><strong>Create or publish an update</strong></div><b>↗</b></Link>
+      <Link href="/admin/leads" prefetch><span>02</span><div><small>Enquiries</small><strong>Review customer interest and follow-up</strong></div><b>↗</b></Link>
+      {isAdmin && <Link href="/admin/staff" prefetch><span>03</span><div><small>Team</small><strong>Add staff and manage access</strong></div><b>↗</b></Link>}
     </section>
 
     <div className="adminDashboardGrid adminDashboardGridModern">
       <section className="adminPanel adminPanelModern">
-        <div className="adminPanelHead"><div><span>Recent enquiries</span><h2>Customer activity</h2></div><Link href="/admin/leads">View all →</Link></div>
+        <div className="adminPanelHead"><div><span>Recent enquiries</span><h2>Customer activity</h2></div><Link href="/admin/leads" prefetch>View all →</Link></div>
         <AdminState loading={leads.loading} error={leads.error}/>
         {leads.data?.items?.map((lead)=><div className="adminCompactRow" key={lead.id}><div><strong>{lead.first_name} {lead.last_name}</strong><span>{lead.reference_no}</span></div><span className="statusPill">{lead.status}</span></div>)}
       </section>
       <section className="adminPanel adminPanelModern">
-        <div className="adminPanelHead"><div><span>Latest stories</span><h2>Newsroom activity</h2></div><Link href="/admin/news">Open newsroom →</Link></div>
+        <div className="adminPanelHead"><div><span>Latest stories</span><h2>Newsroom activity</h2></div><Link href="/admin/news" prefetch>Open newsroom →</Link></div>
         <AdminState loading={news.loading} error={news.error}/>
         {news.data?.items?.map((item)=><div className="adminCompactRow" key={item.id}><div><strong>{item.title}</strong><span>{new Date(item.updated_at).toLocaleDateString()}</span></div><span className="statusPill">{item.status}</span></div>)}
       </section>

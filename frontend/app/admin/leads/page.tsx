@@ -1,16 +1,16 @@
 'use client';
 
-import { AdminFrame, AdminState, useProtectedData } from '@/components/AdminData';
-import { supabase } from '@/lib/supabase';
+import { AdminFrame, AdminState, getAdminAccessToken, useProtectedData } from '@/components/AdminData';
 
-type Lead = { id:string; reference_no:string; first_name:string; last_name:string; email:string; phone?:string|null; country?:string|null; enquiry_type?:string|null; status:string; created_at:string };
+type Lead = {
+  id:string; reference_no:string; first_name:string; last_name:string; email:string; phone?:string|null;
+  country?:string|null; enquiry_type?:string|null; message:string; preferred_contact_method?:string|null;
+  status:string; created_at:string;
+};
 type Result = { items: Lead[]; meta: { total:number } };
 
 async function download(kind:'csv'|'xlsx') {
-  if (!supabase) return;
-  const { data } = await supabase.auth.getSession();
-  const token = data.session?.access_token;
-  if (!token) return;
+  const token = await getAdminAccessToken();
   const response = await fetch(`/api/backend/admin/exports/leads.${kind}`, { headers: { Authorization: `Bearer ${token}` } });
   if (!response.ok) return;
   const blob = await response.blob();
@@ -47,6 +47,12 @@ export default function Page() {
     </div>
 
     <AdminState loading={loading} error={error} empty={!loading && !error && !data?.items?.length ? 'No enquiries yet.' : undefined}/>
-    {data?.items?.length ? <div className="adminTable adminTablePremium"><div className="adminTableHead"><span>Customer</span><span>Reference</span><span>Interest</span><span>Date</span><span>Status</span></div>{data.items.map((lead)=><div className="adminTableRow" key={lead.id}><div><strong>{lead.first_name} {lead.last_name}</strong><small>{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}</small></div><span>{lead.reference_no}</span><span>{lead.enquiry_type || 'General'}</span><span>{new Date(lead.created_at).toLocaleDateString('en-GB')}</span><span className="statusPill">{lead.status.replaceAll('_',' ')}</span></div>)}</div> : null}
+    {data?.items?.length ? <div className="adminTable adminTablePremium adminLeadTable">
+      <div className="adminTableHead"><span>Customer</span><span>Reference</span><span>Interest</span><span>Date</span><span>Status</span></div>
+      {data.items.map((lead)=><article className="adminLeadEntry" key={lead.id}>
+        <div className="adminTableRow"><div><strong>{lead.first_name} {lead.last_name}</strong><small>{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}</small></div><span>{lead.reference_no}</span><span>{lead.enquiry_type || 'General'}</span><span>{new Date(lead.created_at).toLocaleDateString('en-GB')}</span><span className="statusPill">{lead.status.replaceAll('_',' ')}</span></div>
+        <div className="adminLeadMessage"><span>Message</span><p>{lead.message}</p></div>
+      </article>)}
+    </div> : null}
   </AdminFrame>;
 }

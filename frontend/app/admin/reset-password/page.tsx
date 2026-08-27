@@ -12,11 +12,12 @@ export default function Page() {
   const router = useRouter();
 
   useEffect(() => {
+    router.prefetch('/admin');
     if (!supabase) { setError('Password reset is not available.'); return; }
     void supabase.auth.getSession().then(({ data }) => setReady(Boolean(data.session)));
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => setReady(Boolean(session)));
     return () => listener.subscription.unsubscribe();
-  }, []);
+  }, [router]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -31,13 +32,14 @@ export default function Page() {
     if (updateError) setError(updateError.message);
     else {
       setNotice('Your password has been updated.');
+      router.prefetch('/admin');
       setTimeout(()=>router.replace('/admin'), 900);
     }
   }
 
   return <main className="adminLoginPage adminLoginPremium adminLoginRefined">
     <section className="adminLoginBrand">
-      <div className="adminLoginLogo"><img src="/oniria-admin-mark.png" alt="ONIRIA Investments" /></div>
+      <div className="adminLoginLogo" aria-label="ONIRIA Investments"><span className="wordmarkLogo adminLoginWordmarkLogo" aria-hidden="true" /></div>
       <div className="adminLoginStory"><p className="eyebrow">Account recovery</p><h1>Create a new password.</h1><p>Choose a strong password for your ONIRIA staff account, then return to your workspace.</p></div>
       <span className="adminLoginFine">ONIRIA Investments · Staff administration</span>
     </section>

@@ -49,11 +49,9 @@ export default function ContactForm({ projects, selectedProjectId: selectedProje
     const subject = String(fd.get('subject') || 'General question');
     const originalMessage = String(fd.get('message') || '').trim();
     const projectId = String(fd.get('project_id') || '');
-    const projectLabel = form.querySelector<HTMLSelectElement>('select[name="project_id"]')?.selectedOptions?.[0]?.text || 'General ONIRIA enquiry';
-
-    const message = [`Subject: ${subject}`, `Project of interest: ${projectLabel}`, '', originalMessage]
-      .filter(Boolean)
-      .join('\n');
+    // Keep the customer's message exactly as entered. Subject and project are
+    // already submitted in their own fields and should not be prepended here.
+    const message = originalMessage;
 
     const payload = {
       first_name: firstName,
@@ -84,8 +82,7 @@ export default function ContactForm({ projects, selectedProjectId: selectedProje
   return (
     <form className="lead-form lead-formPremium contactCompactForm" onSubmit={submit}>
       <div className="contactFormIntro contactCompactFormIntro">
-        <p className="eyebrow">Send a message</p>
-        <div>
+        <div className="contactCompactFormIntroCopy">
           <h3>Let’s start with the essentials.</h3>
           <p>Share a few details and the relevant ONIRIA team can continue the conversation with you.</p>
         </div>

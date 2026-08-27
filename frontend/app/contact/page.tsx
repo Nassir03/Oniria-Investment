@@ -1,8 +1,9 @@
 import Image from 'next/image';
+import { Suspense } from 'react';
 import ContactForm from '@/components/ContactForm';
 import { getProjects } from '@/lib/api';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 export const metadata = { title: 'Contact' };
 
 export default async function Page() {
@@ -16,8 +17,8 @@ export default async function Page() {
       <section className="contactPremiumHero">
         <Image
           className="contactPremiumHeroImage"
-          src="/images/contact-hero-ona-towers.png"
-          alt="ONA Towers exterior"
+          src="/images/contact-hero-ona-arrival.webp"
+          alt="ONA Towers arrival façade at golden hour"
           fill
           priority
           sizes="100vw"
@@ -34,38 +35,11 @@ export default async function Page() {
         </div>
       </section>
 
-      <section className="section contactPremiumBody contactCompactBody">
-        <div className="contactPremiumIntro contactCompactIntro">
-          <div>
-            <p className="eyebrow">Connect with ONIRIA</p>
-            <h2>Begin with what matters to you.</h2>
-          </div>
-          <p>
-            Share your interest and preferred way to be contacted. We will route your enquiry to the right ONIRIA team
-            for a relevant follow-up.
-          </p>
-        </div>
-
-        <div className="contactPremiumServices contactCompactServices" aria-label="ONIRIA enquiry types">
-          <article>
-            <span>01 · Project enquiries</span>
-            <h3>Explore a destination.</h3>
-            <p>Request project information, availability context or a more detailed introduction.</p>
-          </article>
-          <article>
-            <span>02 · Investment</span>
-            <h3>Discuss the opportunity.</h3>
-            <p>Tell us what you are considering and we will direct the conversation to the relevant team.</p>
-          </article>
-          <article>
-            <span>03 · Partnerships & media</span>
-            <h3>Connect with the right people.</h3>
-            <p>Start a focused specialist conversation without unnecessary steps.</p>
-          </article>
-        </div>
-
-        <div className="contactPremiumFormShell contactCompactFormShell">
-          <ContactForm projects={projects} />
+      <section className="section contactPremiumBody contactCompactBody contactDirectBody">
+        <div className="contactPremiumFormShell contactCompactFormShell contactDirectFormShell">
+          <Suspense fallback={null}>
+            <ContactForm projects={projects} />
+          </Suspense>
         </div>
       </section>
     </main>

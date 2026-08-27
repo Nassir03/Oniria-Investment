@@ -30,7 +30,7 @@ export default function HomeHero() {
         <p className="heroLead">Places. Experience new ways living. Born in Zanzibar.</p>
 
         <div className="heroActions heroActionsSingle">
-          <Link href="/projects" className="button buttonLight">
+          <Link href="/projects" prefetch className="button buttonLight">
             Explore Our projects <span>↗</span>
           </Link>
         </div>

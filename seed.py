@@ -11,7 +11,7 @@ PROJECTS = [
         'location': 'Location details available on enquiry',
         'summary': 'A hospitality-led ONIRIA concept where heritage character, warm materiality and contemporary guest experience meet.',
         'featured': False,
-        'media': [('/images/stone-town-restaurant.png','ONIRIA Stone Town restaurant concept visualization'),('/images/restaurant.png','ONIRIA hospitality lounge concept visualization')],
+        'media': [('/images/stone-town-restaurant.jpg','ONIRIA Stone Town restaurant concept visualization'),('/images/restaurant.webp','ONIRIA hospitality lounge concept visualization')],
     },
     {
         'slug': 'oniria-michamvi',
@@ -20,7 +20,7 @@ PROJECTS = [
         'location': 'Location details available on enquiry',
         'summary': 'A coastal destination concept focused on landscape, hospitality and an immersive sense of escape.',
         'featured': False,
-        'media': [('/images/michamvi-concept.png','ONIRIA Michamvi coastal concept visualization'),('/images/homepage-light.png','ONIRIA coastal residence concept visualization')],
+        'media': [('/images/michamvi-concept.jpg','ONIRIA Michamvi coastal concept visualization'),('/images/homepage-light.webp','ONIRIA coastal residence concept visualization')],
     },
     {
         'slug': 'ona-towers',
@@ -29,7 +29,7 @@ PROJECTS = [
         'location': 'Location details available on enquiry',
         'summary': 'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
         'featured': True,
-        'media': [('/images/outside-ona-tower.png','ONA Towers arrival concept visualization'),('/images/ona-tower.png','ONA Towers exterior concept visualization'),('/images/room.png','ONA Towers bedroom concept visualization')],
+        'media': [('/images/outside-ona-tower.jpg','ONA Towers arrival concept visualization'),('/images/ona-tower.webp','ONA Towers exterior concept visualization'),('/images/room.webp','ONA Towers bedroom concept visualization')],
     },
     {
         'slug': 'v-town',
@@ -38,7 +38,7 @@ PROJECTS = [
         'location': 'Location details available on enquiry',
         'summary': 'A new ONIRIA residential expression composed around calm architecture, greenery and everyday quality of life.',
         'featured': False,
-        'media': [('/images/v-town-villa.png','V Town villa concept visualization'),('/images/room.png','ONIRIA residential interior concept visualization')],
+        'media': [('/images/v-town-villa.webp','V Town villa concept visualization'),('/images/room.webp','ONIRIA residential interior concept visualization')],
     },
 ]
 
