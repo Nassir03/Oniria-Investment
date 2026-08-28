@@ -206,8 +206,8 @@ export default async function Page() {
               <p>
                 ONIRIA welcomes project, investment and commercial conversations that complement the destination vision. Our wider Vigor / Turky Group connection brings experience across operating businesses and sectors in Tanzania.
               </p>
-              <Link href="/contact" prefetch className="button buttonNavy">
-                Contact<span className="arrow">→</span>
+              <Link href="/contact" prefetch className="businessPremiumGroupLink">
+                CONTACT <span className="arrow">→</span>
               </Link>
             </div>
           </div>

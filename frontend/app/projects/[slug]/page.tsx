@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getProject } from '@/lib/api';
 import { fallbackVisual, projectVisuals } from '@/lib/projectVisuals';
+import SignatureProjectPage, { isSignatureProjectSlug } from '@/components/SignatureProjectPage';
 
 export const revalidate = 60;
 
@@ -38,9 +39,14 @@ const fallbackDetails: Record<string, Detail> = {
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const fallback = fallbackDetails[slug];
 
+  if (isSignatureProjectSlug(slug)) {
+    return <SignatureProjectPage slug={slug} />;
+  }
+
+  const fallback = fallbackDetails[slug];
   let project: any = null;
+
   try {
     project = await getProject(slug);
   } catch {

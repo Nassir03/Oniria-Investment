@@ -12,7 +12,15 @@ const links = [
   ['/contact', 'Contact'],
 ] as const;
 
+const signatureProjectPaths = [
+  '/projects/oniria-stone-town',
+  '/projects/oniria-michamvi',
+  '/projects/ona-towers',
+] as const;
+
 function routeCanOverlay(path: string) {
+  if (signatureProjectPaths.includes(path as (typeof signatureProjectPaths)[number])) return false;
+
   return (
     path === '/' ||
     path.startsWith('/our-story') ||
@@ -47,9 +55,20 @@ export default function Header() {
 
   const canOverlay = useMemo(() => routeCanOverlay(path), [path]);
   const solid = !canOverlay || scrolled;
+  const projectDetailRoute = signatureProjectPaths.includes(path as (typeof signatureProjectPaths)[number]);
+  const headerClassName = [
+    'siteHeader',
+    solid ? 'solid' : 'overlay',
+    canOverlay ? 'canOverlay' : 'surfaceOnly',
+    path === '/' && 'homeRoute',
+    path.startsWith('/contact') && 'contactRoute',
+    projectDetailRoute && 'projectDetailRoute',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
-    <header className={`siteHeader ${solid ? 'solid' : 'overlay'} ${canOverlay ? 'canOverlay' : 'surfaceOnly'} ${path === '/' ? 'homeRoute' : ''} ${path.startsWith('/contact') ? 'contactRoute' : ''}`}>
+    <header className={headerClassName}>
       <Link href="/" prefetch className="wordmark" aria-label="ONIRIA Investments home">
         <span className="wordmarkLogo" aria-hidden="true" />
       </Link>

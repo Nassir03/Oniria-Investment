@@ -5435,9 +5435,9 @@ em{font-weight:400;font-style:italic}
   white-space:nowrap;
 }
 
-/* The first three Home collection cards are now presentation-only, not links. */
+/* Keep the first three Home collection cards visually static while allowing their new project-page links. */
 .homeCollectionPremiumCardStatic{
-  cursor:default;
+  cursor:pointer;
 }
 .homeCollectionPremiumCardStatic:hover{
   transform:none;
@@ -9057,4 +9057,203 @@ body,
   .adminStandalone .newsroomMetrics{grid-template-columns:1fr}
   .adminStandalone .adminLeadTable .adminTableRow{grid-template-columns:1fr}
   .adminStandalone .adminLeadTable .adminTableRow>div:first-child{grid-column:auto}
+}
+
+/* =========================================================
+   SIGNATURE PROJECT PAGES — STONE TOWN / MICHAMVI / ONA
+   Scoped styles only; existing public/admin pages remain unchanged.
+   ========================================================= */
+.siteHeader.projectDetailRoute.solid{
+  background:rgba(248,246,240,.98);
+  color:#102a45;
+  border-color:rgba(16,42,69,.12);
+  backdrop-filter:blur(10px);
+}
+.siteHeader.projectDetailRoute.solid .desktopNav a::after{background:#102a45}
+.siteHeader.projectDetailRoute.solid .menuButton span{background:#102a45}
+
+.signatureProjectPage{
+  --project-navy:#06213d;
+  --project-ivory:#f4f1e9;
+  --project-white:#fbfaf7;
+  --project-gold:#b39a73;
+  --project-ink:#132b44;
+  padding-top:78px;
+  background:var(--project-ivory);
+  color:var(--project-ink);
+  min-height:100vh;
+}
+.signatureProjectPage h1,.signatureProjectPage h2,.signatureProjectPage h3{color:inherit}
+.signatureSectionIvory{background:var(--project-ivory);color:var(--project-ink)}
+.signatureNavySection{background:var(--project-navy);color:var(--project-white)}
+.signatureSectionKicker{
+  margin:0 0 16px;
+  font:700 10px/1.3 var(--sans);
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  text-align:center;
+}
+.signatureSectionKicker.alignLeft{text-align:left}
+.signatureRule{width:74px;height:1px;background:var(--project-gold);margin:13px 0 28px}
+.signatureTextLink{
+  display:inline-flex;align-items:center;gap:18px;
+  padding:0 0 8px;border-bottom:1px solid var(--project-gold);
+  font:700 10px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;
+}
+.signatureTextLink span{transition:transform .25s ease}.signatureTextLink:hover span{transform:translateX(5px)}
+.signatureOutlineButton{
+  display:inline-flex;align-items:center;justify-content:space-between;gap:42px;
+  min-width:176px;padding:16px 20px;border:1px solid currentColor;
+  font:700 10px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;
+}
+
+.signatureHero{
+  position:relative;height:min(72svh,760px);min-height:610px;
+  overflow:hidden;background:var(--project-navy);color:var(--project-white);
+}
+.signatureHero>img{object-fit:cover;object-position:center;transform:scale(1.005)}
+.signatureHeroShade{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(3,22,41,.83) 0%,rgba(3,22,41,.56) 32%,rgba(3,22,41,.12) 68%,rgba(3,22,41,.03) 100%),linear-gradient(0deg,rgba(3,22,41,.28),transparent 52%)}
+.signatureHeroCopy{position:absolute;z-index:2;left:7.5vw;bottom:11%;width:min(660px,44vw)}
+.signatureHeroCopy>p{margin:0 0 28px;font:700 10px/1.3 var(--sans);letter-spacing:.18em;text-transform:uppercase}
+.signatureHeroCopy h1{margin:0;font:400 clamp(58px,6vw,96px)/.92 var(--serif);letter-spacing:-.045em;color:var(--project-white)}
+.signatureHeroCopy>span{display:block;max-width:470px;margin-top:28px;font:400 16px/1.65 var(--sans)}
+.signatureHeroCopy>strong{display:block;margin-top:20px;font:700 11px/1.2 var(--sans);letter-spacing:.18em;text-transform:uppercase}
+.signatureHeroCopy>em{display:block;width:max-content;margin-top:26px;padding-top:10px;border-top:1px solid rgba(255,255,255,.58);font:500 11px/1.2 var(--sans);font-style:normal;letter-spacing:.16em;text-transform:uppercase}
+.stoneHero>img{object-position:center 52%}
+.michamviHero>img{object-position:center 56%}
+.michamviHero .signatureHeroShade{background:linear-gradient(90deg,rgba(3,22,41,.76),rgba(3,22,41,.44) 38%,rgba(3,22,41,.08) 72%),linear-gradient(0deg,rgba(3,22,41,.28),transparent 55%)}
+.michamviHero .signatureHeroCopy{width:min(640px,46vw)}
+.michamviHero .signatureHeroCopy h1{font-size:clamp(66px,6.6vw,106px);line-height:.86;text-transform:uppercase}
+.onaHero>img{object-position:center 48%}
+.onaHero .signatureHeroShade{background:linear-gradient(90deg,rgba(3,22,41,.78) 0%,rgba(3,22,41,.46) 35%,rgba(3,22,41,.07) 68%),linear-gradient(0deg,rgba(3,22,41,.28),transparent 60%)}
+
+/* Stone Town */
+.signatureIntro{display:grid;grid-template-columns:minmax(230px,.62fr) minmax(0,1.38fr);gap:8vw;padding:92px 8.5vw 98px;align-items:start}
+.signatureIntroAside>p{margin:0;font:700 10px/1.3 var(--sans);letter-spacing:.18em;text-transform:uppercase}
+.signatureIntroAside>span{display:block;font-size:15px;line-height:1.65}
+.signatureIntroMain{max-width:820px}
+.signatureIntroMain>p{margin:0 0 12px;font:400 clamp(20px,1.65vw,28px)/1.48 var(--sans);letter-spacing:-.018em}
+.signatureIntroMain .signatureTextLink{margin-top:28px}
+.signatureHighlights{padding:56px 7vw 60px}
+.signatureHighlightGrid{display:grid;margin-top:36px}
+.signatureHighlightGrid.fiveCol{grid-template-columns:repeat(5,minmax(0,1fr))}
+.signatureHighlightGrid article{padding:0 28px;text-align:center;border-right:1px solid rgba(255,255,255,.12)}
+.signatureHighlightGrid article:last-child{border-right:0}
+.signatureHighlightGrid svg{width:44px;height:44px;margin:0 auto 20px;fill:none;stroke:var(--project-gold);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.signatureHighlightGrid h3{margin:0 0 12px;font:700 12px/1.35 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--project-white)}
+.signatureHighlightGrid p{max-width:220px;margin:0 auto;font-size:12px;line-height:1.62;color:rgba(255,255,255,.83)}
+.stoneGallery{display:grid;grid-template-columns:repeat(4,1fr);height:420px;background:var(--project-navy)}
+.stoneGalleryItem{position:relative;overflow:hidden}
+.stoneGalleryItem>img{object-fit:cover;transition:transform .7s cubic-bezier(.22,1,.36,1)}
+.stoneGalleryItem:hover>img{transform:scale(1.035)}
+.stoneRooms{display:grid;grid-template-columns:220px minmax(0,1fr);gap:58px;padding:78px 7vw 74px;align-items:start}
+.stoneRoomsIntro>p{margin:12px 0 0;font:700 10px/1.3 var(--sans);letter-spacing:.18em;text-transform:uppercase}
+.stoneRoomsIntro>span{font:700 9px/1.3 var(--sans);letter-spacing:.14em;text-transform:uppercase}
+.stoneRoomsIntro b,.stoneRoomGrid article>span b{font-weight:400;margin-left:9px}
+.stoneRoomGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.stoneRoomGrid article{min-width:0}
+.stoneRoomImage{position:relative;height:245px;overflow:hidden;background:#ddd4c5}
+.stoneRoomImage>img{object-fit:cover;transition:transform .55s ease}.stoneRoomGrid article:hover .stoneRoomImage>img{transform:scale(1.03)}
+.stoneRoomGrid h3{margin:18px 0 6px;font:700 11px/1.25 var(--sans);letter-spacing:.08em;text-transform:uppercase}
+.stoneRoomGrid p{margin:0;color:rgba(19,43,68,.65);font:600 10px/1.3 var(--sans);letter-spacing:.08em;text-transform:uppercase}
+.stoneRoomGrid article>span{display:inline-flex;margin-top:28px;padding-bottom:7px;border-bottom:1px solid var(--project-gold);font:700 9px/1.2 var(--sans);letter-spacing:.13em;text-transform:uppercase}
+.stoneProjectDetails{display:grid;grid-template-columns:minmax(320px,.72fr) minmax(0,1.28fr);min-height:570px;background:var(--project-navy);color:var(--project-white)}
+.stoneProjectDetailsCopy{padding:64px 7vw 58px}
+.stoneProjectDetailsCopy dl{margin:0;display:grid;gap:18px}
+.stoneProjectDetailsCopy dl>div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:26px}
+.stoneProjectDetailsCopy dt{font:700 9px/1.5 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+.stoneProjectDetailsCopy dd{margin:0;font-size:13px;line-height:1.55;color:rgba(255,255,255,.9)}
+.signatureDownload{display:inline-block;margin-top:38px;padding-bottom:8px;border-bottom:1px solid var(--project-gold);font:700 9px/1.2 var(--sans);letter-spacing:.15em;text-transform:uppercase}
+.stoneProjectDetailsMedia{position:relative;min-height:570px;overflow:hidden}.stoneProjectDetailsMedia>img{object-fit:cover}
+.stoneClosing{position:relative;display:grid;grid-template-columns:minmax(320px,.72fr) minmax(0,1fr);gap:11vw;padding:72px 8vw 78px;overflow:hidden}
+.stoneClosing h2{margin:0;font:400 clamp(42px,4.5vw,72px)/.98 var(--serif);letter-spacing:-.04em}
+.stoneClosing>div{max-width:520px;padding-top:7px}.stoneClosing>div p{margin:0 0 34px;font-size:15px;line-height:1.75}
+.stoneClosingMark{position:absolute;right:9%;top:12%;font:400 210px/1 var(--serif);color:rgba(179,154,115,.13);transform:rotate(18deg)}
+
+/* Michamvi */
+.michamviVision{display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);gap:8vw;padding:76px 8vw;align-items:center}
+.michamviVision>div:first-child{max-width:560px}
+.michamviVision h2{margin:0 0 24px;font:400 clamp(42px,4.2vw,66px)/1 var(--serif)}
+.michamviVision>div:first-child>p:last-child{margin:0;font-size:15px;line-height:1.75}
+.michamviVisionImage{position:relative;min-height:420px;overflow:hidden}.michamviVisionImage>img{object-fit:cover}
+.michamviJourney{padding:62px 6.5vw 68px;border-top:1px solid rgba(19,43,68,.08)}
+.michamviJourney h2{margin:0;text-align:center;font:400 clamp(44px,4.6vw,70px)/1 var(--serif)}
+.michamviJourneyGrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:26px;margin-top:52px}
+.michamviJourneyGrid article{text-align:center}
+.michamviJourneyGrid svg{width:44px;height:44px;margin:0 auto 22px;fill:none;stroke:var(--project-ink);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.michamviJourneyGrid article:nth-child(2) svg,.michamviJourneyGrid article:nth-child(6) svg{stroke:var(--project-gold)}
+.michamviJourneyGrid h3{min-height:44px;margin:0 0 13px;font:700 11px/1.35 var(--sans);letter-spacing:.05em;text-transform:uppercase}
+.michamviJourneyGrid p{max-width:190px;margin:0 auto;font-size:12px;line-height:1.65;color:rgba(19,43,68,.82)}
+.michamviResort{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);min-height:560px;border-top:1px solid rgba(19,43,68,.08)}
+.michamviResortImage{position:relative;min-height:560px;overflow:hidden}.michamviResortImage>img{object-fit:cover}
+.michamviResortCopy{padding:65px 7vw 55px}
+.michamviResortCopy h2{margin:0 0 22px;font:400 clamp(42px,4vw,64px)/.98 var(--serif)}
+.michamviResortCopy>p:not(.signatureSectionKicker){margin:0;font-size:14px;line-height:1.7}
+.michamviResortCopy ul{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:11px;font-size:12px;line-height:1.45}
+.michamviResortCopy li{position:relative;padding-left:22px}.michamviResortCopy li::before{content:"◇";position:absolute;left:0;color:var(--project-gold)}
+.michamviClosing{padding:74px 8vw 78px}.michamviClosing h2{max-width:850px;margin:0 0 36px;font:400 clamp(46px,5vw,78px)/.98 var(--serif);color:var(--project-white)}
+
+/* ONA Towers */
+.onaFeatureStrip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:38px 7vw 40px;border-bottom:1px solid rgba(19,43,68,.08)}
+.onaFeatureStrip article{text-align:center;padding:0 22px;border-right:1px solid rgba(19,43,68,.12)}.onaFeatureStrip article:last-child{border-right:0}
+.onaFeatureStrip svg{width:37px;height:37px;margin:0 auto 14px;fill:none;stroke:#53677b;stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round}
+.onaFeatureStrip h3{margin:0 0 6px;font:700 10px/1.3 var(--sans);letter-spacing:.08em;text-transform:uppercase}.onaFeatureStrip p{margin:0;font-size:11px;line-height:1.4;color:rgba(19,43,68,.75)}
+.onaProjectIntro{display:grid;grid-template-columns:minmax(340px,.68fr) minmax(0,1.32fr);gap:6vw;padding:60px 7vw 65px;align-items:center}
+.onaProjectCopy{max-width:500px}.onaProjectCopy h2{margin:0 0 24px;font:400 clamp(46px,4.7vw,72px)/.96 var(--serif)}
+.onaProjectCopy>p:not(.signatureSectionKicker){margin:0 0 15px;font-size:14px;line-height:1.7}.onaProjectCopy ul{margin:24px 0 28px;padding-left:17px;font-size:12px;line-height:1.65}
+.onaProjectImage{position:relative;min-height:540px;overflow:hidden}.onaProjectImage>img{object-fit:cover}
+.onaResidences{padding:54px 7vw 64px}
+.onaResidencesHead{display:grid;grid-template-columns:minmax(260px,.72fr) minmax(0,1.28fr);gap:6vw;align-items:end}
+.onaResidencesHead h2{margin:0 0 16px;font:400 clamp(44px,4.4vw,68px)/1 var(--serif);color:var(--project-white)}
+.onaResidencesHead>div:first-child>p:last-child{max-width:520px;margin:0;font-size:13px;line-height:1.7;color:rgba(255,255,255,.82)}
+.onaHomeStats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-left:1px solid rgba(255,255,255,.14)}
+.onaHomeStats article{padding:0 20px;border-right:1px solid rgba(255,255,255,.14)}
+.onaHomeStats strong{display:block;font:400 42px/1 var(--serif);color:var(--project-white)}.onaHomeStats span{display:block;margin:4px 0 15px;font:700 9px/1 var(--sans);letter-spacing:.12em}.onaHomeStats p{margin:0;font-size:11px;line-height:1.45;color:rgba(255,255,255,.78)}
+.onaInteriorGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:42px}.onaInteriorGrid figure{margin:0}.onaInteriorGrid figure>div{position:relative;height:250px;overflow:hidden}.onaInteriorGrid img{object-fit:cover;transition:transform .6s ease}.onaInteriorGrid figure:hover img{transform:scale(1.035)}.onaInteriorGrid figcaption{margin-top:10px;font-size:10px;color:rgba(255,255,255,.82)}
+.onaAmenities{display:grid;grid-template-columns:minmax(260px,.68fr) minmax(0,1.32fr);gap:7vw;padding:58px 7vw 62px;align-items:center}
+.onaAmenitiesIntro h2{margin:0 0 22px;font:400 clamp(44px,4.3vw,66px)/1 var(--serif)}.onaAmenitiesIntro>p:last-child{max-width:410px;margin:0;font-size:13px;line-height:1.7}
+.onaAmenitiesGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:42px 28px}.onaAmenitiesGrid article{text-align:center}.onaAmenitiesGrid svg{width:40px;height:40px;margin:0 auto 14px;fill:none;stroke:#53677b;stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round}.onaAmenitiesGrid h3{max-width:150px;margin:0 auto;font:700 10px/1.35 var(--sans);letter-spacing:.05em;text-transform:uppercase}
+.onaClosing{position:relative;height:390px;overflow:hidden;background:var(--project-navy);color:var(--project-white)}.onaClosing>img{object-fit:cover;object-position:center 48%}.onaClosingShade{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(2,19,37,.83),rgba(2,19,37,.36) 50%,rgba(2,19,37,.08))}.onaClosingCopy{position:absolute;z-index:2;left:7vw;top:50%;transform:translateY(-50%);max-width:510px}.onaClosingCopy h2{margin:0 0 20px;font:400 clamp(44px,4.5vw,68px)/.96 var(--serif);color:var(--project-white)}.onaClosingCopy p{max-width:430px;margin:0 0 25px;font-size:13px;line-height:1.65}
+
+/* Project-specific footer shown only on these three detail pages. */
+.signatureFooter{background:var(--project-navy);color:var(--project-white);font-family:var(--sans)}
+.signatureFooterWordmark{display:block;width:165px;height:58px;color:#f7f1e8}.signatureFooterWordmark .wordmarkLogo{width:100%;height:100%}
+.signatureFooterSocial{display:flex;gap:16px;align-items:center;font-size:16px;color:rgba(255,255,255,.78)}
+.signatureFooterCompact{min-height:112px;padding:22px 6vw;display:grid;grid-template-columns:1fr auto 1fr;gap:40px;align-items:center;border-top:1px solid rgba(255,255,255,.12)}
+.signatureFooterCompact nav{display:flex;gap:38px;font-size:10px;letter-spacing:.04em}.signatureFooterCompact .signatureFooterSocial{justify-self:end}
+.signatureFooterFull{position:relative;display:grid;grid-template-columns:1.45fr repeat(3,minmax(150px,.65fr));gap:70px;padding:58px 7vw 70px;border-top:1px solid rgba(255,255,255,.1)}
+.signatureFooterFull>div:not(.signatureFooterBrand){display:flex;flex-direction:column;gap:11px}.signatureFooterFull h4{margin:10px 0 14px;font:700 10px/1.2 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--project-white)}
+.signatureFooterFull a,.signatureFooterFull>div>span{font-size:11px;line-height:1.45;color:rgba(255,255,255,.76)}
+.signatureFooterBrand>p{max-width:300px;margin:13px 0 22px;font-size:12px;line-height:1.65;color:rgba(255,255,255,.73)}
+.signatureFooterCopyright{position:absolute;left:7vw;bottom:22px;margin:0;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.48)}
+
+@media(max-width:1050px){
+  .signatureHighlightGrid.fiveCol{grid-template-columns:repeat(3,1fr);gap:38px 0}.signatureHighlightGrid article:nth-child(3){border-right:0}.signatureHighlightGrid article:nth-child(n+4){padding-top:10px}
+  .michamviJourneyGrid{grid-template-columns:repeat(3,1fr);gap:42px 24px}
+  .stoneRooms{grid-template-columns:1fr}.stoneRoomsIntro{display:grid;grid-template-columns:auto 80px 1fr;gap:20px;align-items:center}.stoneRoomsIntro .signatureRule{margin:0}.stoneRoomsIntro>span{justify-self:end}
+  .onaResidencesHead{grid-template-columns:1fr;gap:38px}.onaHomeStats{border-left:0}.onaInteriorGrid figure>div{height:220px}
+  .signatureFooterFull{grid-template-columns:1.3fr repeat(3,1fr);gap:36px}
+}
+
+@media(max-width:800px){
+  .signatureProjectPage{padding-top:78px}
+  .signatureHero{height:66svh;min-height:560px}.signatureHeroCopy{left:24px;right:24px;bottom:10%;width:auto}.signatureHeroCopy h1{font-size:clamp(52px,13vw,78px)}.michamviHero .signatureHeroCopy{width:auto}.michamviHero .signatureHeroCopy h1{font-size:clamp(58px,14vw,84px)}
+  .signatureIntro,.michamviVision,.michamviResort,.onaProjectIntro,.onaAmenities,.stoneProjectDetails,.stoneClosing{grid-template-columns:1fr}
+  .signatureIntro{gap:42px;padding:68px 24px}.signatureIntroMain>p{font-size:19px}.signatureIntroAside .signatureRule{margin-bottom:20px}
+  .signatureHighlights{padding:52px 24px}.signatureHighlightGrid.fiveCol{grid-template-columns:1fr 1fr;gap:38px 0}.signatureHighlightGrid article,.signatureHighlightGrid article:nth-child(3){border-right:1px solid rgba(255,255,255,.12)}.signatureHighlightGrid article:nth-child(even){border-right:0}.signatureHighlightGrid article:last-child{grid-column:1/-1;border-right:0;max-width:350px;justify-self:center}
+  .stoneGallery{grid-template-columns:1fr 1fr;height:640px}.stoneRooms{padding:64px 24px}.stoneRoomGrid{grid-template-columns:1fr 1fr}.stoneProjectDetailsCopy{padding:58px 24px}.stoneProjectDetailsMedia{min-height:440px}.stoneClosing{gap:36px;padding:60px 24px}.stoneClosingMark{font-size:130px}
+  .michamviVision{padding:66px 24px;gap:40px}.michamviVisionImage{min-height:360px}.michamviJourney{padding:58px 24px}.michamviJourneyGrid{grid-template-columns:1fr 1fr}.michamviResortImage{min-height:430px}.michamviResortCopy{padding:58px 24px}.michamviClosing{padding:65px 24px}
+  .onaFeatureStrip{grid-template-columns:1fr 1fr;padding:34px 24px;gap:28px 0}.onaFeatureStrip article:nth-child(even){border-right:0}.onaFeatureStrip article:last-child{grid-column:1/-1;border-right:0}
+  .onaProjectIntro{padding:58px 24px;gap:36px}.onaProjectImage{min-height:440px}.onaResidences{padding:52px 24px}.onaHomeStats{grid-template-columns:repeat(2,1fr);gap:26px 0}.onaHomeStats article:nth-child(even){border-right:0}.onaHomeStats article:last-child{grid-column:1/-1;border-right:0}.onaInteriorGrid{grid-template-columns:1fr 1fr}.onaInteriorGrid figure>div{height:220px}.onaAmenities{padding:58px 24px;gap:42px}.onaAmenitiesGrid{grid-template-columns:1fr 1fr}.onaClosing{height:440px}.onaClosingCopy{left:24px;right:24px}
+  .signatureFooterCompact{grid-template-columns:1fr auto;padding:25px 24px}.signatureFooterCompact nav{grid-column:1/-1;grid-row:2;justify-content:flex-start;gap:20px;flex-wrap:wrap}.signatureFooterFull{grid-template-columns:1fr 1fr;gap:34px;padding:50px 24px 82px}.signatureFooterBrand{grid-column:1/-1}.signatureFooterCopyright{left:24px}
+}
+
+@media(max-width:520px){
+  .signatureHero{min-height:530px}.stoneHero>img{object-position:58% center}.michamviHero>img{object-position:58% center}.onaHero>img{object-position:58% center}
+  .signatureHeroCopy>p{margin-bottom:18px}.signatureHeroCopy>span{font-size:14px;line-height:1.6;margin-top:20px}.signatureHeroCopy>em{margin-top:18px}
+  .signatureHighlightGrid.fiveCol{grid-template-columns:1fr}.signatureHighlightGrid article,.signatureHighlightGrid article:nth-child(3),.signatureHighlightGrid article:nth-child(even),.signatureHighlightGrid article:last-child{grid-column:auto;border-right:0;padding:4px 0 26px;border-bottom:1px solid rgba(255,255,255,.1)}.signatureHighlightGrid article:last-child{border-bottom:0}
+  .stoneGallery{grid-template-columns:1fr;height:auto}.stoneGalleryItem{height:330px}.stoneRoomsIntro{grid-template-columns:1fr}.stoneRoomsIntro>span{justify-self:start}.stoneRoomGrid{grid-template-columns:1fr}.stoneRoomImage{height:290px}.stoneProjectDetailsCopy dl>div{grid-template-columns:95px 1fr;gap:18px}.stoneClosing h2{font-size:44px}
+  .michamviJourneyGrid{grid-template-columns:1fr}.michamviJourneyGrid h3{min-height:0}.michamviJourneyGrid p{max-width:270px}.michamviVision h2,.michamviResortCopy h2{font-size:44px}
+  .onaFeatureStrip{grid-template-columns:1fr}.onaFeatureStrip article,.onaFeatureStrip article:nth-child(even),.onaFeatureStrip article:last-child{grid-column:auto;border-right:0;padding:0 0 20px;border-bottom:1px solid rgba(19,43,68,.1)}.onaFeatureStrip article:last-child{border-bottom:0}.onaProjectCopy h2,.onaResidencesHead h2,.onaAmenitiesIntro h2{font-size:44px}.onaHomeStats{grid-template-columns:1fr}.onaHomeStats article,.onaHomeStats article:last-child{grid-column:auto;border-right:0;border-bottom:1px solid rgba(255,255,255,.12);padding:0 0 18px}.onaHomeStats article:last-child{border-bottom:0}.onaInteriorGrid{grid-template-columns:1fr}.onaInteriorGrid figure>div{height:260px}.onaAmenitiesGrid{grid-template-columns:1fr 1fr;gap:34px 18px}
+  .signatureFooterCompact{grid-template-columns:1fr}.signatureFooterCompact .signatureFooterSocial{justify-self:start}.signatureFooterFull{grid-template-columns:1fr}.signatureFooterBrand{grid-column:auto}.signatureFooterCopyright{position:static;grid-column:1/-1;margin-top:12px}
 }

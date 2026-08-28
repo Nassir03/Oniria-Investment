@@ -9,21 +9,21 @@ const collection = [
     name: 'ONIRIA Stone Town',
     descriptor: 'Heritage Hospitality',
     image: '/images/oniria-stone-town-attached.png',
-    href: '',
+    href: '/projects/oniria-stone-town',
     external: false,
   },
   {
     name: 'ONIRIA Michamvi',
     descriptor: 'Wellness · Nature · Longevity',
     image: '/images/oniria-michamvi-attached.png',
-    href: '',
+    href: '/projects/oniria-michamvi',
     external: false,
   },
   {
     name: 'ONA Towers',
     descriptor: 'Landmark Residences',
     image: '/images/ona-towers-attached.png',
-    href: '',
+    href: '/projects/ona-towers',
     external: false,
   },
   {
@@ -102,13 +102,16 @@ export default function Home() {
                   {CardInner}
                 </a>
               ) : (
-                <article
+                <Link
                   key={project.name}
+                  href={project.href}
+                  prefetch
                   className={`homeCollectionPremiumCard homeCollectionPremiumCardStatic homeCollectionPremiumCard${index + 1}`}
                   role="listitem"
+                  aria-label={`Open ${project.name} project page`}
                 >
                   {CardInner}
-                </article>
+                </Link>
               );
             })}
           </div>
