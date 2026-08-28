@@ -105,7 +105,7 @@ export default async function Page() {
     <main className="publicPage businessPremiumPage">
       <section className="businessPremiumHero">
         <Image
-          src="/images/zanzibar-stone-town-coast.webp"
+          src="/images/projects-zanzibar-attached.png"
           alt="Aerial view of Stone Town and the Zanzibar coastline"
           fill
           priority
