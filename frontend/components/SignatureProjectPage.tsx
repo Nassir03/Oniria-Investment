@@ -118,13 +118,6 @@ function StoneTownPage() {
     ['leaf', 'Wellness & Spa', 'A serene spa and wellbeing spaces for rest and reconnection.'],
     ['lantern', 'SHI Restaurant', 'A refined dining concept celebrating local flavors and culture.'],
   ];
-  const rooms = [
-    ['/images/room.png', 'Standard Deluxe', '9 Rooms'],
-    ['/images/project-pages/stone-lounge.jpg', 'Junior Suite', '4 Rooms'],
-    ['/images/project-pages/stone-bedroom.jpg', 'Supreme', '4 Rooms'],
-    ['/images/project-pages/stone-corridor.jpg', 'Master Suite', '3 Rooms'],
-  ];
-
   return (
     <main className="signatureProjectPage stoneTownProjectPage">
       <section className="signatureHero stoneHero">
@@ -162,13 +155,6 @@ function StoneTownPage() {
         ].map(([src, alt]) => <div className="stoneGalleryItem" key={src}><Image src={src} alt={alt} fill quality={92} sizes="25vw"/></div>)}
       </section>
 
-      <section className="stoneRooms signatureSectionIvory">
-        <div className="stoneRoomsIntro"><p>Room Collection</p><div className="signatureRule"/><span>View all rooms <b>←</b></span></div>
-        <div className="stoneRoomGrid">
-          {rooms.map(([src, name, count]) => <article key={name}><div className="stoneRoomImage"><Image src={src} alt={`${name} room`} fill quality={92} sizes="(max-width:700px) 100vw, 22vw"/></div><h3>{name}</h3><p>{count}</p><span>View Room <b>→</b></span></article>)}
-        </div>
-      </section>
-
       <section id="stone-project-details" className="stoneProjectDetails">
         <div className="stoneProjectDetailsCopy">
           <p className="signatureSectionKicker alignLeft">Project Details</p>
@@ -180,7 +166,6 @@ function StoneTownPage() {
             <div><dt>Status</dt><dd>Under Construction</dd></div>
             <div><dt>Opening</dt><dd>April 2027</dd></div>
           </dl>
-          <span className="signatureDownload">Download Brochure ↓</span>
         </div>
         <div className="stoneProjectDetailsMedia"><Image src="/images/project-pages/stone-courtyard-main.jpg" alt="ONIRIA Stone Town courtyard" fill quality={92} sizes="(max-width:800px) 100vw, 60vw"/></div>
       </section>
@@ -215,7 +200,6 @@ function MichamviPage() {
           <h1>ONIRIA<br/>MICHAMVI</h1>
           <strong>Longevity Resort</strong>
           <span>A coastal destination concept focused on wellness, rejuvenation and longevity.</span>
-          <em>Opening August 2027</em>
         </div>
       </section>
 
@@ -305,16 +289,16 @@ function VTownPage() {
   const highlights: Array<[IconName, string, string]> = [
     ['waves', 'Oceanfront Living', 'Uninterrupted views & nature'],
     ['leaf', 'Wellbeing & Sports', 'Active lifestyle every day'],
-    ['sail', 'V Yacht Club', 'Mooring, dining & ocean experiences'],
+    ['sail', 'Beach Club', 'Dining, leisure & ocean experiences'],
     ['building', 'Boutique Lifestyle', 'Retail, dining & essential services'],
     ['community', 'Private Community', 'Privacy, security & a sense of belonging'],
   ];
 
   const residences = [
-    ['/images/project-pages/vtown-entry.jpg', 'Signature Villas', '2, 3 & 4 Bedroom', 'Oceanfront & Lagoon Villas'],
-    ['/images/project-pages/vtown-bedroom-ocean.jpg', 'Residence Collection', '1, 2 & 3 Bedroom Apartments', 'Contemporary Coastal Living'],
-    ['/images/project-pages/vtown-kitchen.jpg', 'Promenade & Retail', 'Shops, Cafés', '& Restaurants'],
-    ['/images/project-pages/vtown-bedroom-arch.jpg', 'V Yacht Club', 'Boating, Leisure', '& Exclusive Experiences'],
+    ['/images/project-pages/vtown-entry.jpg', 'V Town coastal residence'],
+    ['/images/project-pages/vtown-bedroom-ocean.jpg', 'V Town ocean-view bedroom'],
+    ['/images/project-pages/vtown-kitchen.jpg', 'V Town contemporary kitchen'],
+    ['/images/project-pages/vtown-bedroom-arch.jpg', 'V Town arched bedroom'],
   ];
 
   const amenities: Array<[IconName, string, string]> = [
@@ -344,9 +328,6 @@ function VTownPage() {
           <h1>V TOWN</h1>
           <strong>The Art of Living</strong>
           <span>A masterplanned coastal community in Fumba, where art, wellbeing and nature come together to create an elevated way of life.</span>
-          <a href={V_TOWN_URL} target="_blank" rel="noreferrer" className="vTownHeroWebsiteLink">
-            Visit V Town Website <b aria-hidden="true">↗</b>
-          </a>
         </div>
       </section>
 
@@ -379,11 +360,9 @@ function VTownPage() {
           <h2>Elegant homes<br/>in perfect harmony.</h2>
         </div>
         <div className="vTownResidenceGrid">
-          {residences.map(([src, title, lineOne, lineTwo]) => (
-            <article key={title}>
-              <div className="vTownResidenceImage"><Image src={src} alt={`${title} at V Town`} fill quality={92} sizes="(max-width:700px) 100vw, 20vw"/></div>
-              <h3>{title}</h3>
-              <p>{lineOne}<br/>{lineTwo}</p>
+          {residences.map(([src, alt]) => (
+            <article key={src}>
+              <div className="vTownResidenceImage"><Image src={src} alt={alt} fill quality={92} sizes="(max-width:700px) 100vw, 20vw"/></div>
             </article>
           ))}
         </div>

@@ -102,7 +102,7 @@ export default async function Page() {
             </div>
             <div className="contactReferenceInfoRow">
               <span className="contactReferenceIcon"><ContactIcon type="phone" /></span>
-              <div><strong>Phone</strong><a href="tel:+255777221121">+255 777 221 121</a></div>
+              <div><strong>Phone</strong><a href="tel:+255705321121">+255 705 321 121</a></div>
             </div>
             <div className="contactReferenceInfoRow">
               <span className="contactReferenceIcon"><ContactIcon type="web" /></span>
