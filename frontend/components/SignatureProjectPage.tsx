@@ -110,34 +110,6 @@ function ProjectIcon({ name }: { name: IconName }) {
   return null;
 }
 
-function ProjectFooter({ compact = false }: { compact?: boolean }) {
-  if (compact) {
-    return (
-      <footer className="signatureFooter signatureFooterCompact">
-        <Link href="/" className="signatureFooterWordmark" aria-label="ONIRIA Investments home"><span className="wordmarkLogo" /></Link>
-        <nav aria-label="Project footer navigation">
-          <Link href="/vision">Vision</Link><Link href="/projects">Projects</Link><Link href="/our-story">About</Link><Link href="/newsroom">News</Link><Link href="/contact">Contact</Link>
-        </nav>
-        <div className="signatureFooterSocial"><span>in</span><span>◎</span><span>✉</span></div>
-      </footer>
-    );
-  }
-
-  return (
-    <footer className="signatureFooter signatureFooterFull">
-      <div className="signatureFooterBrand">
-        <Link href="/" className="signatureFooterWordmark" aria-label="ONIRIA Investments home"><span className="wordmarkLogo" /></Link>
-        <p>We create transformative destinations that inspire wellbeing, elevate communities and stand the test of time.</p>
-        <div className="signatureFooterSocial"><span>in</span><span>◎</span><span>▶</span></div>
-      </div>
-      <div><h4>Projects</h4><Link href="/projects/ona-towers">ONA Towers</Link><Link href="/projects/oniria-stone-town">ONIRIA Stone Town</Link><Link href="/projects/oniria-michamvi">ONIRIA Michamvi</Link><Link href="/projects/v-town">V-Town Fumba</Link></div>
-      <div><h4>Company</h4><Link href="/vision">Vision</Link><Link href="/our-story">About</Link><Link href="/newsroom">News</Link><Link href="/contact">Careers</Link><Link href="/contact">Contact</Link></div>
-      <div><h4>Legal</h4><span>Privacy Policy</span><span>Terms and Conditions</span><span>Sitemap</span></div>
-      <p className="signatureFooterCopyright">© {new Date().getFullYear()} ONIRIA Investments. All rights reserved.</p>
-    </footer>
-  );
-}
-
 function StoneTownPage() {
   const highlights: Array<[IconName, string, string]> = [
     ['window', '20 Keys', 'Collection of Standard Deluxe, Junior Suite, Supreme and Master Suite rooms.'],
@@ -219,7 +191,6 @@ function StoneTownPage() {
         <span className="stoneClosingMark" aria-hidden="true">✦</span>
       </section>
 
-      <ProjectFooter compact />
     </main>
   );
 }
@@ -261,7 +232,7 @@ function MichamviPage() {
       </section>
 
       <section className="michamviResort signatureSectionIvory">
-        <div className="michamviResortImage"><Image src="/images/project-pages/michamvi-aerial.jpg" alt="Aerial view of ONIRIA Michamvi resort concept" fill quality={92} sizes="(max-width:800px) 100vw, 55vw"/></div>
+        <div className="michamviResortImage"><Image src="/images/michamvi-island-ocean-attached.png" alt="Turquoise island shoreline with boats and white sand beach" fill quality={92} sizes="(max-width:800px) 100vw, 55vw"/></div>
         <div className="michamviResortCopy">
           <p className="signatureSectionKicker alignLeft">The Resort</p>
           <h2>Designed in Harmony<br/>with Nature</h2>
@@ -270,12 +241,6 @@ function MichamviPage() {
         </div>
       </section>
 
-      <section className="michamviClosing signatureNavySection">
-        <p className="signatureSectionKicker alignLeft">Begin Your Journey</p>
-        <h2>Wellbeing, nature and longevity — by the ocean.</h2>
-        <Link href="/contact" className="signatureOutlineButton">Enquire Now <span>→</span></Link>
-      </section>
-      <ProjectFooter />
     </main>
   );
 }
@@ -330,12 +295,6 @@ function OnaTowersPage() {
         <div className="onaAmenitiesGrid">{amenities.map(([icon,title])=><article key={title}><ProjectIcon name={icon}/><h3>{title}</h3></article>)}</div>
       </section>
 
-      <section className="onaClosing">
-        <Image src="/images/project-pages/ona-sunset.jpg" alt="Sunset over Zanzibar" fill quality={92} sizes="100vw"/>
-        <div className="onaClosingShade"/>
-        <div className="onaClosingCopy"><h2>Live Above.<br/>See Beyond.</h2><p>A home that connects you to the best of Zanzibar — ocean, culture and community.</p><Link href="/contact" className="signatureOutlineButton">Enquire Now <span>→</span></Link></div>
-      </section>
-      <ProjectFooter />
     </main>
   );
 }

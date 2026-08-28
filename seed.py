@@ -29,7 +29,7 @@ PROJECTS = [
         'location': 'Location details available on enquiry',
         'summary': 'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
         'featured': True,
-        'media': [('/images/outside-ona-tower.jpg','ONA Towers arrival concept visualization'),('/images/ona-tower.webp','ONA Towers exterior concept visualization'),('/images/room.webp','ONA Towers bedroom concept visualization')],
+        'media': [('/images/outside-ona-tower.jpg','ONA Towers arrival concept visualization'),('/images/ona-tower.webp','ONA Towers exterior concept visualization'),('/images/room.png','ONA Towers bedroom concept visualization')],
     },
     {
         'slug': 'v-town',
@@ -38,7 +38,7 @@ PROJECTS = [
         'location': 'Location details available on enquiry',
         'summary': 'A new ONIRIA residential expression composed around calm architecture, greenery and everyday quality of life.',
         'featured': False,
-        'media': [('/images/v-town-villa.webp','V Town villa concept visualization'),('/images/room.webp','ONIRIA residential interior concept visualization')],
+        'media': [('/images/v-town-villa.webp','V Town villa concept visualization'),('/images/room.png','ONIRIA residential interior concept visualization')],
     },
 ]
 
