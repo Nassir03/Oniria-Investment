@@ -28,13 +28,13 @@ export default function HomeHero() {
       >
         <h1>
           <span>We create what</span>
-          <span>does not exist yet.</span>
+          <span>doesn't exist yet.</span>
         </h1>
-        <p className="heroLead">Places. Experience new ways living. Born in Zanzibar.</p>
+        <p className="heroLead">Places. Experiences. New ways of living. Born in Zanzibar.</p>
 
         <div className="heroActions heroActionsSingle">
           <Link href="/projects" prefetch className="homeMontserratUnderlineLink">
-            EXPLORE OUR PROJECTS 
+            EXPLORE OUR PROJECTS<span className="arrow">→</span>
           </Link>
         </div>
       </motion.div>

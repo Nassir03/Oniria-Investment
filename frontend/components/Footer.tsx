@@ -50,7 +50,7 @@ export default function Footer() {
           <Link href="/" prefetch className="footerWordmark" aria-label="ONIRIA Investments home">
             <span className="wordmarkLogo" aria-hidden="true" />
           </Link>
-          <span>We create what does not exist yet</span>
+          <span>We create what doesn&apos;t exist yet</span>
         </div>
 
         <div className="compactFooterRight">

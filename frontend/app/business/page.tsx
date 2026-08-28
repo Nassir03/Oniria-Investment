@@ -5,7 +5,7 @@ import { getProjects } from '@/lib/api';
 import { fallbackVisual, projectVisuals } from '@/lib/projectVisuals';
 
 export const revalidate = 60;
-export const metadata = { title: 'Our Project' };
+export const metadata = { title: 'Our Projects' };
 
 const VIGOR_GROUP_URL = 'https://turkysgroup.co.tz/';
 const V_TOWN_URL = 'https://oniria-city-2hez.vercel.app/';
@@ -114,8 +114,8 @@ export default async function Page() {
         />
         <div className="businessPremiumHeroShade" />
         <div className="businessPremiumHeroCopy">
-          <p className="eyebrow light">Our Project</p>
-          <h1>Place that don&apos;t exist anywhere else.</h1>
+          <p className="eyebrow light">Our Projects</p>
+          <h1>Place that do not exist anywhere else.</h1>
           <p className="businessPremiumHeroLeadTwoLine">
             <span>From Stone Town to Zanzibar coastline, ONIRIA is creating a new</span>
             <span>generation of places to stay, live, gather and experience.</span>
@@ -207,7 +207,7 @@ export default async function Page() {
                 ONIRIA welcomes project, investment and commercial conversations that complement the destination vision. Our wider Vigor / Turky Group connection brings experience across operating businesses and sectors in Tanzania.
               </p>
               <Link href="/contact" prefetch className="button buttonNavy">
-                Contact
+                Contact<span className="arrow">→</span>
               </Link>
             </div>
           </div>
