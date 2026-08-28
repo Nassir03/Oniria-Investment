@@ -16,6 +16,7 @@ const signatureProjectPaths = [
   '/projects/oniria-stone-town',
   '/projects/oniria-michamvi',
   '/projects/ona-towers',
+  '/projects/v-town',
 ] as const;
 
 function routeCanOverlay(path: string) {

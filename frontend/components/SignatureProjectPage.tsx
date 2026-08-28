@@ -1,12 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-type SignatureSlug = 'oniria-stone-town' | 'oniria-michamvi' | 'ona-towers';
+type SignatureSlug = 'oniria-stone-town' | 'oniria-michamvi' | 'ona-towers' | 'v-town';
 
 export const signatureProjectSlugs: SignatureSlug[] = [
   'oniria-stone-town',
   'oniria-michamvi',
   'ona-towers',
+  'v-town',
 ];
 
 export function isSignatureProjectSlug(slug: string): slug is SignatureSlug {
@@ -33,7 +34,11 @@ type IconName =
   | 'yoga'
   | 'library'
   | 'kids'
-  | 'shield';
+  | 'shield'
+  | 'sail'
+  | 'building'
+  | 'community'
+  | 'cycle';
 
 function ProjectIcon({ name }: { name: IconName }) {
   if (name === 'leaf') {
@@ -90,7 +95,47 @@ function ProjectIcon({ name }: { name: IconName }) {
   if (name === 'shield') {
     return <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6 38 11v11c0 9-5 16-14 20-9-4-14-11-14-20V11Z"/><path d="m18 24 4 4 8-9"/></svg>;
   }
+  if (name === 'sail') {
+    return <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 7v28M24 10 12 30h12M27 14l10 16H27M9 36c5 0 5 3 10 3s5-3 10-3 5 3 10 3"/></svg>;
+  }
+  if (name === 'building') {
+    return <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M9 41V16h13v25M22 41V9h17v32M5 41h38"/><path d="M13 21h5M13 27h5M13 33h5M27 15h7M27 21h7M27 27h7M27 33h7"/></svg>;
+  }
+  if (name === 'community') {
+    return <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="17" cy="17" r="5"/><circle cx="31" cy="17" r="5"/><path d="M7 38c1-8 5-12 10-12s9 4 10 12M21 38c1-7 5-11 10-11s9 4 10 11"/></svg>;
+  }
+  if (name === 'cycle') {
+    return <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="13" cy="34" r="7"/><circle cx="36" cy="34" r="7"/><path d="m13 34 8-14 8 14H13l9-8h8M20 16h8M28 20l5 6"/></svg>;
+  }
   return null;
+}
+
+function ProjectFooter({ compact = false }: { compact?: boolean }) {
+  if (compact) {
+    return (
+      <footer className="signatureFooter signatureFooterCompact">
+        <Link href="/" className="signatureFooterWordmark" aria-label="ONIRIA Investments home"><span className="wordmarkLogo" /></Link>
+        <nav aria-label="Project footer navigation">
+          <Link href="/vision">Vision</Link><Link href="/projects">Projects</Link><Link href="/our-story">About</Link><Link href="/newsroom">News</Link><Link href="/contact">Contact</Link>
+        </nav>
+        <div className="signatureFooterSocial"><span>in</span><span>◎</span><span>✉</span></div>
+      </footer>
+    );
+  }
+
+  return (
+    <footer className="signatureFooter signatureFooterFull">
+      <div className="signatureFooterBrand">
+        <Link href="/" className="signatureFooterWordmark" aria-label="ONIRIA Investments home"><span className="wordmarkLogo" /></Link>
+        <p>We create transformative destinations that inspire wellbeing, elevate communities and stand the test of time.</p>
+        <div className="signatureFooterSocial"><span>in</span><span>◎</span><span>▶</span></div>
+      </div>
+      <div><h4>Projects</h4><Link href="/projects/ona-towers">ONA Towers</Link><Link href="/projects/oniria-stone-town">ONIRIA Stone Town</Link><Link href="/projects/oniria-michamvi">ONIRIA Michamvi</Link><Link href="/projects/v-town">V-Town Fumba</Link></div>
+      <div><h4>Company</h4><Link href="/vision">Vision</Link><Link href="/our-story">About</Link><Link href="/newsroom">News</Link><Link href="/contact">Careers</Link><Link href="/contact">Contact</Link></div>
+      <div><h4>Legal</h4><span>Privacy Policy</span><span>Terms and Conditions</span><span>Sitemap</span></div>
+      <p className="signatureFooterCopyright">© {new Date().getFullYear()} ONIRIA Investments. All rights reserved.</p>
+    </footer>
+  );
 }
 
 function StoneTownPage() {
@@ -174,6 +219,7 @@ function StoneTownPage() {
         <span className="stoneClosingMark" aria-hidden="true">✦</span>
       </section>
 
+      <ProjectFooter compact />
     </main>
   );
 }
@@ -224,6 +270,12 @@ function MichamviPage() {
         </div>
       </section>
 
+      <section className="michamviClosing signatureNavySection">
+        <p className="signatureSectionKicker alignLeft">Begin Your Journey</p>
+        <h2>Wellbeing, nature and longevity — by the ocean.</h2>
+        <Link href="/contact" className="signatureOutlineButton">Enquire Now <span>→</span></Link>
+      </section>
+      <ProjectFooter />
     </main>
   );
 }
@@ -278,6 +330,126 @@ function OnaTowersPage() {
         <div className="onaAmenitiesGrid">{amenities.map(([icon,title])=><article key={title}><ProjectIcon name={icon}/><h3>{title}</h3></article>)}</div>
       </section>
 
+      <section className="onaClosing">
+        <Image src="/images/project-pages/ona-sunset.jpg" alt="Sunset over Zanzibar" fill quality={92} sizes="100vw"/>
+        <div className="onaClosingShade"/>
+        <div className="onaClosingCopy"><h2>Live Above.<br/>See Beyond.</h2><p>A home that connects you to the best of Zanzibar — ocean, culture and community.</p><Link href="/contact" className="signatureOutlineButton">Enquire Now <span>→</span></Link></div>
+      </section>
+      <ProjectFooter />
+    </main>
+  );
+}
+
+const V_TOWN_URL = 'https://oniria-city-2hez.vercel.app/';
+
+function VTownPage() {
+  const highlights: Array<[IconName, string, string]> = [
+    ['waves', 'Oceanfront Living', 'Uninterrupted views & nature'],
+    ['leaf', 'Wellbeing & Sports', 'Active lifestyle every day'],
+    ['sail', 'V Yacht Club', 'Mooring, dining & ocean experiences'],
+    ['building', 'Boutique Lifestyle', 'Retail, dining & essential services'],
+    ['community', 'Private Community', 'Privacy, security & a sense of belonging'],
+  ];
+
+  const residences = [
+    ['/images/project-pages/vtown-entry.jpg', 'Signature Villas', '2, 3 & 4 Bedroom', 'Oceanfront & Lagoon Villas'],
+    ['/images/project-pages/vtown-bedroom-ocean.jpg', 'Residence Collection', '1, 2 & 3 Bedroom Apartments', 'Contemporary Coastal Living'],
+    ['/images/project-pages/vtown-kitchen.jpg', 'Promenade & Retail', 'Shops, Cafés', '& Restaurants'],
+    ['/images/project-pages/vtown-bedroom-arch.jpg', 'V Yacht Club', 'Boating, Leisure', '& Exclusive Experiences'],
+  ];
+
+  const amenities: Array<[IconName, string, string]> = [
+    ['dumbbell', 'Gym & Fitness', 'Indoor & outdoor'],
+    ['yoga', 'Yoga & Wellness', 'Studios & retreats'],
+    ['cycle', 'Running & Cycling', 'Scenic tracks'],
+    ['kids', 'Kids Club', 'Safe & engaging'],
+    ['spark', 'Art & Culture', 'Gallery & events'],
+    ['waves', 'Beach Club', 'Relax & unwind'],
+    ['sail', 'Water Sports', 'Adventure & fun'],
+    ['community', 'Community Spaces', 'Gather & connect'],
+  ];
+
+  return (
+    <main className="signatureProjectPage vTownProjectPage">
+      <section className="signatureHero vTownHero">
+        <Image
+          src="/images/v-town-villa.png"
+          alt="V Town coastal villa in Fumba, Zanzibar"
+          fill
+          priority
+          quality={92}
+          sizes="100vw"
+        />
+        <div className="signatureHeroShade" />
+        <div className="signatureHeroCopy vTownHeroCopy">
+          <h1>V TOWN</h1>
+          <strong>The Art of Living</strong>
+          <span>A masterplanned coastal community in Fumba, where art, wellbeing and nature come together to create an elevated way of life.</span>
+          <a href={V_TOWN_URL} target="_blank" rel="noreferrer" className="vTownHeroWebsiteLink">
+            Visit V Town Website <b aria-hidden="true">↗</b>
+          </a>
+        </div>
+      </section>
+
+      <section className="vTownEssence signatureSectionIvory">
+        <div className="vTownEssenceCopy">
+          <p className="signatureSectionKicker alignLeft">The Essence</p>
+          <div className="signatureRule" />
+          <h2>More than a place<br/>to live.<br/>A way to live.</h2>
+          <p>V Town is thoughtfully designed to harmonize modern living with Zanzibar&apos;s natural beauty. Every space, every detail, every experience is crafted for balance and connection.</p>
+        </div>
+        <div className="vTownEssenceImage">
+          <Image src="/images/project-pages/vtown-living.jpg" alt="V Town contemporary coastal living space" fill quality={92} sizes="(max-width:800px) 100vw, 58vw"/>
+        </div>
+      </section>
+
+      <section className="vTownFeatureStrip signatureSectionIvory" aria-label="V Town highlights">
+        {highlights.map(([icon, title, copy]) => (
+          <article key={title}>
+            <ProjectIcon name={icon}/>
+            <h3>{title}</h3>
+            <p>{copy}</p>
+          </article>
+        ))}
+      </section>
+
+      <section className="vTownResidences signatureSectionIvory">
+        <div className="vTownResidencesIntro">
+          <p className="signatureSectionKicker alignLeft">Residences</p>
+          <div className="signatureRule" />
+          <h2>Elegant homes<br/>in perfect harmony.</h2>
+        </div>
+        <div className="vTownResidenceGrid">
+          {residences.map(([src, title, lineOne, lineTwo]) => (
+            <article key={title}>
+              <div className="vTownResidenceImage"><Image src={src} alt={`${title} at V Town`} fill quality={92} sizes="(max-width:700px) 100vw, 20vw"/></div>
+              <h3>{title}</h3>
+              <p>{lineOne}<br/>{lineTwo}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="vTownArtOfLiving">
+        <Image src="/images/project-pages/vtown-entry.jpg" alt="V Town landscaped arrival and coastal architecture" fill quality={92} sizes="100vw"/>
+        <div className="vTownArtShade" />
+        <div className="vTownArtInner">
+          <div className="vTownArtIntro">
+            <p className="signatureSectionKicker alignLeft">The Art of Living</p>
+            <h2>Live well.<br/>Every day.</h2>
+            <p>Wellbeing, connection and inspiration are woven into every moment.</p>
+          </div>
+          <div className="vTownAmenitiesGrid">
+            {amenities.map(([icon, title, copy]) => (
+              <article key={title}>
+                <ProjectIcon name={icon}/>
+                <div><h3>{title}</h3><p>{copy}</p></div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
     </main>
   );
 }
@@ -285,5 +457,6 @@ function OnaTowersPage() {
 export default function SignatureProjectPage({ slug }: { slug: SignatureSlug }) {
   if (slug === 'oniria-stone-town') return <StoneTownPage />;
   if (slug === 'oniria-michamvi') return <MichamviPage />;
-  return <OnaTowersPage />;
+  if (slug === 'ona-towers') return <OnaTowersPage />;
+  return <VTownPage />;
 }

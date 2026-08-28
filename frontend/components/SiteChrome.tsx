@@ -9,6 +9,11 @@ import SiteAnalytics from './SiteAnalytics';
 export default function SiteChrome({ children }: { children: ReactNode }) {
   const path = usePathname();
   const isAdmin = path.startsWith('/admin');
+  const hasSignatureProjectFooter = [
+    '/projects/oniria-stone-town',
+    '/projects/oniria-michamvi',
+    '/projects/ona-towers',
+  ].includes(path);
 
   if (isAdmin) return <>{children}</>;
 
@@ -17,7 +22,7 @@ export default function SiteChrome({ children }: { children: ReactNode }) {
       <SiteAnalytics />
       <Header />
       {children}
-      <Footer />
+      {!hasSignatureProjectFooter ? <Footer /> : null}
     </>
   );
 }

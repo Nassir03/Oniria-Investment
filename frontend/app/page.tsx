@@ -30,8 +30,8 @@ const collection = [
     name: 'V Town',
     descriptor: 'The Art of Living',
     image: '/images/v-town-attached.png',
-    href: 'https://oniria-city-2hez.vercel.app/',
-    external: true,
+    href: '/projects/v-town',
+    external: false,
   },
 ];
 

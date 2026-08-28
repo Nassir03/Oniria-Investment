@@ -8,7 +8,6 @@ export const revalidate = 60;
 export const metadata = { title: 'Our Projects' };
 
 const VIGOR_GROUP_URL = 'https://turkysgroup.co.tz/';
-const V_TOWN_URL = 'https://oniria-city-2hez.vercel.app/';
 
 const fallbackProjects = [
   {
@@ -82,7 +81,7 @@ const projectPresentation: Record<
 };
 
 function projectHref(slug: string) {
-  return slug === 'v-town' ? V_TOWN_URL : `/projects/${slug}`;
+  return `/projects/${slug}`;
 }
 
 const stableProjectHero: Record<string, string> = {
