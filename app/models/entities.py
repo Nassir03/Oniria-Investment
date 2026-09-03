@@ -208,3 +208,22 @@ class AdminNotification(Base, UUIDPrimaryKeyMixin):
 Index('ix_news_status_published_desc', NewsArticle.status, NewsArticle.published_at.desc())
 Index('ix_leads_status_created_desc', Lead.status, Lead.created_at.desc())
 Index('ix_admin_notifications_user_read_created', AdminNotification.user_id, AdminNotification.is_read, AdminNotification.created_at.desc())
+
+
+class ProjectToolkitAsset(Base, UUIDPrimaryKeyMixin, TimestampMixin):
+    __tablename__ = 'project_toolkit_assets'
+    project_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey('projects.id', ondelete='CASCADE'), index=True)
+    project_slug: Mapped[str] = mapped_column(String(160), default='all-projects', index=True)
+    category: Mapped[str] = mapped_column(String(40), index=True)
+    title: Mapped[str] = mapped_column(String(200))
+    description: Mapped[str | None] = mapped_column(Text)
+    file_url: Mapped[str] = mapped_column(Text)
+    preview_image_url: Mapped[str | None] = mapped_column(Text)
+    storage_path: Mapped[str | None] = mapped_column(Text)
+    preview_storage_path: Mapped[str | None] = mapped_column(Text)
+    media_type: Mapped[str] = mapped_column(String(30), default='image')
+    file_name: Mapped[str | None] = mapped_column(String(300))
+    file_size: Mapped[int | None] = mapped_column(Integer)
+    is_public: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False, index=True)
+    is_downloadable: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

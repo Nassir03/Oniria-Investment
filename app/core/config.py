@@ -40,12 +40,15 @@ class Settings(BaseSettings):
     sentry_dsn: str | None = None
 
     lead_rate_limit_per_minute: int = 10
-    max_upload_bytes: int = 10 * 1024 * 1024
+    max_upload_bytes: int = 100 * 1024 * 1024
     allowed_upload_mime_types: Annotated[List[str], NoDecode] = [
         'image/jpeg',
         'image/png',
         'image/webp',
         'image/avif',
+        'application/pdf',
+        'video/mp4',
+        'video/webm',
     ]
 
     @field_validator('frontend_origins', 'allowed_upload_mime_types', mode='before')

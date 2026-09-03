@@ -11,11 +11,12 @@ from sqlalchemy.orm import selectinload
 from app.core.errors import AppError
 from app.core.security import StaffPrincipal, get_current_staff, require_roles
 from app.db.session import get_db
-from app.models.entities import Lead, LeadNote, NewsArticle, Profile, SiteVisit
+from app.models.entities import Lead, LeadNote, NewsArticle, Profile, SiteVisit, ProjectToolkitAsset
 from app.schemas.admin import AdminNotificationList, CurrentStaff, ProfileUpdate, StaffCreate, StaffOut, StaffUpdate, UploadSignRequest, UploadSignResponse
 from app.schemas.common import PageMeta, Paginated
 from app.schemas.lead import LeadOut, LeadUpdate
 from app.schemas.news import NewsArticleOut, NewsCreate, NewsUpdate
+from app.schemas.toolkit import ToolkitAssetCreate, ToolkitAssetOut, ToolkitAssetUpdate
 from app.services.audit_service import write_audit
 from app.services.news_service import archive_article, create_article, get_article, publish_article, unpublish_article, update_article
 from app.services.notification_service import (
@@ -25,7 +26,7 @@ from app.services.notification_service import (
     mark_notification_read,
     normalize_notification_preferences,
 )
-from app.services.storage_service import create_signed_upload, save_local_newsroom_image, save_local_profile_image
+from app.services.storage_service import create_signed_upload, delete_storage_files, save_local_newsroom_image, save_local_profile_image
 from app.services.staff_service import create_staff, list_staff, update_staff
 from fastapi.responses import StreamingResponse
 
@@ -629,3 +630,100 @@ async def export_activity_csv(
         media_type='text/csv',
         headers={'Content-Disposition': 'attachment; filename="oniria-website-activity.csv"'},
     )
+
+
+@router.get('/toolkit-assets', response_model=list[ToolkitAssetOut])
+async def admin_toolkit_assets(
+    project_slug: str | None = None,
+    db: AsyncSession = Depends(get_db),
+    _: StaffPrincipal = Depends(require_roles('admin', 'editor', 'content_manager')),
+):
+    stmt = select(ProjectToolkitAsset)
+    if project_slug:
+        stmt = stmt.where(ProjectToolkitAsset.project_slug == project_slug)
+    return (await db.scalars(stmt.order_by(ProjectToolkitAsset.project_slug, ProjectToolkitAsset.sort_order, ProjectToolkitAsset.title))).all()
+
+
+@router.post('/toolkit-assets', response_model=ToolkitAssetOut, status_code=201)
+async def admin_toolkit_asset_create(
+    payload: ToolkitAssetCreate,
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(require_roles('admin', 'editor', 'content_manager')),
+):
+    asset = ProjectToolkitAsset(**payload.model_dump())
+    db.add(asset)
+    await db.flush()
+    await write_audit(db, staff.id, 'toolkit_asset.create', 'project_toolkit_asset', asset.id, {'title': asset.title, 'category': asset.category})
+    await db.commit()
+    await db.refresh(asset)
+    return asset
+
+
+@router.patch('/toolkit-assets/{asset_id}', response_model=ToolkitAssetOut)
+async def admin_toolkit_asset_update(
+    asset_id: UUID,
+    payload: ToolkitAssetUpdate,
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(require_roles('admin', 'editor', 'content_manager')),
+):
+    asset = await db.get(ProjectToolkitAsset, asset_id)
+    if not asset:
+        raise AppError('toolkit_asset_not_found', 'Toolkit asset not found.', 404)
+
+    old_storage_path = asset.storage_path
+    old_preview_storage_path = asset.preview_storage_path
+    changes = payload.model_dump(exclude_unset=True)
+    for key, value in changes.items():
+        setattr(asset, key, value)
+
+    await write_audit(
+        db, staff.id, 'toolkit_asset.update', 'project_toolkit_asset', asset.id,
+        {'changes': list(changes.keys()), 'title': asset.title, 'project_slug': asset.project_slug},
+    )
+    await db.commit()
+    await db.refresh(asset)
+
+    # A replacement upload should not leave the old object in storage. Cleanup
+    # happens after the database update so the public toolkit never points at a
+    # file that was removed before its replacement was saved.
+    stale_paths: list[str | None] = []
+    if 'storage_path' in changes and old_storage_path != asset.storage_path:
+        stale_paths.append(old_storage_path)
+    if 'preview_storage_path' in changes and old_preview_storage_path != asset.preview_storage_path:
+        stale_paths.append(old_preview_storage_path)
+    if stale_paths:
+        try:
+            delete_storage_files(stale_paths)
+        except Exception:
+            # The content update is already valid. A failed cleanup must not turn
+            # a successful edit into a broken admin response.
+            pass
+
+    return asset
+
+
+@router.delete('/toolkit-assets/{asset_id}', status_code=204)
+async def admin_toolkit_asset_delete(
+    asset_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(require_roles('admin', 'editor', 'content_manager')),
+):
+    asset = await db.get(ProjectToolkitAsset, asset_id)
+    if not asset:
+        raise AppError('toolkit_asset_not_found', 'Toolkit asset not found.', 404)
+
+    storage_paths = [asset.storage_path, asset.preview_storage_path]
+    await write_audit(
+        db, staff.id, 'toolkit_asset.delete', 'project_toolkit_asset', asset.id,
+        {'title': asset.title, 'project_slug': asset.project_slug},
+    )
+    await db.delete(asset)
+    await db.commit()
+
+    # Remove uploaded files as well as the database record. The public toolkit
+    # disappears immediately because the record is gone even if cleanup fails.
+    try:
+        delete_storage_files(storage_paths)
+    except Exception:
+        pass
+    return Response(status_code=204)

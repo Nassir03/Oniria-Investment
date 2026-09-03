@@ -249,6 +249,7 @@ const adminNav = [
   { href: '/admin/news', label: 'Newsroom', roles: ['admin', 'editor', 'content_manager'] },
   { href: '/admin/leads', label: 'Enquiries', roles: ['admin', 'sales'] },
   { href: '/admin/projects', label: 'Projects' },
+  { href: '/admin/toolkit', label: 'Toolkit', roles: ['admin', 'editor', 'content_manager'] },
   { href: '/admin/staff', label: 'Team', roles: ['admin'] },
   { href: '/admin/settings', label: 'Settings' },
 ];

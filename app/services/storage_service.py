@@ -105,3 +105,31 @@ async def save_local_profile_image(file: UploadFile, user_id: UUID) -> str:
     filename = f'{user_id}-{secrets.token_hex(6)}{extension}'
     (target_dir / filename).write_bytes(raw)
     return f'/media/staff/{filename}'
+
+
+def delete_storage_files(paths: list[str | None]) -> None:
+    """Delete toolkit objects from the configured Supabase Storage bucket.
+
+    Only paths below toolkit/ are accepted. This prevents an admin toolkit
+    action from accidentally deleting unrelated newsroom/profile storage.
+    """
+    clean = []
+    for raw in paths:
+        if not raw:
+            continue
+        path = str(raw).strip().lstrip('/')
+        if not path.startswith('toolkit/'):
+            continue
+        if path not in clean:
+            clean.append(path)
+
+    if not clean:
+        return
+    if not settings.supabase_url or not settings.supabase_service_role_key:
+        raise AppError('storage_not_configured', 'Storage service is not configured.', 503)
+
+    client = create_client(settings.supabase_url, settings.supabase_service_role_key)
+    result = client.storage.from_(settings.storage_bucket).remove(clean)
+    # supabase-py raises for transport/auth errors. Some versions return an
+    # object/dict; no additional response parsing is needed for successful removal.
+    return None
