@@ -251,7 +251,7 @@ export default function ToolkitAdminPage() {
             <p className="eyebrow">{editingId ? 'Edit asset' : 'Add asset'}</p>
             <h2>{editingId ? 'Update project material' : 'Upload new material'}</h2>
           </div>
-          <a href="/projects/toolkit" target="_blank" rel="noreferrer">Open public toolkit ↗</a>
+          <a href="/toolkit" target="_blank" rel="noreferrer">Open public toolkit ↗</a>
         </div>
 
         <div className="toolkitAdminGrid">
