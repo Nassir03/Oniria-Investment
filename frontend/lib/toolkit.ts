@@ -33,15 +33,13 @@ export type ToolkitAsset = {
 export type ToolkitProject = {
   slug: string;
   name: string;
-  subtitle: string;
+  slogan?: string;
 };
 
 export const toolkitProjects: ToolkitProject[] = [
-  { slug: 'all-projects', name: 'ONIRIA Investments', subtitle: 'Project media library' },
-  { slug: 'ona-towers', name: 'ONA Towers', subtitle: 'Landmark residences' },
-  { slug: 'oniria-stone-town', name: 'ONIRIA Stone Town', subtitle: 'Heritage hospitality' },
-  { slug: 'oniria-michamvi', name: 'ONIRIA Michamvi', subtitle: 'Wellness · Nature · Longevity' },
-  { slug: 'v-town', name: 'V Town', subtitle: 'Coastal living' },
+  { slug: 'all-projects', name: 'Oniria Investments', slogan: 'Project media library' },
+  { slug: 'ona-towers', name: 'Ona Towers', slogan: 'Ishi juu, ona zaidi' },
+  { slug: 'roho', name: 'Roho', slogan: 'The Art of Living' },
 ];
 
 // Initial ONIRIA Investments overview assets. Project-specific selections are

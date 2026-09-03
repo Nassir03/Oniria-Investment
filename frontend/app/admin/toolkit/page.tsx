@@ -42,7 +42,6 @@ export default function ToolkitAdminPage() {
   const [projectSlug, setProjectSlug] = useState('all-projects');
   const [category, setCategory] = useState<ToolkitCategory>('gallery');
   const [title, setTitle] = useState('Gallery');
-  const [description, setDescription] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [previewFile, setPreviewFile] = useState<File | null>(null);
   const [downloadable, setDownloadable] = useState(true);
@@ -111,7 +110,6 @@ export default function ToolkitAdminPage() {
     setProjectSlug('all-projects');
     setCategory('gallery');
     setTitle('Gallery');
-    setDescription('');
     setFile(null);
     setPreviewFile(null);
     setDownloadable(true);
@@ -124,7 +122,6 @@ export default function ToolkitAdminPage() {
     setProjectSlug(item.project_slug);
     setCategory(item.category);
     setTitle(item.title);
-    setDescription(item.description || '');
     setFile(null);
     setPreviewFile(null);
     setDownloadable(item.is_downloadable);
@@ -152,7 +149,6 @@ export default function ToolkitAdminPage() {
         project_slug: projectSlug,
         category,
         title: title.trim(),
-        description: description.trim() || null,
         is_public: isPublic,
         is_downloadable: downloadable,
         sort_order: (categories.findIndex((entry) => entry.value === category) + 1) * 10,
@@ -275,10 +271,7 @@ export default function ToolkitAdminPage() {
             <span>Display title</span>
             <input value={title} onChange={(e) => setTitle(e.target.value)} required />
           </label>
-          <label className="toolkitAdminWide">
-            <span>Description</span>
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder="Short premium description shown beneath the carousel." />
-          </label>
+
           <label>
             <span>{editingId ? 'Replace main file (optional)' : 'Main file'}</span>
             <input id="toolkit-file" type="file" accept="image/*,application/pdf,video/mp4,video/webm" onChange={(e) => setFile(e.target.files?.[0] || null)} required={!editingId} />

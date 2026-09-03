@@ -60,8 +60,16 @@ function AssetPreview({ asset, onClose }: { asset: ToolkitAsset; onClose: () => 
           )}
         </div>
         <div className="toolkitModalBottom">
-          <p>{asset.description}</p>
-          {asset.is_downloadable && <a className="toolkitDownloadLink" href={asset.file_url} download={asset.file_name || undefined}><DownloadIcon /><span>Download asset</span></a>}
+          {asset.is_downloadable && (
+            <a
+              className="toolkitDownloadLink"
+              href={asset.file_url}
+              download={asset.file_name || undefined}
+            >
+              <DownloadIcon />
+              <span>Download asset</span>
+            </a>
+          )}
         </div>
       </motion.div>
     </motion.div>
@@ -119,8 +127,10 @@ export default function ToolkitCarousel({ initialAssets = fallbackToolkitAssets 
           <Image src="/images/toolkit/oniria-logo-white.png" width={250} height={110} alt="ONIRIA Investments" priority />
         </div>
         <div className="toolkitTitleBlock">
-          <p>{selectedProject.subtitle}</p>
-          <h1>ONIRIA <em>Toolkit</em></h1>
+          <h1>{selectedProject.name}</h1>
+          {selectedProject.slogan && (
+            <p>{selectedProject.slogan}</p>
+          )}
         </div>
         <label className="toolkitProjectPicker">
           <span>Project</span>
@@ -162,14 +172,15 @@ export default function ToolkitCarousel({ initialAssets = fallbackToolkitAssets 
           </div>
 
           <div className="toolkitControls">
-            <button onClick={() => move(-1)} aria-label="Previous toolkit item"><ArrowIcon direction="left" /></button>
-            <div><span>{String(active + 1).padStart(2, '0')}</span><i /><span>{String(assets.length).padStart(2, '0')}</span></div>
-            <button onClick={() => move(1)} aria-label="Next toolkit item"><ArrowIcon direction="right" /></button>
+            <button onClick={() => move(-1)} aria-label="Previous toolkit item">
+              <ArrowIcon direction="left" />
+            </button>
+
+            <button onClick={() => move(1)} aria-label="Next toolkit item">
+              <ArrowIcon direction="right" />
+            </button>
           </div>
 
-          <footer className="toolkitMeta">
-            <p>{current?.description}</p>
-          </footer>
         </>
       ) : (
         <div className="toolkitEmptyProject" role="status">
