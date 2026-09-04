@@ -1,5 +1,6 @@
 from datetime import datetime
 from uuid import UUID
+from urllib.parse import urlparse
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 ALLOWED_CATEGORIES = {
@@ -7,6 +8,19 @@ ALLOWED_CATEGORIES = {
     'project_film', 'payment_plan', 'material_boards', 'masterplan',
 }
 ALLOWED_MEDIA_TYPES = {'image', 'pdf', 'video', 'document'}
+
+
+def _safe_toolkit_url(value: str) -> str:
+    value = value.strip()
+    if not value:
+        raise ValueError('Toolkit link cannot be empty.')
+    if value.startswith('/') and not value.startswith('//'):
+        return value
+
+    parsed = urlparse(value)
+    if parsed.scheme not in {'http', 'https'} or not parsed.netloc:
+        raise ValueError('Toolkit links must be valid HTTP(S) URLs or site-relative paths.')
+    return value
 
 
 class ToolkitAssetBase(BaseModel):
@@ -25,6 +39,18 @@ class ToolkitAssetBase(BaseModel):
     is_public: bool = True
     is_downloadable: bool = True
     sort_order: int = 0
+
+    @field_validator('file_url')
+    @classmethod
+    def valid_file_url(cls, value: str) -> str:
+        return _safe_toolkit_url(value)
+
+    @field_validator('preview_image_url')
+    @classmethod
+    def valid_preview_image_url(cls, value: str | None) -> str | None:
+        if value is None or not value.strip():
+            return None
+        return _safe_toolkit_url(value)
 
     @field_validator('category')
     @classmethod
@@ -61,6 +87,20 @@ class ToolkitAssetUpdate(BaseModel):
     is_public: bool | None = None
     is_downloadable: bool | None = None
     sort_order: int | None = None
+
+    @field_validator('file_url')
+    @classmethod
+    def valid_file_url(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        return _safe_toolkit_url(value)
+
+    @field_validator('preview_image_url')
+    @classmethod
+    def valid_preview_image_url(cls, value: str | None) -> str | None:
+        if value is None or not value.strip():
+            return None
+        return _safe_toolkit_url(value)
 
     @field_validator('category')
     @classmethod

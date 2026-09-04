@@ -86,6 +86,75 @@ export const toolkitProjects: ToolkitProject[] = [
   },
 ];
 
+
+export const toolkitCategoryDefaultCover: Record<ToolkitCategory, string> = {
+  gallery: '/images/toolkit/ona-tower.png',
+  logo: '/images/toolkit/oniria-logo-white.png',
+  project_brief: '/images/toolkit/ona-hall.png',
+  brochure: '/images/toolkit/abstract/palm-shadow.png',
+  floor_plans: '/images/toolkit/ona-living-room.png',
+  project_film: '/images/toolkit/abstract/sand-texture.png',
+  payment_plan: '/images/toolkit/ona-coffee.png',
+  material_boards: '/images/toolkit/abstract/ocean-wave.png',
+  masterplan: '/images/toolkit/coastal-residence.png',
+};
+
+const imageCategories = new Set<ToolkitCategory>([
+  'gallery',
+  'logo',
+  'material_boards',
+]);
+
+const pdfCategories = new Set<ToolkitCategory>([
+  'project_brief',
+  'brochure',
+  'floor_plans',
+  'payment_plan',
+  'masterplan',
+]);
+
+export function normalizeToolkitLink(value: string): string {
+  const trimmed = value.trim();
+  if (!trimmed) throw new Error('Enter the asset link.');
+
+  if (trimmed.startsWith('/') && !trimmed.startsWith('//')) return trimmed;
+
+  const candidate = trimmed.startsWith('//')
+    ? `https:${trimmed}`
+    : /^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed)
+      ? trimmed
+      : `https://${trimmed}`;
+
+  let url: URL;
+  try {
+    url = new URL(candidate);
+  } catch {
+    throw new Error('Enter a valid public link.');
+  }
+
+  if (!['http:', 'https:'].includes(url.protocol)) {
+    throw new Error('Toolkit links must use HTTP or HTTPS.');
+  }
+
+  return url.toString();
+}
+
+export function inferToolkitMediaType(
+  rawUrl: string,
+  category: ToolkitCategory,
+): ToolkitAsset['media_type'] {
+  const url = rawUrl.toLowerCase().split(/[?#]/)[0];
+
+  if (/\.(png|jpe?g|webp|avif|gif|svg)$/.test(url)) return 'image';
+  if (/\.pdf$/.test(url)) return 'pdf';
+  if (/\.(mp4|webm|mov|m4v)$/.test(url)) return 'video';
+
+  if (category === 'project_film') return 'video';
+  if (pdfCategories.has(category)) return 'pdf';
+  if (imageCategories.has(category)) return 'image';
+  return 'document';
+}
+
 /*
  * ----------------------------------------------------------
  * FALLBACK TOOLKIT ASSETS

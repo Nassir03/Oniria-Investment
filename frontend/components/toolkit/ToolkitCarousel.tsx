@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import Link from 'next/link';
 
 import {
   AnimatePresence,
@@ -21,6 +21,7 @@ import type {
 
 import {
   fallbackToolkitAssets,
+  toolkitCategoryDefaultCover,
   toolkitProjects,
 } from '@/lib/toolkit';
 
@@ -92,66 +93,86 @@ function CloseIcon() {
 
 /*
  * ----------------------------------------------------------
- * GOOGLE DRIVE HELPERS
+ * LINK + COVER HELPERS
  * ----------------------------------------------------------
  */
 
-/*
- * Detect whether a toolkit file is hosted on Google Drive.
- */
-function isGoogleDriveFile(
-  url: string,
-) {
-  return /^https:\/\/drive\.google\.com\/file\/d\//i.test(
-    url,
-  );
+function isExternalLink(url: string) {
+  return /^https?:\/\//i.test(url);
 }
 
-/*
- * Extract the Google Drive file ID.
- *
- * Example:
- *
- * https://drive.google.com/file/d/ABC123/view
- *
- * becomes:
- *
- * ABC123
- */
-function getGoogleDriveFileId(
-  url: string,
-) {
-  const match = url.match(
-    /drive\.google\.com\/file\/d\/([^/?]+)/i,
+function getGoogleDriveFileId(url: string) {
+  const pathMatch = url.match(
+    /(?:drive\.google\.com\/file\/d\/|docs\.google\.com\/[^/]+\/d\/)([^/?#]+)/i,
   );
+  if (pathMatch?.[1]) return pathMatch[1];
 
-  return match?.[1] || null;
-}
-
-/*
- * Convert normal Google Drive view URL to download URL.
- *
- * Example:
- *
- * VIEW:
- * https://drive.google.com/file/d/ABC123/view
- *
- * DOWNLOAD:
- * https://drive.google.com/uc?export=download&id=ABC123
- */
-function getDownloadUrl(
-  url: string,
-) {
-  const fileId =
-    getGoogleDriveFileId(url);
-
-  if (!fileId) {
-    return url;
+  try {
+    const parsed = new URL(url);
+    if (
+      parsed.hostname === 'drive.google.com' ||
+      parsed.hostname.endsWith('.google.com')
+    ) {
+      return parsed.searchParams.get('id');
+    }
+  } catch {
+    // Relative/local links are valid toolkit URLs and simply are not Drive links.
   }
 
+  return null;
+}
+
+
+function getDownloadUrl(url: string) {
+  const fileId = getGoogleDriveFileId(url);
+  if (!fileId) return url;
+
+  return `https://drive.google.com/uc?export=download&id=${fileId}`;
+}
+
+function getGoogleDriveThumbnail(url: string) {
+  const fileId = getGoogleDriveFileId(url);
+  if (!fileId) return null;
+
+  return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1600`;
+}
+
+function getToolkitCoverUrl(asset: ToolkitAsset) {
+  const requested = asset.preview_image_url?.trim();
+
+  if (requested) {
+    return getGoogleDriveThumbnail(requested) || requested;
+  }
+
+  if (asset.media_type === 'image') {
+    return getGoogleDriveThumbnail(asset.file_url) || asset.file_url;
+  }
+
+  return toolkitCategoryDefaultCover[asset.category];
+}
+
+function ToolkitCover({
+  asset,
+}: {
+  asset: ToolkitAsset;
+}) {
+  const fallback = toolkitCategoryDefaultCover[asset.category];
+  const [src, setSrc] = useState(() => getToolkitCoverUrl(asset));
+
+  useEffect(() => {
+    setSrc(getToolkitCoverUrl(asset));
+  }, [asset]);
+
   return (
-    'https://drive.google.com/uc' +
-    `?export=download&id=${fileId}`
+    <img
+      src={src}
+      alt=""
+      aria-hidden="true"
+      loading="eager"
+      onError={() => {
+        if (src !== fallback) setSrc(fallback);
+      }}
+    />
   );
 }
 
@@ -402,16 +423,9 @@ function AssetPreview({
               title={`${asset.title} PDF`}
             />
           ) : (
-            <Image
-              src={
-                asset.file_url
-              }
-              alt={
-                asset.title
-              }
-              fill
-              sizes="90vw"
-              quality={92}
+            <img
+              src={getGoogleDriveThumbnail(asset.file_url) || asset.file_url}
+              alt={asset.title}
             />
           )}
         </div>
@@ -425,28 +439,9 @@ function AssetPreview({
                   asset.file_url,
                 )
               }
-              target={
-                isGoogleDriveFile(
-                  asset.file_url,
-                )
-                  ? '_blank'
-                  : undefined
-              }
-              rel={
-                isGoogleDriveFile(
-                  asset.file_url,
-                )
-                  ? 'noopener noreferrer'
-                  : undefined
-              }
-              download={
-                !isGoogleDriveFile(
-                  asset.file_url,
-                )
-                  ? asset.file_name ||
-                    undefined
-                  : undefined
-              }
+              target={isExternalLink(getDownloadUrl(asset.file_url)) ? '_blank' : undefined}
+              rel={isExternalLink(getDownloadUrl(asset.file_url)) ? 'noopener noreferrer' : undefined}
+              download={!isExternalLink(asset.file_url) ? asset.file_name || undefined : undefined}
             >
               <DownloadIcon />
 
@@ -655,15 +650,9 @@ export default function ToolkitCarousel({
        * ----------------------------------------------------
        */}
       <header className="toolkitIntro">
-        <div className="toolkitBrand">
-          <Image
-            src="/images/toolkit/oniria-logo-white.png"
-            width={250}
-            height={110}
-            alt="ONIRIA Investments"
-            priority
-          />
-        </div>
+        <Link href="/" prefetch className="toolkitBrand" aria-label="ONIRIA Investments home">
+          <span className="wordmarkLogo toolkitBrandWordmark" aria-hidden="true" />
+        </Link>
 
         <div className="toolkitTitleBlock">
           <h1>
@@ -760,7 +749,7 @@ export default function ToolkitCarousel({
                       asset.id
                     }
                     className={
-                      `toolkitCard ${
+                      `toolkitCard toolkitCard--${asset.category} ${
                         isActive
                           ? 'active'
                           : ''
@@ -825,16 +814,7 @@ export default function ToolkitCarousel({
                      * Therefore the abstract images
                      * show correctly as B covers.
                      */}
-                    <Image
-                      src={
-                        asset.preview_image_url ||
-                        asset.file_url
-                      }
-                      alt=""
-                      fill
-                      sizes="(max-width: 800px) 72vw, 420px"
-                      quality={92}
-                    />
+                    <ToolkitCover asset={asset} />
 
                     <div className="toolkitCardShade" />
 
@@ -861,28 +841,9 @@ export default function ToolkitCarousel({
                                 asset.file_url,
                               )
                             }
-                            target={
-                              isGoogleDriveFile(
-                                asset.file_url,
-                              )
-                                ? '_blank'
-                                : undefined
-                            }
-                            rel={
-                              isGoogleDriveFile(
-                                asset.file_url,
-                              )
-                                ? 'noopener noreferrer'
-                                : undefined
-                            }
-                            download={
-                              !isGoogleDriveFile(
-                                asset.file_url,
-                              )
-                                ? asset.file_name ||
-                                  undefined
-                                : undefined
-                            }
+                            target={isExternalLink(getDownloadUrl(asset.file_url)) ? '_blank' : undefined}
+                            rel={isExternalLink(getDownloadUrl(asset.file_url)) ? 'noopener noreferrer' : undefined}
+                            download={!isExternalLink(asset.file_url) ? asset.file_name || undefined : undefined}
                             className="toolkitSquareAction"
                             aria-label={`Download ${asset.title}`}
                             onClick={(
@@ -898,15 +859,12 @@ export default function ToolkitCarousel({
                         {/*
                          * EYE / PREVIEW ICON
                          *
-                         * Google Drive:
-                         * opens in another tab.
+                         * External links open in another tab so Google Drive,
+                         * hosted PDFs and web pages work without iframe restrictions.
                          *
-                         * Local/Supabase:
-                         * opens internal preview.
+                         * Local media keeps the internal ONIRIA preview.
                          */}
-                        {isGoogleDriveFile(
-                          asset.file_url,
-                        ) ? (
+                        {isExternalLink(asset.file_url) ? (
                           <a
                             href={
                               asset.file_url

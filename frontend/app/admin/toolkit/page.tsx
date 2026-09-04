@@ -3,9 +3,13 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { AdminFrame, AdminState, getAdminAccessToken } from '@/components/AdminData';
 import { authFetch } from '@/lib/api';
-import { supabase } from '@/lib/supabase';
 import type { ToolkitAsset, ToolkitCategory } from '@/lib/toolkit';
-import { toolkitProjects } from '@/lib/toolkit';
+import {
+  inferToolkitMediaType,
+  normalizeToolkitLink,
+  toolkitCategoryDefaultCover,
+  toolkitProjects,
+} from '@/lib/toolkit';
 
 const categories: { value: ToolkitCategory; label: string }[] = [
   { value: 'gallery', label: 'Gallery' },
@@ -23,13 +27,6 @@ function categoryLabel(value: ToolkitCategory) {
   return categories.find((entry) => entry.value === value)?.label || value;
 }
 
-function mediaType(file: File): ToolkitAsset['media_type'] {
-  if (file.type === 'application/pdf') return 'pdf';
-  if (file.type.startsWith('video/')) return 'video';
-  if (file.type.startsWith('image/')) return 'image';
-  return 'document';
-}
-
 export default function ToolkitAdminPage() {
   const [items, setItems] = useState<ToolkitAsset[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,13 +34,14 @@ export default function ToolkitAdminPage() {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
 
-  // Form state
+  // Form state. Toolkit media is intentionally link-based so publishing does
+  // not depend on a separately configured storage service.
   const [editingId, setEditingId] = useState<string | null>(null);
   const [projectSlug, setProjectSlug] = useState('all-projects');
   const [category, setCategory] = useState<ToolkitCategory>('gallery');
   const [title, setTitle] = useState('Gallery');
-  const [file, setFile] = useState<File | null>(null);
-  const [previewFile, setPreviewFile] = useState<File | null>(null);
+  const [assetLink, setAssetLink] = useState('');
+  const [previewLink, setPreviewLink] = useState('');
   const [downloadable, setDownloadable] = useState(true);
   const [isPublic, setIsPublic] = useState(true);
 
@@ -84,37 +82,15 @@ export default function ToolkitAdminPage() {
       .filter((group) => group.items.length);
   }, [visibleItems]);
 
-  async function uploadFile(upload: File, folder: string) {
-    if (!supabase) throw new Error('Supabase is not configured in the frontend environment.');
-    const token = await getAdminAccessToken();
-    const signed = await authFetch<{ path: string; token: string; signed_url?: string | null }>('/admin/uploads/sign', token, {
-      method: 'POST',
-      body: JSON.stringify({ filename: upload.name, content_type: upload.type, size_bytes: upload.size, folder }),
-    });
-    const bucket = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'oniria-media';
-    const result = await supabase.storage.from(bucket).uploadToSignedUrl(signed.path, signed.token, upload, { contentType: upload.type });
-    if (result.error) throw result.error;
-    const publicUrl = supabase.storage.from(bucket).getPublicUrl(signed.path).data.publicUrl;
-    return { url: publicUrl, path: signed.path };
-  }
-
-  function clearFileInputs() {
-    const fileInput = document.getElementById('toolkit-file') as HTMLInputElement | null;
-    const previewInput = document.getElementById('toolkit-preview') as HTMLInputElement | null;
-    if (fileInput) fileInput.value = '';
-    if (previewInput) previewInput.value = '';
-  }
-
   function resetForm() {
     setEditingId(null);
     setProjectSlug('all-projects');
     setCategory('gallery');
     setTitle('Gallery');
-    setFile(null);
-    setPreviewFile(null);
+    setAssetLink('');
+    setPreviewLink('');
     setDownloadable(true);
     setIsPublic(true);
-    clearFileInputs();
   }
 
   function edit(item: ToolkitAsset) {
@@ -122,21 +98,36 @@ export default function ToolkitAdminPage() {
     setProjectSlug(item.project_slug);
     setCategory(item.category);
     setTitle(item.title);
-    setFile(null);
-    setPreviewFile(null);
+    setAssetLink(item.file_url);
+    // Do not clutter the edit form with an automatic category cover. Only
+    // show a preview URL that was explicitly saved for this asset.
+    setPreviewLink(
+      item.preview_image_url === toolkitCategoryDefaultCover[item.category]
+        ? ''
+        : item.preview_image_url || '',
+    );
     setDownloadable(item.is_downloadable);
     setIsPublic(item.is_public);
-    clearFileInputs();
     setError('');
-    setNotice(`Editing “${item.title}”. You can change details without uploading the file again.`);
+    setNotice(`Editing “${item.title}”. Update the links or publication settings, then save.`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   async function submit(event: FormEvent) {
     event.preventDefault();
-    const existing = editingId ? items.find((item) => item.id === editingId) : null;
-    if (!existing && !file) {
-      setError('Choose a toolkit file first.');
+
+    let normalizedAssetLink = '';
+    let normalizedPreviewLink = '';
+    try {
+      normalizedAssetLink = normalizeToolkitLink(assetLink);
+      normalizedPreviewLink = previewLink.trim() ? normalizeToolkitLink(previewLink) : '';
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Enter a valid toolkit link.');
+      return;
+    }
+
+    if (!title.trim()) {
+      setError('Enter a display title.');
       return;
     }
 
@@ -145,55 +136,47 @@ export default function ToolkitAdminPage() {
     setNotice('');
 
     try {
+      const existing = editingId ? items.find((item) => item.id === editingId) : null;
+      const resolvedPreviewLink = normalizedPreviewLink || toolkitCategoryDefaultCover[category];
+      const keepsExistingFile = Boolean(existing && normalizedAssetLink === existing.file_url);
+      const keepsExistingPreview = Boolean(
+        existing && resolvedPreviewLink === (existing.preview_image_url || toolkitCategoryDefaultCover[existing.category]),
+      );
+
       const payload: Record<string, unknown> = {
         project_slug: projectSlug,
         category,
         title: title.trim(),
+        file_url: normalizedAssetLink,
+        preview_image_url: resolvedPreviewLink,
+        // Preserve storage metadata only while an existing stored object is
+        // still being referenced. Switching to a pasted link clears the old
+        // storage path so backend cleanup can safely remove the obsolete file.
+        storage_path: keepsExistingFile ? existing?.storage_path || null : null,
+        preview_storage_path: keepsExistingPreview ? existing?.preview_storage_path || null : null,
+        media_type: keepsExistingFile && existing
+          ? existing.media_type
+          : inferToolkitMediaType(normalizedAssetLink, category),
+        file_name: keepsExistingFile && existing ? existing.file_name : title.trim(),
+        file_size: keepsExistingFile && existing ? existing.file_size : null,
         is_public: isPublic,
         is_downloadable: downloadable,
         sort_order: (categories.findIndex((entry) => entry.value === category) + 1) * 10,
       };
 
-      if (file) {
-        const uploaded = await uploadFile(file, `toolkit/${projectSlug}/${category}`);
-        payload.file_url = uploaded.url;
-        payload.storage_path = uploaded.path;
-        payload.media_type = mediaType(file);
-        payload.file_name = file.name;
-        payload.file_size = file.size;
-
-        // When replacing an image whose preview was the main image, keep them in sync.
-        if (mediaType(file) === 'image' && (!existing?.preview_storage_path || existing.preview_image_url === existing.file_url)) {
-          payload.preview_image_url = uploaded.url;
-          payload.preview_storage_path = null;
-        }
-      }
-
-      if (previewFile) {
-        const preview = await uploadFile(previewFile, `toolkit/${projectSlug}/${category}/previews`);
-        payload.preview_image_url = preview.url;
-        payload.preview_storage_path = preview.path;
-      }
-
       const token = await getAdminAccessToken();
-      if (existing) {
-        await authFetch<ToolkitAsset>(`/admin/toolkit-assets/${existing.id}`, token, {
+      if (editingId) {
+        await authFetch<ToolkitAsset>(`/admin/toolkit-assets/${editingId}`, token, {
           method: 'PATCH',
           body: JSON.stringify(payload),
         });
-        setNotice('Toolkit asset updated successfully.');
+        setNotice('Toolkit link updated successfully and is ready for the public website.');
       } else {
-        // A new PDF/video without a preview can still be published. The public
-        // card will use the file URL; for best presentation upload a preview image.
-        if (!payload.preview_image_url && file) {
-          const uploadedUrl = payload.file_url as string;
-          payload.preview_image_url = uploadedUrl;
-        }
         await authFetch<ToolkitAsset>('/admin/toolkit-assets', token, {
           method: 'POST',
           body: JSON.stringify(payload),
         });
-        setNotice('Toolkit asset published successfully.');
+        setNotice('Toolkit link published successfully and is ready for the public website.');
       }
 
       resetForm();
@@ -223,7 +206,7 @@ export default function ToolkitAdminPage() {
 
   async function remove(item: ToolkitAsset) {
     const projectName = toolkitProjects.find((project) => project.slug === item.project_slug)?.name || item.project_slug;
-    if (!window.confirm(`Permanently remove “${item.title}” from ${projectName}? The stored toolkit file will also be removed.`)) return;
+    if (!window.confirm(`Permanently remove “${item.title}” from ${projectName}?`)) return;
 
     setError('');
     setNotice('');
@@ -242,14 +225,14 @@ export default function ToolkitAdminPage() {
     <AdminFrame title="Project Toolkit" kicker="Media library">
       <section className="adminWelcomeStrip adminWelcomePremium compact">
         <div><p className="eyebrow">Toolkit management</p><h2>Publish, update or remove every project asset.</h2></div>
-        <p>Each item belongs to one project. Public visitors only see files published for the project they select.</p>
+        <p>Paste a secure public link for each item. Public visitors immediately see published entries for the project they select.</p>
       </section>
 
       <form className={`toolkitAdminForm ${editingId ? 'isEditing' : ''}`} onSubmit={submit}>
         <div className="toolkitAdminHeading">
           <div>
             <p className="eyebrow">{editingId ? 'Edit asset' : 'Add asset'}</p>
-            <h2>{editingId ? 'Update project material' : 'Upload new material'}</h2>
+            <h2>{editingId ? 'Update project material' : 'Add material by link'}</h2>
           </div>
           <a href="/toolkit" target="_blank" rel="noreferrer">Open public toolkit ↗</a>
         </div>
@@ -271,13 +254,34 @@ export default function ToolkitAdminPage() {
             <span>Display title</span>
             <input value={title} onChange={(e) => setTitle(e.target.value)} required />
           </label>
-          <label>
-            <span>{editingId ? 'Replace main file (optional)' : 'Main file'}</span>
-            <input id="toolkit-file" type="file" accept="image/*,application/pdf,video/mp4,video/webm" onChange={(e) => setFile(e.target.files?.[0] || null)} required={!editingId} />
+          <label className="toolkitAdminWideField">
+            <span>Asset link</span>
+            <input
+              value={assetLink}
+              onChange={(e) => setAssetLink(e.target.value)}
+              type="text"
+              inputMode="url"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              placeholder="https://drive.google.com/file/d/.../view"
+              required
+            />
+            <small>Paste a public HTTPS link (Google Drive, PDF, image, video or another public page). No storage setup is required.</small>
           </label>
-          <label>
-            <span>{editingId ? 'Replace preview image (optional)' : 'Preview image (optional)'}</span>
-            <input id="toolkit-preview" type="file" accept="image/*" onChange={(e) => setPreviewFile(e.target.files?.[0] || null)} />
+          <label className="toolkitAdminWideField">
+            <span>Preview image link (optional)</span>
+            <input
+              value={previewLink}
+              onChange={(e) => setPreviewLink(e.target.value)}
+              type="text"
+              inputMode="url"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              placeholder="https://example.com/project-cover.jpg"
+            />
+            <small>Use a direct image link for a custom card cover. Leave blank to use the ONIRIA category cover.</small>
           </label>
         </div>
 
@@ -290,7 +294,7 @@ export default function ToolkitAdminPage() {
         {notice && <div className="adminNotice">{notice}</div>}
 
         <div className="toolkitAdminFormActions">
-          <button className="button buttonNavy" disabled={saving}>{saving ? 'Saving…' : editingId ? 'Save changes' : 'Publish asset'} <span>→</span></button>
+          <button className="button buttonNavy" disabled={saving}>{saving ? 'Saving…' : editingId ? 'Save changes' : 'Publish link'} <span>→</span></button>
           {editingId && <button type="button" className="toolkitAdminCancel" onClick={resetForm} disabled={saving}>Cancel edit</button>}
         </div>
       </form>
@@ -325,10 +329,10 @@ export default function ToolkitAdminPage() {
                   <div>
                     <small>{categoryLabel(item.category)}</small>
                     <strong>{item.title}</strong>
-                    <span>{item.media_type.toUpperCase()} · {item.is_public ? 'Public' : 'Hidden'}</span>
+                    <span>{item.media_type.toUpperCase()} · {item.is_public ? 'Public' : 'Hidden'} · Link</span>
                   </div>
                   <div className="toolkitAdminRowActions">
-                    <a href={item.file_url} target="_blank" rel="noreferrer">Preview</a>
+                    <a href={item.file_url} target="_blank" rel="noopener noreferrer">Open link</a>
                     <button type="button" onClick={() => edit(item)}>Edit</button>
                     <button type="button" onClick={() => void toggleVisibility(item)}>{item.is_public ? 'Hide' : 'Publish'}</button>
                     <button type="button" className="danger" onClick={() => void remove(item)}>Remove</button>
