@@ -161,7 +161,7 @@ export const fallbackToolkitAssets: ToolkitAsset[] = [
       'https://drive.google.com/file/d/1SfgaphlnuV2_AiGKmEFeLgagevCnrZFy/view?usp=drive_link',
 
     preview_image_url:
-      '/images/toolkit/abstract/ocean-wave.png',
+      '/images/toolkit/oniria-logo-white.png',
 
     media_type: 'image',
 
@@ -354,10 +354,10 @@ export const fallbackToolkitAssets: ToolkitAsset[] = [
     title: 'Material Boards',
 
     file_url:
-      '/images/toolkit/abstract/stone-light.png',
+      '/images/toolkit/abstract/ocean-wave.png',
 
     preview_image_url:
-      '/images/toolkit/abstract/stone-light.png',
+      '/images/toolkit/abstract/ocean-wave.png',
 
     media_type: 'image',
 
