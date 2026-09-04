@@ -271,7 +271,6 @@ export default function ToolkitAdminPage() {
             <span>Display title</span>
             <input value={title} onChange={(e) => setTitle(e.target.value)} required />
           </label>
-
           <label>
             <span>{editingId ? 'Replace main file (optional)' : 'Main file'}</span>
             <input id="toolkit-file" type="file" accept="image/*,application/pdf,video/mp4,video/webm" onChange={(e) => setFile(e.target.files?.[0] || null)} required={!editingId} />
