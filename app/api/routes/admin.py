@@ -27,7 +27,7 @@ from app.services.notification_service import (
     normalize_notification_preferences,
 )
 from app.services.storage_service import create_signed_upload, delete_storage_files, save_local_newsroom_image, save_local_profile_image
-from app.services.staff_service import create_staff, list_staff, update_staff
+from app.services.staff_service import create_staff, delete_staff, list_staff, update_staff
 from fastapi.responses import StreamingResponse
 
 router = APIRouter(prefix='/admin', tags=['admin'])
@@ -328,6 +328,32 @@ async def admin_staff_update(
         )
     await db.commit()
     return result
+
+
+@router.delete('/staff/{user_id}', status_code=204)
+async def admin_staff_delete(
+    user_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(require_roles('admin')),
+):
+    result = await delete_staff(db, user_id, actor_id=staff.id)
+    await write_audit(db, staff.id, 'staff.delete', 'profile', user_id, {
+        'email': result['email'],
+        'roles': result['roles'],
+        'notification_key': 'staff_changes',
+        'notification_events': ['staff_account_deleted', 'staff_access_removed'],
+    })
+    await create_preference_notifications(
+        db,
+        preference_key='staff_account_changes',
+        notification_type='staff_account_deleted',
+        title='Staff account removed',
+        message=f"{result['full_name'] or result['email']} was removed from Team Access.",
+        link='/admin/staff',
+        allowed_roles={'admin'},
+    )
+    await db.commit()
+    return Response(status_code=204)
 
 
 @router.get('/news', response_model=Paginated[NewsArticleOut])

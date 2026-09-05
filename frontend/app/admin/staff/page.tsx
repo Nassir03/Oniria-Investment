@@ -108,6 +108,33 @@ export default function Page() {
     }
   }
 
+  async function removeSelected() {
+    if (!selected) return;
+
+    const name = selected.full_name || selected.email || 'this staff member';
+    if (!window.confirm(`Remove ${name} from Team Access? This deletes their staff login and cannot be undone.`)) {
+      return;
+    }
+
+    setSaving(true);
+    setError('');
+    setNotice('');
+
+    try {
+      const token = await getAdminAccessToken();
+      await authFetch<void>(`/admin/staff/${selected.id}`, token, {
+        method: 'DELETE',
+      });
+      setSelected(null);
+      setNotice(`${name} has been removed from Team Access.`);
+      await loadStaff();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to remove staff account.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <AdminFrame title="Team access" kicker="Staff administration">
       {!isAdmin && profile ? (
@@ -172,7 +199,17 @@ export default function Page() {
               <label><span>Account status</span><select name="status" defaultValue={selected.status}><option value="active">Active</option><option value="suspended">Suspended</option></select></label>
               <label><span>New password (optional)</span><input name="password" type="password" minLength={8} placeholder="Leave blank to keep current password" /></label>
               <fieldset className="wide"><legend>Responsibilities</legend><div className="adminRoleGrid four">{roleOptions.map((role)=><label className="adminRoleOption" key={role.value}><input type="checkbox" name={`edit_role_${role.value}`} defaultChecked={selected.roles.includes(role.value)} /><span><strong>{role.label}</strong><small>{role.description}</small></span></label>)}</div></fieldset>
-              <button className="adminPrimaryButton" disabled={saving}>{saving ? 'Saving…' : 'Save staff changes'} <span>→</span></button>
+              <div className="adminStaffActions">
+                <button className="adminPrimaryButton" disabled={saving}>{saving ? 'Saving…' : 'Save staff changes'} <span>→</span></button>
+                <button
+                  type="button"
+                  className="adminDangerButton"
+                  disabled={saving || selected.id === profile?.id}
+                  onClick={() => void removeSelected()}
+                >
+                  Remove staff
+                </button>
+              </div>
             </form>
           </section>}
 

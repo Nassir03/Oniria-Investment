@@ -180,3 +180,44 @@ async def update_staff(
         'created_at': profile.created_at,
         'updated_at': profile.updated_at,
     }
+
+
+async def delete_staff(
+    db: AsyncSession,
+    user_id: UUID,
+    *,
+    actor_id: UUID,
+) -> dict:
+    if user_id == actor_id:
+        raise AppError('cannot_delete_self', 'You cannot remove your own staff account.', 400)
+
+    profile = await db.scalar(select(Profile).where(Profile.id == user_id))
+    if not profile:
+        raise AppError('staff_not_found', 'Staff account not found.', 404)
+
+    current_roles = (await db.scalars(
+        select(StaffRoleAssignment.role).where(StaffRoleAssignment.user_id == user_id)
+    )).all()
+
+    try:
+        _admin_auth().delete_user(str(user_id))
+    except Exception as exc:
+        message = str(exc).lower()
+        if 'not found' not in message and 'does not exist' not in message:
+            raise AppError('staff_auth_delete_failed', 'Unable to remove the Supabase staff login.', 502) from exc
+
+    removed = {
+        'id': profile.id,
+        'email': profile.email,
+        'full_name': profile.full_name,
+        'status': profile.status,
+        'roles': sorted(current_roles),
+        'created_at': profile.created_at,
+        'updated_at': profile.updated_at,
+    }
+
+    await db.execute(delete(StaffRoleAssignment).where(StaffRoleAssignment.user_id == user_id))
+    await db.delete(profile)
+    await db.flush()
+
+    return removed

@@ -3108,6 +3108,10 @@ em{font-weight:400;font-style:italic}
 .adminFormThree{grid-template-columns:repeat(3,minmax(0,1fr))}
 .adminFormThree>label:first-of-type,.adminFormThree>label:nth-of-type(2),.adminFormThree>label:nth-of-type(3){grid-column:auto}
 .adminFormThree>.wide{grid-column:1/-1}
+.adminStaffActions{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.adminDangerButton{min-height:46px;padding:0 18px;border:1px solid rgba(124,31,31,.48);background:rgba(124,31,31,.08);color:#7c1f1f;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .22s ease,color .22s ease,border-color .22s ease}
+.adminDangerButton:hover{background:#7c1f1f;border-color:#7c1f1f;color:#fff}
+.adminDangerButton:disabled{opacity:.45;cursor:not-allowed}
 .adminToast{position:fixed;right:28px;bottom:28px;z-index:120;padding:15px 18px;max-width:420px;border:1px solid #031B35;font-size:11px;line-height:1.5;box-shadow:0 18px 40px rgba(3,27,53,.12)}
 .adminToast.success{background:#031B35;color:#B8A37C}
 .adminToast.error{background:#B8A37C;color:#031B35}
@@ -3175,6 +3179,8 @@ em{font-weight:400;font-style:italic}
   .adminWelcomeStrip{grid-template-columns:1fr;gap:20px}
   .adminFormThree{grid-template-columns:1fr}
   .adminFormThree>label:first-of-type,.adminFormThree>label:nth-of-type(2),.adminFormThree>label:nth-of-type(3){grid-column:1/-1}
+  .adminStaffActions{align-items:stretch;flex-direction:column}
+  .adminStaffActions .adminPrimaryButton,.adminDangerButton{width:100%;justify-content:center}
 }
 @media(max-width:760px){
   .adminLayout{grid-template-columns:1fr}
