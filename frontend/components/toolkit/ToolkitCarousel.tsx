@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 
 import {
@@ -21,7 +22,8 @@ import type {
 
 import {
   fallbackToolkitAssets,
-  toolkitCategoryDefaultCover,
+  getToolkitAssetsForProject,
+  mergeToolkitAssets,
   toolkitProjects,
 } from '@/lib/toolkit';
 
@@ -93,85 +95,125 @@ function CloseIcon() {
 
 /*
  * ----------------------------------------------------------
- * LINK + COVER HELPERS
+ * GOOGLE DRIVE HELPERS
  * ----------------------------------------------------------
  */
 
-function isExternalLink(url: string) {
-  return /^https?:\/\//i.test(url);
+function isGoogleDriveFile(
+  url: string,
+) {
+  return (
+    /^https:\/\/drive\.google\.com\//i.test(url) &&
+    Boolean(getGoogleDriveFileId(url))
+  );
 }
 
-function getGoogleDriveFileId(url: string) {
-  const pathMatch = url.match(
-    /(?:drive\.google\.com\/file\/d\/|docs\.google\.com\/[^/]+\/d\/)([^/?#]+)/i,
+function getGoogleDriveFileId(
+  url: string,
+) {
+  const match = url.match(
+    /drive\.google\.com\/file\/d\/([^/?]+)/i,
   );
-  if (pathMatch?.[1]) return pathMatch[1];
+
+  if (match?.[1]) {
+    return match[1];
+  }
 
   try {
-    const parsed = new URL(url);
+    const parsedUrl = new URL(url);
+
     if (
-      parsed.hostname === 'drive.google.com' ||
-      parsed.hostname.endsWith('.google.com')
+      parsedUrl.hostname.toLowerCase() ===
+      'drive.google.com'
     ) {
-      return parsed.searchParams.get('id');
+      return parsedUrl.searchParams.get('id');
     }
   } catch {
-    // Relative/local links are valid toolkit URLs and simply are not Drive links.
+    return null;
   }
 
   return null;
 }
 
+function getDownloadUrl(
+  url: string,
+) {
+  const fileId =
+    getGoogleDriveFileId(url);
 
-function getDownloadUrl(url: string) {
-  const fileId = getGoogleDriveFileId(url);
-  if (!fileId) return url;
-
-  return `https://drive.google.com/uc?export=download&id=${fileId}`;
-}
-
-function getGoogleDriveThumbnail(url: string) {
-  const fileId = getGoogleDriveFileId(url);
-  if (!fileId) return null;
-
-  return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1600`;
-}
-
-function getToolkitCoverUrl(asset: ToolkitAsset) {
-  const requested = asset.preview_image_url?.trim();
-
-  if (requested) {
-    return getGoogleDriveThumbnail(requested) || requested;
+  if (!fileId) {
+    return url;
   }
 
-  if (asset.media_type === 'image') {
-    return getGoogleDriveThumbnail(asset.file_url) || asset.file_url;
-  }
-
-  return toolkitCategoryDefaultCover[asset.category];
+  return (
+    'https://drive.google.com/uc' +
+    `?export=download&id=${fileId}`
+  );
 }
 
-function ToolkitCover({
-  asset,
+function getGoogleDrivePreviewUrl(
+  url: string,
+) {
+  const fileId =
+    getGoogleDriveFileId(url);
+
+  return fileId
+    ? `/api/news-image?id=${fileId}`
+    : null;
+}
+
+function isLocalAssetUrl(
+  url: string,
+) {
+  return url.startsWith('/') && !url.startsWith('//');
+}
+
+function getToolkitImageUrl(
+  asset: ToolkitAsset,
+) {
+  const source =
+    asset.preview_image_url ||
+    asset.file_url;
+
+  if (isGoogleDriveFile(source)) {
+    return getGoogleDrivePreviewUrl(source) || source;
+  }
+
+  return source;
+}
+
+function ToolkitImage({
+  src,
+  alt,
+  sizes,
+  priority = false,
 }: {
-  asset: ToolkitAsset;
+  src: string;
+  alt: string;
+  sizes: string;
+  priority?: boolean;
 }) {
-  const fallback = toolkitCategoryDefaultCover[asset.category];
-  const [src, setSrc] = useState(() => getToolkitCoverUrl(asset));
-
-  useEffect(() => {
-    setSrc(getToolkitCoverUrl(asset));
-  }, [asset]);
+  if (
+    isLocalAssetUrl(src)
+  ) {
+    return (
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes={sizes}
+        quality={92}
+        priority={priority}
+      />
+    );
+  }
 
   return (
     <img
       src={src}
-      alt=""
-      aria-hidden="true"
-      loading="eager"
-      onError={() => {
-        if (src !== fallback) setSrc(fallback);
-      }}
+      alt={alt}
+      loading={priority ? 'eager' : 'lazy'}
+      decoding="async"
     />
   );
 }
@@ -208,13 +250,10 @@ function circularOffset(
 }
 
 /*
- * Main 3D card positions.
+ * Main 3D card positioning.
  *
- * Active card:
- * centered and full size
- *
- * Side cards:
- * rotated in 3D
+ * The animation values are preserved from your current
+ * working carousel.
  */
 function cardPose(
   offset: number,
@@ -247,15 +286,15 @@ function cardPose(
    */
   if (abs === 1) {
     return {
-      x: sign * 330,
-      z: -20,
+      x: sign * 390,
+      z: -45,
 
       rotateY:
-        sign * -30,
+        sign * -36,
 
-      scale: 0.82,
+      scale: 0.78,
 
-      opacity: 0.82,
+      opacity: 0.86,
 
       filter:
         'brightness(.68)',
@@ -267,15 +306,15 @@ function cardPose(
    */
   if (abs === 2) {
     return {
-      x: sign * 570,
-      z: -135,
+      x: sign * 690,
+      z: -210,
 
       rotateY:
-        sign * -46,
+        sign * -56,
 
-      scale: 0.64,
+      scale: 0.58,
 
-      opacity: 0.62,
+      opacity: 0.66,
 
       filter:
         'brightness(.5)',
@@ -286,13 +325,13 @@ function cardPose(
    * HIDDEN CARDS
    */
   return {
-    x: sign * 760,
-    z: -220,
+    x: sign * 900,
+    z: -310,
 
     rotateY:
-      sign * -58,
+      sign * -68,
 
-    scale: 0.5,
+    scale: 0.46,
 
     opacity: 0,
 
@@ -306,9 +345,9 @@ function cardPose(
  * INTERNAL PREVIEW MODAL
  * ----------------------------------------------------------
  *
- * Used only for local / Supabase assets.
+ * Used for local / directly previewable assets.
  *
- * Google Drive files open directly in another tab instead.
+ * Google Drive files open directly in a new tab.
  */
 
 function AssetPreview({
@@ -423,9 +462,10 @@ function AssetPreview({
               title={`${asset.title} PDF`}
             />
           ) : (
-            <img
-              src={getGoogleDriveThumbnail(asset.file_url) || asset.file_url}
+            <ToolkitImage
+              src={getToolkitImageUrl(asset)}
               alt={asset.title}
+              sizes="90vw"
             />
           )}
         </div>
@@ -439,9 +479,28 @@ function AssetPreview({
                   asset.file_url,
                 )
               }
-              target={isExternalLink(getDownloadUrl(asset.file_url)) ? '_blank' : undefined}
-              rel={isExternalLink(getDownloadUrl(asset.file_url)) ? 'noopener noreferrer' : undefined}
-              download={!isExternalLink(asset.file_url) ? asset.file_name || undefined : undefined}
+              target={
+                isGoogleDriveFile(
+                  asset.file_url,
+                )
+                  ? '_blank'
+                  : undefined
+              }
+              rel={
+                isGoogleDriveFile(
+                  asset.file_url,
+                )
+                  ? 'noopener noreferrer'
+                  : undefined
+              }
+              download={
+                !isGoogleDriveFile(
+                  asset.file_url,
+                )
+                  ? asset.file_name ||
+                    undefined
+                  : undefined
+              }
             >
               <DownloadIcon />
 
@@ -470,6 +529,39 @@ export default function ToolkitCarousel({
 }) {
   const reduceMotion =
     useReducedMotion();
+
+  /*
+   * --------------------------------------------------------
+   * COMPLETE TOOLKIT COLLECTION
+   * --------------------------------------------------------
+   *
+   * IMPORTANT FIX:
+   *
+   * The database/API assets are merged with the built-in
+   * ONIRIA Investments assets.
+   *
+   * This means:
+   *
+   * Adding ONA Towers does NOT remove ONIRIA Investments.
+   *
+   * Adding ROHO does NOT remove ONIRIA Investments.
+   *
+   * Adding ROHO does NOT remove ONA Towers.
+   *
+   * A database asset replaces a fallback only if BOTH:
+   *
+   * project_slug + category
+   *
+   * match.
+   */
+  const allAssets =
+    useMemo(
+      () =>
+        mergeToolkitAssets(
+          initialAssets,
+        ),
+      [initialAssets],
+    );
 
   /*
    * Current selected project.
@@ -520,37 +612,34 @@ export default function ToolkitCarousel({
    * STRICT PROJECT FILTER
    * --------------------------------------------------------
    *
-   * If ONA Towers is selected:
+   * ONIRIA Investments:
    *
-   * ONLY
+   * project_slug === "all-projects"
+   *
+   * ONA Towers:
    *
    * project_slug === "ona-towers"
    *
-   * appears.
+   * ROHO:
    *
-   * ROHO assets cannot appear under ONA Towers.
+   * project_slug === "roho"
+   *
+   * `all-projects` is therefore treated as ONIRIA
+   * Investments itself, NOT as a request to combine all
+   * projects.
    */
-  const assets = useMemo(
-    () =>
-      initialAssets
-        .filter(
-          (asset) =>
-            asset.project_slug ===
-              projectSlug &&
-            asset.is_public !==
-              false,
-        )
-        .slice()
-        .sort(
-          (a, b) =>
-            a.sort_order -
-            b.sort_order,
+  const assets =
+    useMemo(
+      () =>
+        getToolkitAssetsForProject(
+          allAssets,
+          projectSlug,
         ),
-    [
-      initialAssets,
-      projectSlug,
-    ],
-  );
+      [
+        allAssets,
+        projectSlug,
+      ],
+    );
 
   /*
    * Reset carousel whenever project changes.
@@ -560,6 +649,25 @@ export default function ToolkitCarousel({
 
     setPreview(null);
   }, [projectSlug]);
+
+  /*
+   * Protect active index if assets change while the same
+   * project remains selected.
+   */
+  useEffect(() => {
+    if (!assets.length) {
+      setActive(0);
+      return;
+    }
+
+    setActive(
+      (current) =>
+        Math.min(
+          current,
+          assets.length - 1,
+        ),
+    );
+  }, [assets.length]);
 
   /*
    * Move carousel left/right.
@@ -650,8 +758,16 @@ export default function ToolkitCarousel({
        * ----------------------------------------------------
        */}
       <header className="toolkitIntro">
-        <Link href="/" prefetch className="toolkitBrand" aria-label="ONIRIA Investments home">
-          <span className="wordmarkLogo toolkitBrandWordmark" aria-hidden="true" />
+        <Link
+          href="/"
+          prefetch
+          className="toolkitBrand"
+          aria-label="ONIRIA Investments home"
+        >
+          <span
+            className="wordmarkLogo toolkitBrandWordmark"
+            aria-hidden="true"
+          />
         </Link>
 
         <div className="toolkitTitleBlock">
@@ -745,9 +861,11 @@ export default function ToolkitCarousel({
 
                 return (
                   <motion.article
-                    key={
-                      asset.id
-                    }
+                    /*
+                     * Include project in the React key as an extra
+                     * isolation guard.
+                     */
+                    key={`${asset.project_slug}:${asset.id}`}
                     className={
                       `toolkitCard toolkitCard--${asset.category} ${
                         isActive
@@ -806,15 +924,17 @@ export default function ToolkitCarousel({
                     {/*
                      * CARD COVER
                      *
-                     * IMPORTANT:
+                     * preview_image_url controls the visual card.
                      *
-                     * This uses preview_image_url,
-                     * NOT file_url.
-                     *
-                     * Therefore the abstract images
-                     * show correctly as B covers.
+                     * file_url remains the actual downloadable /
+                     * viewable material.
                      */}
-                    <ToolkitCover asset={asset} />
+                    <ToolkitImage
+                      src={getToolkitImageUrl(asset)}
+                      alt=""
+                      sizes="(max-width: 800px) 72vw, 420px"
+                      priority={isActive}
+                    />
 
                     <div className="toolkitCardShade" />
 
@@ -832,7 +952,7 @@ export default function ToolkitCarousel({
                     {isActive && (
                       <div className="toolkitCardActions">
                         {/*
-                         * DOWNLOAD ICON
+                         * DOWNLOAD
                          */}
                         {asset.is_downloadable && (
                           <a
@@ -841,9 +961,28 @@ export default function ToolkitCarousel({
                                 asset.file_url,
                               )
                             }
-                            target={isExternalLink(getDownloadUrl(asset.file_url)) ? '_blank' : undefined}
-                            rel={isExternalLink(getDownloadUrl(asset.file_url)) ? 'noopener noreferrer' : undefined}
-                            download={!isExternalLink(asset.file_url) ? asset.file_name || undefined : undefined}
+                            target={
+                              isGoogleDriveFile(
+                                asset.file_url,
+                              )
+                                ? '_blank'
+                                : undefined
+                            }
+                            rel={
+                              isGoogleDriveFile(
+                                asset.file_url,
+                              )
+                                ? 'noopener noreferrer'
+                                : undefined
+                            }
+                            download={
+                              !isGoogleDriveFile(
+                                asset.file_url,
+                              )
+                                ? asset.file_name ||
+                                  undefined
+                                : undefined
+                            }
                             className="toolkitSquareAction"
                             aria-label={`Download ${asset.title}`}
                             onClick={(
@@ -857,14 +996,16 @@ export default function ToolkitCarousel({
                         )}
 
                         {/*
-                         * EYE / PREVIEW ICON
+                         * VIEW / PREVIEW
                          *
-                         * External links open in another tab so Google Drive,
-                         * hosted PDFs and web pages work without iframe restrictions.
+                         * Google Drive opens externally.
                          *
-                         * Local media keeps the internal ONIRIA preview.
+                         * Other assets use the existing internal
+                         * preview.
                          */}
-                        {isExternalLink(asset.file_url) ? (
+                        {isGoogleDriveFile(
+                          asset.file_url,
+                        ) ? (
                           <a
                             href={
                               asset.file_url
@@ -911,12 +1052,6 @@ export default function ToolkitCarousel({
            * ----------------------------------------------------
            * NAVIGATION
            * ----------------------------------------------------
-           *
-           * No 01 ----- 09 counter.
-           *
-           * Only:
-           *
-           * <     >
            */}
           <div className="toolkitControls">
             <button
@@ -946,8 +1081,8 @@ export default function ToolkitCarousel({
          * EMPTY PROJECT
          * ----------------------------------------------------
          *
-         * If ROHO or ONA Towers has no published files,
-         * ONIRIA Investments files are NOT shown instead.
+         * Do NOT substitute ONIRIA Investments assets when
+         * ONA or ROHO genuinely has no public assets.
          */
         <div
           className="toolkitEmptyProject"

@@ -14,10 +14,16 @@ export const metadata = {
 export const dynamic = 'force-dynamic';
 
 async function loadToolkit(): Promise<ToolkitAsset[]> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 4_000);
+
   try {
     const response = await fetch(
       `${PUBLIC_API_BASE}/toolkit-assets?page_size=100`,
-      { cache: 'no-store' },
+      {
+        cache: 'no-store',
+        signal: controller.signal,
+      },
     );
 
     if (!response.ok) return fallbackToolkitAssets;
@@ -29,6 +35,8 @@ async function loadToolkit(): Promise<ToolkitAsset[]> {
       : fallbackToolkitAssets;
   } catch {
     return fallbackToolkitAssets;
+  } finally {
+    clearTimeout(timeout);
   }
 }
 

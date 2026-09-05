@@ -141,15 +141,47 @@ type AdminSessionSnapshot = {
 let adminSessionCache: AdminSessionSnapshot | null = null;
 let adminSessionPromise: Promise<AdminSessionSnapshot> | null = null;
 const ADMIN_SESSION_CACHE_MS = 30_000;
+const TOKEN_REFRESH_SKEW_SECONDS = 90;
 
 function clearAdminSessionCache() {
   adminSessionCache = null;
   adminSessionPromise = null;
 }
 
+function tokenExpiresSoon(token: string) {
+  try {
+    const payload = token.split('.')[1];
+    if (!payload) return true;
+    const normalizedBase64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const normalized = normalizedBase64.padEnd(
+      normalizedBase64.length + ((4 - normalizedBase64.length % 4) % 4),
+      '=',
+    );
+    const decoded = JSON.parse(window.atob(normalized));
+    const expiresAt = typeof decoded.exp === 'number' ? decoded.exp : 0;
+    return expiresAt <= Math.floor(Date.now() / 1000) + TOKEN_REFRESH_SKEW_SECONDS;
+  } catch {
+    return true;
+  }
+}
+
+function rememberAdminToken(token: string) {
+  adminSessionCache = {
+    token,
+    profile: adminSessionCache?.profile || null,
+    error: adminSessionCache?.error || '',
+    loadedAt: Date.now(),
+  };
+}
+
 async function loadAdminSession(force = false): Promise<AdminSessionSnapshot> {
   const now = Date.now();
-  if (!force && adminSessionCache && now - adminSessionCache.loadedAt < ADMIN_SESSION_CACHE_MS) {
+  if (
+    !force &&
+    adminSessionCache &&
+    now - adminSessionCache.loadedAt < ADMIN_SESSION_CACHE_MS &&
+    (!adminSessionCache.token || !tokenExpiresSoon(adminSessionCache.token))
+  ) {
     return adminSessionCache;
   }
   if (!force && adminSessionPromise) return adminSessionPromise;
@@ -158,8 +190,16 @@ async function loadAdminSession(force = false): Promise<AdminSessionSnapshot> {
     if (!supabase) {
       return { token: null, profile: null, error: 'Staff sign-in is not available yet. Please contact the administrator.', loadedAt: Date.now() };
     }
-    const { data } = await supabase.auth.getSession();
-    const accessToken = data.session?.access_token || null;
+    let { data } = await supabase.auth.getSession();
+    let accessToken = data.session?.access_token || null;
+    if (accessToken && tokenExpiresSoon(accessToken)) {
+      const refreshed = await supabase.auth.refreshSession();
+      data = refreshed.data;
+      accessToken = data.session?.access_token || accessToken;
+      if (tokenExpiresSoon(accessToken)) {
+        return { token: null, profile: null, error: '', loadedAt: Date.now() };
+      }
+    }
     if (!accessToken) return { token: null, profile: null, error: '', loadedAt: Date.now() };
     try {
       const profile = await authFetch<StaffProfile>('/admin/me', accessToken);
@@ -182,12 +222,30 @@ async function loadAdminSession(force = false): Promise<AdminSessionSnapshot> {
   }
 }
 
-export async function getAdminAccessToken(): Promise<string> {
-  if (adminSessionCache?.token) return adminSessionCache.token;
+export async function getAdminAccessToken(options: { forceRefresh?: boolean } = {}): Promise<string> {
   if (!supabase) throw new Error('Staff sign-in is not available yet. Please contact the administrator.');
-  const { data } = await supabase.auth.getSession();
-  const token = data.session?.access_token || null;
+  if (
+    !options.forceRefresh &&
+    adminSessionCache?.token &&
+    !tokenExpiresSoon(adminSessionCache.token)
+  ) {
+    return adminSessionCache.token;
+  }
+
+  let { data } = await supabase.auth.getSession();
+  let token = data.session?.access_token || null;
+
+  if (token && (options.forceRefresh || tokenExpiresSoon(token))) {
+    const refreshed = await supabase.auth.refreshSession();
+    data = refreshed.data;
+    token = data.session?.access_token || token;
+    if (tokenExpiresSoon(token)) {
+      throw new Error('Your staff session has expired. Please sign in again.');
+    }
+  }
+
   if (!token) throw new Error('Your staff session has expired. Please sign in again.');
+  rememberAdminToken(token);
   return token;
 }
 
@@ -223,8 +281,12 @@ export function useAdminSession() {
 
   useEffect(() => {
     if (!supabase) return;
-    const { data } = supabase.auth.onAuthStateChange((event) => {
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') clearAdminSessionCache();
+      if (event === 'TOKEN_REFRESHED' && session?.access_token) {
+        rememberAdminToken(session.access_token);
+        setToken(session.access_token);
+      }
     });
     return () => data.subscription.unsubscribe();
   }, []);
