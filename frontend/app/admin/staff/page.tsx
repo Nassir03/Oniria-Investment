@@ -17,7 +17,6 @@ type Staff = StaffProfile & {
   updated_at: string;
 };
 
-
 export default function Page() {
   const { profile } = useAdminSession();
   const [staff, setStaff] = useState<Staff[]>([]);
@@ -108,10 +107,13 @@ export default function Page() {
     }
   }
 
-  async function removeSelected() {
-    if (!selected) return;
+  async function removeStaffAccount(item: Staff) {
+    if (item.id === profile?.id) {
+      setError('You cannot remove your own staff account.');
+      return;
+    }
 
-    const name = selected.full_name || selected.email || 'this staff member';
+    const name = item.full_name || item.email || 'this staff member';
     if (!window.confirm(`Remove ${name} from Team Access? This deletes their staff login and cannot be undone.`)) {
       return;
     }
@@ -122,10 +124,8 @@ export default function Page() {
 
     try {
       const token = await getAdminAccessToken();
-      await authFetch<void>(`/admin/staff/${selected.id}`, token, {
-        method: 'DELETE',
-      });
-      setSelected(null);
+      await authFetch<void>(`/admin/staff/${item.id}`, token, { method: 'DELETE' });
+      if (selected?.id === item.id) setSelected(null);
       setNotice(`${name} has been removed from Team Access.`);
       await loadStaff();
     } catch (err) {
@@ -146,8 +146,8 @@ export default function Page() {
       ) : (
         <>
           <div className="adminMetrics adminMetricsModern">
-            <article><span>Team members</span><strong>{staff.length || '—'}</strong><small>Staff profiles</small></article>
-            <article><span>Active access</span><strong>{activeCount || '—'}</strong><small>Current staff access</small></article>
+            <article><span>Team members</span><strong>{staff.length || '-'}</strong><small>Staff profiles</small></article>
+            <article><span>Active access</span><strong>{activeCount || '-'}</strong><small>Current staff access</small></article>
             <article><span>Access setup</span><strong className="metricText">Assigned roles</strong><small>Managed by administrators</small></article>
           </div>
 
@@ -165,13 +165,15 @@ export default function Page() {
                 <fieldset>
                   <legend>Responsibilities</legend>
                   <div className="adminRoleGrid">
-                    {roleOptions.map((role) => <label className="adminRoleOption" key={role.value}>
-                      <input type="checkbox" name={`role_${role.value}`} defaultChecked={role.value === 'sales'} />
-                      <span><strong>{role.label}</strong><small>{role.description}</small></span>
-                    </label>)}
+                    {roleOptions.map((role) => (
+                      <label className="adminRoleOption" key={role.value}>
+                        <input type="checkbox" name={`role_${role.value}`} defaultChecked={role.value === 'sales'} />
+                        <span><strong>{role.label}</strong><small>{role.description}</small></span>
+                      </label>
+                    ))}
                   </div>
                 </fieldset>
-                <button className="adminPrimaryButton" disabled={saving}>{saving ? 'Creating access…' : 'Create staff access'} <span>→</span></button>
+                <button className="adminPrimaryButton" disabled={saving}>{saving ? 'Creating access...' : 'Create staff access'} <span>-&gt;</span></button>
               </form>
             </section>
 
@@ -182,36 +184,65 @@ export default function Page() {
               </div>
               <AdminState loading={loading} error={error} empty={!loading && !error && !staff.length ? 'No staff profiles found.' : undefined} />
               <div className="adminStaffList">
-                {staff.map((item) => <button className={`adminStaffRow ${selected?.id === item.id ? 'selected' : ''}`} key={item.id} onClick={() => setSelected(item)}>
-                  <span className="adminAvatar">{(item.full_name || item.email || 'S').slice(0, 1).toUpperCase()}</span>
-                  <span className="adminStaffIdentity"><strong>{item.full_name || 'Unnamed staff'}</strong><small>{item.email}</small></span>
-                  <span className="adminStaffResponsibilities">{item.roles.join(' · ')}</span>
-                  <span className={`adminStatusDot ${item.status}`}>{item.status}</span>
-                </button>)}
+                {staff.map((item) => (
+                  <article className={`adminStaffRow ${selected?.id === item.id ? 'selected' : ''}`} key={item.id}>
+                    <button type="button" className="adminStaffRowSelect" onClick={() => setSelected(item)}>
+                      <span className="adminAvatar">{(item.full_name || item.email || 'S').slice(0, 1).toUpperCase()}</span>
+                      <span className="adminStaffIdentity"><strong>{item.full_name || 'Unnamed staff'}</strong><small>{item.email}</small></span>
+                      <span className="adminStaffResponsibilities">{item.roles.join(' - ')}</span>
+                      <span className={`adminStatusDot ${item.status}`}>{item.status}</span>
+                    </button>
+                    <button
+                      type="button"
+                      className="adminStaffRemoveInline"
+                      disabled={saving || item.id === profile?.id}
+                      onClick={() => void removeStaffAccount(item)}
+                      title={item.id === profile?.id ? 'You cannot remove your own staff account.' : 'Remove staff'}
+                    >
+                      Remove
+                    </button>
+                  </article>
+                ))}
               </div>
             </section>
           </div>
 
-          {selected && <section className="adminFeatureCard adminFeatureCardWide adminEditStaff">
-            <div className="adminSectionTitle inline"><div><p className="eyebrow">Manage staff</p><h2>{selected.full_name || selected.email}</h2></div><button className="adminGhostButton" onClick={() => setSelected(null)}>Close</button></div>
-            <form className="adminForm adminFormThree" onSubmit={updateSelected}>
-              <label><span>Full name</span><input name="full_name" defaultValue={selected.full_name || ''} required /></label>
-              <label><span>Account status</span><select name="status" defaultValue={selected.status}><option value="active">Active</option><option value="suspended">Suspended</option></select></label>
-              <label><span>New password (optional)</span><input name="password" type="password" minLength={8} placeholder="Leave blank to keep current password" /></label>
-              <fieldset className="wide"><legend>Responsibilities</legend><div className="adminRoleGrid four">{roleOptions.map((role)=><label className="adminRoleOption" key={role.value}><input type="checkbox" name={`edit_role_${role.value}`} defaultChecked={selected.roles.includes(role.value)} /><span><strong>{role.label}</strong><small>{role.description}</small></span></label>)}</div></fieldset>
-              <div className="adminStaffActions">
-                <button className="adminPrimaryButton" disabled={saving}>{saving ? 'Saving…' : 'Save staff changes'} <span>→</span></button>
-                <button
-                  type="button"
-                  className="adminDangerButton"
-                  disabled={saving || selected.id === profile?.id}
-                  onClick={() => void removeSelected()}
-                >
-                  Remove staff
-                </button>
+          {selected && (
+            <section className="adminFeatureCard adminFeatureCardWide adminEditStaff">
+              <div className="adminSectionTitle inline">
+                <div><p className="eyebrow">Manage staff</p><h2>{selected.full_name || selected.email}</h2></div>
+                <button className="adminGhostButton" onClick={() => setSelected(null)}>Close</button>
               </div>
-            </form>
-          </section>}
+              <form className="adminForm adminFormThree" onSubmit={updateSelected}>
+                <label><span>Full name</span><input name="full_name" defaultValue={selected.full_name || ''} required /></label>
+                <label><span>Account status</span><select name="status" defaultValue={selected.status}><option value="active">Active</option><option value="suspended">Suspended</option></select></label>
+                <label><span>New password (optional)</span><input name="password" type="password" minLength={8} placeholder="Leave blank to keep current password" /></label>
+                <fieldset className="wide">
+                  <legend>Responsibilities</legend>
+                  <div className="adminRoleGrid four">
+                    {roleOptions.map((role) => (
+                      <label className="adminRoleOption" key={role.value}>
+                        <input type="checkbox" name={`edit_role_${role.value}`} defaultChecked={selected.roles.includes(role.value)} />
+                        <span><strong>{role.label}</strong><small>{role.description}</small></span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+                <div className="adminStaffActions">
+                  <button className="adminPrimaryButton" disabled={saving}>{saving ? 'Saving...' : 'Save staff changes'} <span>-&gt;</span></button>
+                  <button
+                    type="button"
+                    className="adminDangerButton"
+                    disabled={saving || selected.id === profile?.id}
+                    onClick={() => void removeStaffAccount(selected)}
+                    title={selected.id === profile?.id ? 'You cannot remove your own staff account.' : 'Remove staff'}
+                  >
+                    Remove staff
+                  </button>
+                </div>
+              </form>
+            </section>
+          )}
 
           {notice && <div className="adminToast success">{notice}</div>}
           {error && !loading && <div className="adminToast error">{error}</div>}

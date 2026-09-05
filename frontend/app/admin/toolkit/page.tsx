@@ -86,6 +86,24 @@ function projectName(projectSlug: string) {
   );
 }
 
+function toolkitErrorMessage(
+  err: unknown,
+  fallback: string,
+) {
+  const message =
+    err instanceof Error
+      ? err.message
+      : fallback;
+
+  if (
+    /^not found$/i.test(message.trim())
+  ) {
+    return 'Toolkit asset data could not be found. Refresh the library and try again.';
+  }
+
+  return message || fallback;
+}
+
 export default function ToolkitAdminPage() {
   const [items, setItems] =
     useState<ToolkitAsset[]>([]);
@@ -182,9 +200,10 @@ export default function ToolkitAdminPage() {
       setItems(loadedItems);
     } catch (err) {
       setError(
-        err instanceof Error
-          ? err.message
-          : 'Unable to load toolkit assets.',
+        toolkitErrorMessage(
+          err,
+          'Unable to load toolkit assets.',
+        ),
       );
     } finally {
       setLoading(false);
@@ -599,10 +618,19 @@ export default function ToolkitAdminPage() {
        */
       await refresh();
     } catch (err) {
+      if (
+        editingId &&
+        /^not found$/i.test(err instanceof Error ? err.message.trim() : '')
+      ) {
+        resetForm(effectiveProjectSlug);
+        await refresh();
+      }
+
       setError(
-        err instanceof Error
-          ? err.message
-          : 'Unable to save this toolkit asset.',
+        toolkitErrorMessage(
+          err,
+          'Unable to save this toolkit asset.',
+        ),
       );
     } finally {
       setSaving(false);
@@ -654,9 +682,10 @@ export default function ToolkitAdminPage() {
       );
     } catch (err) {
       setError(
-        err instanceof Error
-          ? err.message
-          : 'Unable to change publication status.',
+        toolkitErrorMessage(
+          err,
+          'Unable to change publication status.',
+        ),
       );
     }
   }
@@ -719,9 +748,10 @@ export default function ToolkitAdminPage() {
       );
     } catch (err) {
       setError(
-        err instanceof Error
-          ? err.message
-          : 'Unable to remove the asset.',
+        toolkitErrorMessage(
+          err,
+          'Unable to remove the asset.',
+        ),
       );
     }
   }

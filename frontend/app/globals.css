@@ -3095,15 +3095,19 @@ em{font-weight:400;font-style:italic}
 .adminGhostButton{background:transparent;color:#031B35;min-height:38px}
 .adminPrimaryButton:disabled{opacity:.5;cursor:wait}
 .adminStaffList{display:grid;gap:8px}
-.adminStaffRow{width:100%;display:grid;grid-template-columns:42px minmax(0,1fr) minmax(100px,.7fr) auto;gap:12px;align-items:center;text-align:left;padding:13px;border:1px solid rgba(3,27,53,.12);background:rgba(255,255,255,.06);color:#031B35;cursor:pointer;transition:background .2s ease,border-color .2s ease}
+.adminStaffRow{width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px;border:1px solid rgba(3,27,53,.12);background:rgba(255,255,255,.06);color:#031B35;transition:background .2s ease,border-color .2s ease}
 .adminStaffRow:hover,.adminStaffRow.selected{background:rgba(255,255,255,.22);border-color:rgba(3,27,53,.32)}
+.adminStaffRowSelect{width:100%;display:grid;grid-template-columns:42px minmax(0,1fr) minmax(100px,.7fr) auto;gap:12px;align-items:center;text-align:left;padding:5px;border:0;background:transparent;color:#031B35;cursor:pointer}
 .adminAvatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#031B35;color:#B8A37C;font:400 17px var(--serif)}
 .adminStaffIdentity{display:grid;gap:4px}
 .adminStaffIdentity strong{font:400 16px var(--serif)}
-.adminStaffIdentity small,.adminStaffRoles{font-size:8px;line-height:1.4;opacity:.7}
-.adminStaffRoles{text-transform:uppercase;letter-spacing:.08em}
+.adminStaffIdentity small,.adminStaffRoles,.adminStaffResponsibilities{font-size:8px;line-height:1.4;opacity:.7}
+.adminStaffRoles,.adminStaffResponsibilities{text-transform:uppercase;letter-spacing:.08em}
 .adminStatusDot{font-size:7px;text-transform:uppercase;letter-spacing:.12em;padding:7px 8px;border:1px solid rgba(3,27,53,.28)}
 .adminStatusDot.suspended{opacity:.48}
+.adminStaffRemoveInline{min-height:38px;padding:0 12px;border:1px solid rgba(124,31,31,.38);background:rgba(124,31,31,.06);color:#7c1f1f;font-size:8px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;cursor:pointer;transition:background .2s ease,color .2s ease,border-color .2s ease}
+.adminStaffRemoveInline:hover{background:#7c1f1f;border-color:#7c1f1f;color:#fff}
+.adminStaffRemoveInline:disabled{opacity:.42;cursor:not-allowed}
 .adminEditStaff{margin-top:20px}
 .adminFormThree{grid-template-columns:repeat(3,minmax(0,1fr))}
 .adminFormThree>label:first-of-type,.adminFormThree>label:nth-of-type(2),.adminFormThree>label:nth-of-type(3){grid-column:auto}
@@ -3197,8 +3201,10 @@ em{font-weight:400;font-style:italic}
   .adminMetricsModern article{min-height:130px}
   .adminDashboardGridModern{grid-template-columns:1fr}
   .adminRoleGrid,.adminRoleGrid.four{grid-template-columns:1fr}
-  .adminStaffRow{grid-template-columns:38px minmax(0,1fr) auto}
-  .adminStaffRoles{display:none}
+  .adminStaffRow{grid-template-columns:1fr}
+  .adminStaffRowSelect{grid-template-columns:38px minmax(0,1fr) auto}
+  .adminStaffRoles,.adminStaffResponsibilities{display:none}
+  .adminStaffRemoveInline{width:100%}
   .adminForm,.adminFormTwo{grid-template-columns:1fr}
   .adminForm>label,.adminForm>label:first-of-type,.adminForm>label:nth-of-type(2),.adminForm>label:nth-of-type(3),.adminForm>fieldset,.adminForm>.adminPrimaryButton,.adminForm>.adminEditorFooter,.adminFormTwo{grid-column:1}
   .adminEditorialToolbar{grid-template-columns:1fr;align-items:start}

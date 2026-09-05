@@ -30,10 +30,6 @@ function formatApiError(body: ApiErrorBody, status: number) {
   const detailMessage = typeof body?.detail === 'object' ? body.detail?.message : body?.detail;
   let base = body?.message || detailMessage || `Request failed (${status})`;
 
-  if (status === 404 && /^not found$/i.test(base.trim())) {
-    base = 'This information is not available yet.';
-  }
-
   // Never surface server tracebacks or internal implementation details in the staff UI.
   if (/traceback|sqlalchemy|asyncpg|site_visits|programmingerror/i.test(base)) {
     base = 'This report could not be loaded right now. Please refresh the page or try again shortly.';

@@ -44,7 +44,7 @@ async function downloadReport(kind:'csv'|'xlsx') {
 export default function Page() {
   const overview = useProtectedData<Overview>('/admin/overview');
   const { profile } = useAdminSession();
-  const overviewUnavailable = overview.error === 'This information is not available yet.';
+  const overviewUnavailable = /^not found$/i.test(overview.error.trim());
   const analytics = overview.data?.analytics;
   const news = overview.data?.news;
   const leads = overview.data?.leads;
@@ -64,7 +64,14 @@ export default function Page() {
       <p>Keep the team aligned, respond to new interest quickly and understand how people are engaging with ONIRIA online.</p>
     </section>
 
-    <AdminState loading={overview.loading} error={overviewUnavailable ? '' : overview.error}/>
+    <AdminState
+      loading={overview.loading}
+      error={
+        overviewUnavailable
+          ? 'Dashboard data is not available right now. The workspace is still ready to use.'
+          : overview.error
+      }
+    />
 
     <div className="adminMetrics adminMetricsModern adminMetricsFour">
       <article><span>Website visits</span><strong>{analytics?.total_views ?? '—'}</strong><small>Last 30 days</small></article>
