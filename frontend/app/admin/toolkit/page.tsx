@@ -13,7 +13,7 @@ import {
   getAdminAccessToken,
 } from '@/components/AdminData';
 
-import { authFetch } from '@/lib/api';
+import { ApiRequestError, authFetch } from '@/lib/api';
 
 import type {
   ToolkitAsset,
@@ -95,13 +95,71 @@ function toolkitErrorMessage(
       ? err.message
       : fallback;
 
+  // Only describe an individual asset as missing when the API explicitly
+  // identifies that condition. A generic route-level 404 used to be shown as
+  // "Toolkit asset data could not be found", which hid deployment problems.
   if (
-    /^not found$/i.test(message.trim())
+    err instanceof ApiRequestError &&
+    err.code === 'toolkit_asset_not_found'
   ) {
-    return 'Toolkit asset data could not be found. Refresh the library and try again.';
+    return 'That toolkit asset no longer exists. The library has been refreshed.';
+  }
+
+  if (
+    err instanceof ApiRequestError &&
+    err.status === 404
+  ) {
+    return 'The toolkit administration API is not available on the deployed backend.';
   }
 
   return message || fallback;
+}
+
+async function updateToolkitAsset(
+  id: string,
+  token: string,
+  payload: Record<string, unknown>,
+) {
+  try {
+    return await authFetch<ToolkitAsset>(
+      `/admin/toolkit-assets/${id}`,
+      token,
+      {
+        method: 'PATCH',
+        body: JSON.stringify(payload),
+      },
+    );
+  } catch (err) {
+    if (!(err instanceof ApiRequestError) || err.status !== 405) throw err;
+    return authFetch<ToolkitAsset>(
+      `/admin/toolkit-assets/${id}/update`,
+      token,
+      {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      },
+    );
+  }
+}
+
+async function deleteToolkitAsset(
+  id: string,
+  token: string,
+) {
+  try {
+    await authFetch<void>(
+      `/admin/toolkit-assets/${id}`,
+      token,
+      { method: 'DELETE' },
+    );
+  } catch (err) {
+    if (!(err instanceof ApiRequestError) || err.status !== 405) throw err;
+    await authFetch<void>(
+      `/admin/toolkit-assets/${id}/delete`,
+      token,
+      { method: 'POST' },
+    );
+  }
 }
 
 export default function ToolkitAdminPage() {
@@ -529,15 +587,10 @@ export default function ToolkitAdminPage() {
 
       if (editingId) {
         const updated =
-          await authFetch<ToolkitAsset>(
-            `/admin/toolkit-assets/${editingId}`,
+          await updateToolkitAsset(
+            editingId,
             token,
-            {
-              method: 'PATCH',
-              body: JSON.stringify(
-                payload,
-              ),
-            },
+            payload,
           );
 
         /**
@@ -620,10 +673,13 @@ export default function ToolkitAdminPage() {
     } catch (err) {
       if (
         editingId &&
-        /^not found$/i.test(err instanceof Error ? err.message.trim() : '')
+        err instanceof ApiRequestError &&
+        err.code === 'toolkit_asset_not_found'
       ) {
         resetForm(effectiveProjectSlug);
         await refresh();
+        setNotice('That asset had already been removed. The library is now up to date.');
+        return;
       }
 
       setError(
@@ -648,22 +704,16 @@ export default function ToolkitAdminPage() {
       const token =
         await getAdminAccessToken();
 
+      /**
+       * Only visibility is modified. Project is not changed.
+       */
       const updated =
-        await authFetch<ToolkitAsset>(
-          `/admin/toolkit-assets/${item.id}`,
+        await updateToolkitAsset(
+          item.id,
           token,
           {
-            method: 'PATCH',
-
-            /**
-             * Only visibility is modified.
-             *
-             * Project is not changed.
-             */
-            body: JSON.stringify({
-              is_public:
-                !item.is_public,
-            }),
+            is_public:
+              !item.is_public,
           },
         );
 
@@ -681,6 +731,15 @@ export default function ToolkitAdminPage() {
           : `${projectName(item.project_slug)} asset hidden from the public toolkit.`,
       );
     } catch (err) {
+      if (
+        err instanceof ApiRequestError &&
+        err.code === 'toolkit_asset_not_found'
+      ) {
+        await refresh();
+        setNotice('That asset had already been removed. The library is now up to date.');
+        return;
+      }
+
       setError(
         toolkitErrorMessage(
           err,
@@ -717,12 +776,9 @@ export default function ToolkitAdminPage() {
       /**
        * Delete exact asset ID only.
        */
-      await authFetch(
-        `/admin/toolkit-assets/${item.id}`,
+      await deleteToolkitAsset(
+        item.id,
         token,
-        {
-          method: 'DELETE',
-        },
       );
 
       /**
@@ -747,6 +803,19 @@ export default function ToolkitAdminPage() {
         `“${item.title}” removed from ${ownerProjectName}. Other projects were not changed.`,
       );
     } catch (err) {
+      if (
+        err instanceof ApiRequestError &&
+        err.code === 'toolkit_asset_not_found'
+      ) {
+        setItems((current) =>
+          current.filter((entry) => entry.id !== item.id),
+        );
+        if (editingId === item.id) resetForm(item.project_slug);
+        await refresh();
+        setNotice('That asset had already been removed. The library is now up to date.');
+        return;
+      }
+
       setError(
         toolkitErrorMessage(
           err,

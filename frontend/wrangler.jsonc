@@ -10,7 +10,10 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS",
-    "run_worker_first": false
+    "run_worker_first": [
+      "/api/*",
+      "/media/*"
+    ]
   },
   "images": {
     "binding": "IMAGES"

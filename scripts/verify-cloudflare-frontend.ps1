@@ -14,14 +14,26 @@ if ($lock.name -ne 'oniria-investment') {
     throw "frontend/package-lock.json name must be 'oniria-investment' but is '$($lock.name)'"
 }
 
-$wranglerFiles = @(
-    (Join-Path $frontend 'wrangler.jsonc'),
-    (Join-Path $frontend 'wrangler.json'),
-    (Join-Path $frontend 'wrangler.toml')
-) | Where-Object { Test-Path $_ }
+$wranglerPath = Join-Path $frontend 'wrangler.jsonc'
+if (-not (Test-Path $wranglerPath)) {
+    throw 'frontend/wrangler.jsonc is required for the OpenNext Cloudflare deployment.'
+}
 
-if ($wranglerFiles.Count -gt 0) {
-    throw "This project is configured for Cloudflare automatic Next.js setup. Remove committed Wrangler config before deploying: $($wranglerFiles -join ', ')"
+# This repository keeps wrangler.jsonc as strict JSON (despite the .jsonc
+# extension), so PowerShell can validate the routing contract directly.
+$wrangler = Get-Content $wranglerPath -Raw | ConvertFrom-Json
+$runWorkerFirst = $wrangler.assets.run_worker_first
+if ($runWorkerFirst -is [bool]) {
+    if (-not $runWorkerFirst) {
+        throw 'Cloudflare assets.run_worker_first must be true or include /api/* and /media/*.'
+    }
+} else {
+    $workerFirstRoutes = @($runWorkerFirst)
+    foreach ($requiredRoute in @('/api/*', '/media/*')) {
+        if ($workerFirstRoutes -notcontains $requiredRoute) {
+            throw "Cloudflare assets.run_worker_first must include $requiredRoute so dynamic requests cannot be intercepted by static assets."
+        }
+    }
 }
 
 $matches = Get-ChildItem $frontend -Recurse -File |

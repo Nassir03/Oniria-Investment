@@ -2,7 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { AdminFrame, AdminState, getAdminAccessToken, type StaffProfile, useAdminSession } from '@/components/AdminData';
-import { authFetch } from '@/lib/api';
+import { ApiRequestError, authFetch } from '@/lib/api';
 
 const roleOptions = [
   { value: 'admin', label: 'Administrator', description: 'Full access across the staff workspace.' },
@@ -124,7 +124,15 @@ export default function Page() {
 
     try {
       const token = await getAdminAccessToken();
-      await authFetch<void>(`/admin/staff/${item.id}`, token, { method: 'DELETE' });
+      try {
+        await authFetch<void>(`/admin/staff/${item.id}`, token, { method: 'DELETE' });
+      } catch (err) {
+        // Some edge/static-asset layers answer DELETE with 405 before the
+        // request reaches FastAPI. Retry the equivalent POST action only for
+        // that transport-level failure; all other errors remain visible.
+        if (!(err instanceof ApiRequestError) || err.status !== 405) throw err;
+        await authFetch<void>(`/admin/staff/${item.id}/delete`, token, { method: 'POST' });
+      }
       if (selected?.id === item.id) setSelected(null);
       setNotice(`${name} has been removed from Team Access.`);
       await loadStaff();

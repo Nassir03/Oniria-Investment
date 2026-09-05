@@ -3,7 +3,7 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { AdminFrame, AdminState, getAdminAccessToken, useAdminSession } from '@/components/AdminData';
 import EditorialImage from '@/components/EditorialImage';
-import { authFetch } from '@/lib/api';
+import { ApiRequestError, authFetch } from '@/lib/api';
 
 type News = {
   id:string;
@@ -138,7 +138,12 @@ export default function Page() {
     try{
       const access=await getAdminAccessToken();
       if(kind==='archive') {
-        await authFetch<void>(`/admin/news/${item.id}`,access,{method:'DELETE'});
+        try {
+          await authFetch<void>(`/admin/news/${item.id}`,access,{method:'DELETE'});
+        } catch (err) {
+          if (!(err instanceof ApiRequestError) || err.status !== 405) throw err;
+          await authFetch<void>(`/admin/news/${item.id}/delete`,access,{method:'POST'});
+        }
         setData((current) => current ? { items: current.items.filter((entry)=>entry.id !== item.id), meta: { total: Math.max(0, current.meta.total - 1) } } : current);
         setNotice('Article deleted from the Newsroom.');
       } else {

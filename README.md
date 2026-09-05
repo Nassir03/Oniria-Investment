@@ -163,3 +163,24 @@ npm run dev
 ```
 
 Staff authentication requires valid Supabase frontend credentials in `frontend/.env.local` and matching backend Supabase JWT settings in the backend `.env`.
+
+## Production deployment contract
+
+The frontend and FastAPI backend must be deployed together from the same revision when admin API routes change.
+
+Before deploying the backend:
+
+```powershell
+alembic upgrade head
+python -m pytest -q
+```
+
+If the database is managed manually from the Supabase SQL editor instead of Alembic, apply `database/migrations/007_project_toolkit_assets.sql` once. It is idempotent and ensures the Toolkit table/preview column exists.
+
+For the Cloudflare/OpenNext frontend, configure the deployed FastAPI base URL (including `/api/v1`) as `BACKEND_API_BASE_URL` or `INTERNAL_API_BASE_URL`. Keep `NEXT_PUBLIC_API_BASE_URL` pointed at the same public FastAPI API for server/public fallbacks. Do not point these variables at the frontend Worker itself.
+
+`frontend/wrangler.jsonc` deliberately routes `/api/*` and `/media/*` through the Worker before static assets. This is required for browser admin mutations (POST/PATCH/DELETE) and for backend-served uploaded media. Validate the frontend before deployment with:
+
+```powershell
+.\scripts\verify-cloudflare-frontend.ps1
+```
