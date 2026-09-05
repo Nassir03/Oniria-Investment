@@ -17,6 +17,33 @@ type Staff = StaffProfile & {
   updated_at: string;
 };
 
+function isRouteNotFound(err: unknown) {
+  return err instanceof ApiRequestError && err.status === 404 && (!err.code || err.code === 'http_404');
+}
+
+async function removeStaffWithFallbacks(userId: string, token: string) {
+  const actions = [
+    { path: `/admin/staff/${userId}`, method: 'DELETE' },
+    { path: `/admin/staff/${userId}/delete`, method: 'POST' },
+    { path: `/admin/team/${userId}`, method: 'DELETE' },
+    { path: `/admin/team/${userId}/delete`, method: 'POST' },
+  ];
+
+  let lastRouteError: unknown;
+
+  for (const action of actions) {
+    try {
+      await authFetch<void>(action.path, token, { method: action.method });
+      return;
+    } catch (err) {
+      if (!(err instanceof ApiRequestError) || (err.status !== 405 && !isRouteNotFound(err))) throw err;
+      lastRouteError = err;
+    }
+  }
+
+  throw lastRouteError instanceof Error ? lastRouteError : new Error('Unable to remove staff account.');
+}
+
 export default function Page() {
   const { profile } = useAdminSession();
   const [staff, setStaff] = useState<Staff[]>([]);
@@ -124,15 +151,7 @@ export default function Page() {
 
     try {
       const token = await getAdminAccessToken();
-      try {
-        await authFetch<void>(`/admin/staff/${item.id}`, token, { method: 'DELETE' });
-      } catch (err) {
-        // Some edge/static-asset layers answer DELETE with 405 before the
-        // request reaches FastAPI. Retry the equivalent POST action only for
-        // that transport-level failure; all other errors remain visible.
-        if (!(err instanceof ApiRequestError) || err.status !== 405) throw err;
-        await authFetch<void>(`/admin/staff/${item.id}/delete`, token, { method: 'POST' });
-      }
+      await removeStaffWithFallbacks(item.id, token);
       if (selected?.id === item.id) setSelected(null);
       setNotice(`${name} has been removed from Team Access.`);
       await loadStaff();

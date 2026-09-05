@@ -237,6 +237,22 @@ async def admin_overview(
     }
 
 
+@router.get('/dashboard', include_in_schema=False)
+async def admin_overview_dashboard_compat(
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(get_current_staff),
+):
+    return await admin_overview(db=db, staff=staff)
+
+
+@router.get('/summary', include_in_schema=False)
+async def admin_overview_summary_compat(
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(get_current_staff),
+):
+    return await admin_overview(db=db, staff=staff)
+
+
 @router.get('/staff', response_model=list[StaffOut])
 async def admin_staff_list(
     db: AsyncSession = Depends(get_db),
@@ -364,6 +380,24 @@ async def admin_staff_delete_compat(
 ):
     # Compatibility endpoint for edge/CDN setups that reject DELETE before the
     # request reaches FastAPI. The canonical DELETE endpoint remains unchanged.
+    return await admin_staff_delete(user_id=user_id, db=db, staff=staff)
+
+
+@router.delete('/team/{user_id}', status_code=204, include_in_schema=False)
+async def admin_team_delete_compat(
+    user_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(require_roles('admin')),
+):
+    return await admin_staff_delete(user_id=user_id, db=db, staff=staff)
+
+
+@router.post('/team/{user_id}/delete', status_code=204, include_in_schema=False)
+async def admin_team_delete_post_compat(
+    user_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(require_roles('admin')),
+):
     return await admin_staff_delete(user_id=user_id, db=db, staff=staff)
 
 
@@ -691,6 +725,15 @@ async def admin_toolkit_assets(
     return (await db.scalars(stmt.order_by(ProjectToolkitAsset.project_slug, ProjectToolkitAsset.sort_order, ProjectToolkitAsset.title))).all()
 
 
+@router.get('/toolkit', response_model=list[ToolkitAssetOut], include_in_schema=False)
+async def admin_toolkit_assets_compat(
+    project_slug: str | None = None,
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(require_roles('admin', 'editor', 'content_manager')),
+):
+    return await admin_toolkit_assets(project_slug=project_slug, db=db, _=staff)
+
+
 @router.post('/toolkit-assets', response_model=ToolkitAssetOut, status_code=201)
 async def admin_toolkit_asset_create(
     payload: ToolkitAssetCreate,
@@ -704,6 +747,15 @@ async def admin_toolkit_asset_create(
     await db.commit()
     await db.refresh(asset)
     return asset
+
+
+@router.post('/toolkit', response_model=ToolkitAssetOut, status_code=201, include_in_schema=False)
+async def admin_toolkit_asset_create_compat(
+    payload: ToolkitAssetCreate,
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(require_roles('admin', 'editor', 'content_manager')),
+):
+    return await admin_toolkit_asset_create(payload=payload, db=db, staff=staff)
 
 
 @router.patch('/toolkit-assets/{asset_id}', response_model=ToolkitAssetOut)
@@ -749,6 +801,16 @@ async def admin_toolkit_asset_update(
     return asset
 
 
+@router.patch('/toolkit/{asset_id}', response_model=ToolkitAssetOut, include_in_schema=False)
+async def admin_toolkit_asset_update_path_compat(
+    asset_id: UUID,
+    payload: ToolkitAssetUpdate,
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(require_roles('admin', 'editor', 'content_manager')),
+):
+    return await admin_toolkit_asset_update(asset_id=asset_id, payload=payload, db=db, staff=staff)
+
+
 @router.delete('/toolkit-assets/{asset_id}', status_code=204)
 async def admin_toolkit_asset_delete(
     asset_id: UUID,
@@ -776,6 +838,15 @@ async def admin_toolkit_asset_delete(
     return Response(status_code=204)
 
 
+@router.delete('/toolkit/{asset_id}', status_code=204, include_in_schema=False)
+async def admin_toolkit_asset_delete_path_compat(
+    asset_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(require_roles('admin', 'editor', 'content_manager')),
+):
+    return await admin_toolkit_asset_delete(asset_id=asset_id, db=db, staff=staff)
+
+
 @router.post('/toolkit-assets/{asset_id}/update', response_model=ToolkitAssetOut, include_in_schema=False)
 async def admin_toolkit_asset_update_compat(
     asset_id: UUID,
@@ -787,6 +858,16 @@ async def admin_toolkit_asset_update_compat(
     return await admin_toolkit_asset_update(asset_id=asset_id, payload=payload, db=db, staff=staff)
 
 
+@router.post('/toolkit/{asset_id}/update', response_model=ToolkitAssetOut, include_in_schema=False)
+async def admin_toolkit_asset_update_path_post_compat(
+    asset_id: UUID,
+    payload: ToolkitAssetUpdate,
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(require_roles('admin', 'editor', 'content_manager')),
+):
+    return await admin_toolkit_asset_update(asset_id=asset_id, payload=payload, db=db, staff=staff)
+
+
 @router.post('/toolkit-assets/{asset_id}/delete', status_code=204, include_in_schema=False)
 async def admin_toolkit_asset_delete_compat(
     asset_id: UUID,
@@ -794,4 +875,13 @@ async def admin_toolkit_asset_delete_compat(
     staff: StaffPrincipal = Depends(require_roles('admin', 'editor', 'content_manager')),
 ):
     # Compatibility endpoint for proxies that block DELETE.
+    return await admin_toolkit_asset_delete(asset_id=asset_id, db=db, staff=staff)
+
+
+@router.post('/toolkit/{asset_id}/delete', status_code=204, include_in_schema=False)
+async def admin_toolkit_asset_delete_path_post_compat(
+    asset_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    staff: StaffPrincipal = Depends(require_roles('admin', 'editor', 'content_manager')),
+):
     return await admin_toolkit_asset_delete(asset_id=asset_id, db=db, staff=staff)

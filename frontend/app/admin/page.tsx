@@ -1,7 +1,9 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { AdminFrame, AdminState, getAdminAccessToken, readableRoles, useAdminSession, useProtectedData } from '@/components/AdminData';
+import { AdminFrame, AdminState, getAdminAccessToken, readableRoles, useAdminSession } from '@/components/AdminData';
+import { ApiRequestError, authFetch } from '@/lib/api';
 
 type NewsItem = { id:string; title:string; status:string; updated_at:string };
 type Lead = { id:string; reference_no:string; first_name:string; last_name:string; status:string; created_at:string };
@@ -19,9 +21,43 @@ type Overview = {
   analytics: Analytics;
 };
 
+const emptyAnalytics: Analytics = {
+  period_days: 30,
+  total_views: 0,
+  unique_visitors: 0,
+  daily: [],
+  monthly: [],
+  top_pages: [],
+};
+
+const emptyOverview: Overview = {
+  news: { items: [], total: 0 },
+  leads: { items: [], total: 0 },
+  analytics: emptyAnalytics,
+};
+
 function labelPath(path:string) {
   if (path === '/') return 'Home';
   return path.replace(/^\//,'').replace(/[-/]/g,' ').replace(/\b\w/g,(c)=>c.toUpperCase());
+}
+
+function isRouteNotFound(err: unknown) {
+  return err instanceof ApiRequestError && err.status === 404 && (!err.code || err.code === 'http_404');
+}
+
+async function loadOverview() {
+  const token = await getAdminAccessToken();
+  const endpoints = ['/admin/overview', '/admin/dashboard', '/admin/summary'];
+
+  for (const endpoint of endpoints) {
+    try {
+      return await authFetch<Overview>(endpoint, token);
+    } catch (err) {
+      if (!isRouteNotFound(err)) throw err;
+    }
+  }
+
+  return emptyOverview;
 }
 
 async function downloadReport(kind:'csv'|'xlsx') {
@@ -42,18 +78,44 @@ async function downloadReport(kind:'csv'|'xlsx') {
 }
 
 export default function Page() {
-  const overview = useProtectedData<Overview>('/admin/overview');
   const { profile } = useAdminSession();
-  const overviewUnavailable = /^not found$/i.test(overview.error.trim());
-  const analytics = overview.data?.analytics;
-  const news = overview.data?.news;
-  const leads = overview.data?.leads;
+  const [overviewData, setOverviewData] = useState<Overview | null>(null);
+  const [overviewLoading, setOverviewLoading] = useState(true);
+  const [overviewError, setOverviewError] = useState('');
+  const analytics = overviewData?.analytics;
+  const news = overviewData?.news;
+  const leads = overviewData?.leads;
   const isAdmin = profile?.roles?.includes('admin');
   const canUseNewsroom = Boolean(profile?.roles?.some((role)=>['admin','editor','content_manager'].includes(role)));
   const canUseLeads = Boolean(profile?.roles?.some((role)=>['admin','sales'].includes(role)));
   const maxDaily = Math.max(1, ...(analytics?.daily.map((item)=>item.views) || [1]));
   const recentDaily = analytics?.daily.slice(-14) || [];
   const maxMonthly = Math.max(1, ...(analytics?.monthly.map((item)=>item.views) || [1]));
+
+  useEffect(() => {
+    let active = true;
+
+    async function run() {
+      setOverviewLoading(true);
+      setOverviewError('');
+      try {
+        const data = await loadOverview();
+        if (active) setOverviewData(data);
+      } catch (err) {
+        if (active) {
+          setOverviewError(err instanceof Error ? err.message : 'Unable to load dashboard data.');
+          setOverviewData(emptyOverview);
+        }
+      } finally {
+        if (active) setOverviewLoading(false);
+      }
+    }
+
+    void run();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return <AdminFrame title="Overview" kicker="ONIRIA administration">
     <section className="adminWelcomeStrip adminWelcomePremium">
@@ -65,12 +127,8 @@ export default function Page() {
     </section>
 
     <AdminState
-      loading={overview.loading}
-      error={
-        overviewUnavailable
-          ? 'Dashboard data is not available right now. The workspace is still ready to use.'
-          : overview.error
-      }
+      loading={overviewLoading}
+      error={overviewError}
     />
 
     <div className="adminMetrics adminMetricsModern adminMetricsFour">
@@ -104,7 +162,7 @@ export default function Page() {
             <div><i style={{width:`${Math.max(4,(item.views/maxMonthly)*100)}%`}} /></div>
             <strong>{item.views}</strong>
           </div>)}
-          {!overview.loading && !analytics?.monthly.length ? <div className="adminChartEmpty">Monthly activity will build automatically over time.</div> : null}
+          {!overviewLoading && !analytics?.monthly.length ? <div className="adminChartEmpty">Monthly activity will build automatically over time.</div> : null}
         </div>
       </article>
     </section>
@@ -113,7 +171,7 @@ export default function Page() {
       <article className="adminPanel adminPanelModern adminPopularPanel">
         <div className="adminPanelHead"><div><span>Most viewed</span><h2>Popular pages</h2></div><small>Last 30 days</small></div>
         {(analytics?.top_pages || []).map((item,index)=><div className="adminPopularRow" key={item.path}><span>{String(index+1).padStart(2,'0')}</span><strong>{labelPath(item.path)}</strong><b>{item.views}</b></div>)}
-        {!overview.loading && !analytics?.top_pages.length ? <div className="adminNotice">Page activity will appear here as visitors use the website.</div> : null}
+        {!overviewLoading && !analytics?.top_pages.length ? <div className="adminNotice">Page activity will appear here as visitors use the website.</div> : null}
       </article>
 
       {canUseLeads ? <article className="adminPanel adminPanelModern adminReportsPanel">

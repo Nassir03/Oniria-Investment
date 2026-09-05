@@ -109,30 +109,54 @@ function toolkitErrorMessage(
     err instanceof ApiRequestError &&
     err.status === 404
   ) {
-    return 'The toolkit administration API is not available on the deployed backend.';
+    return 'Toolkit asset data could not be found. Refresh the library and try again.';
   }
 
   return message || fallback;
 }
 
-async function updateToolkitAsset(
-  id: string,
+function isRouteNotFound(err: unknown) {
+  if (!(err instanceof ApiRequestError) || err.status !== 404) {
+    return false;
+  }
+
+  return !err.code || err.code === 'http_404';
+}
+
+async function loadToolkitAssets(
+  token: string,
+) {
+  try {
+    return await authFetch<ToolkitAsset[]>(
+      '/admin/toolkit-assets',
+      token,
+    );
+  } catch (err) {
+    if (!isRouteNotFound(err)) throw err;
+    return authFetch<ToolkitAsset[]>(
+      '/admin/toolkit',
+      token,
+    );
+  }
+}
+
+async function createToolkitAsset(
   token: string,
   payload: Record<string, unknown>,
 ) {
   try {
     return await authFetch<ToolkitAsset>(
-      `/admin/toolkit-assets/${id}`,
+      '/admin/toolkit-assets',
       token,
       {
-        method: 'PATCH',
+        method: 'POST',
         body: JSON.stringify(payload),
       },
     );
   } catch (err) {
-    if (!(err instanceof ApiRequestError) || err.status !== 405) throw err;
+    if (!isRouteNotFound(err)) throw err;
     return authFetch<ToolkitAsset>(
-      `/admin/toolkit-assets/${id}/update`,
+      '/admin/toolkit',
       token,
       {
         method: 'POST',
@@ -142,24 +166,67 @@ async function updateToolkitAsset(
   }
 }
 
+async function updateToolkitAsset(
+  id: string,
+  token: string,
+  payload: Record<string, unknown>,
+) {
+  const actions = [
+    { path: `/admin/toolkit-assets/${id}`, method: 'PATCH' },
+    { path: `/admin/toolkit-assets/${id}/update`, method: 'POST' },
+    { path: `/admin/toolkit/${id}`, method: 'PATCH' },
+    { path: `/admin/toolkit/${id}/update`, method: 'POST' },
+  ];
+
+  let lastRouteError: unknown;
+
+  for (const action of actions) {
+    try {
+      return await authFetch<ToolkitAsset>(
+        action.path,
+        token,
+        {
+          method: action.method,
+          body: JSON.stringify(payload),
+        },
+      );
+    } catch (err) {
+      if (!(err instanceof ApiRequestError) || (err.status !== 405 && !isRouteNotFound(err))) throw err;
+      lastRouteError = err;
+    }
+  }
+
+  throw lastRouteError instanceof Error ? lastRouteError : new Error('Unable to update toolkit asset.');
+}
+
 async function deleteToolkitAsset(
   id: string,
   token: string,
 ) {
-  try {
-    await authFetch<void>(
-      `/admin/toolkit-assets/${id}`,
-      token,
-      { method: 'DELETE' },
-    );
-  } catch (err) {
-    if (!(err instanceof ApiRequestError) || err.status !== 405) throw err;
-    await authFetch<void>(
-      `/admin/toolkit-assets/${id}/delete`,
-      token,
-      { method: 'POST' },
-    );
+  const actions = [
+    { path: `/admin/toolkit-assets/${id}`, method: 'DELETE' },
+    { path: `/admin/toolkit-assets/${id}/delete`, method: 'POST' },
+    { path: `/admin/toolkit/${id}`, method: 'DELETE' },
+    { path: `/admin/toolkit/${id}/delete`, method: 'POST' },
+  ];
+
+  let lastRouteError: unknown;
+
+  for (const action of actions) {
+    try {
+      await authFetch<void>(
+        action.path,
+        token,
+        { method: action.method },
+      );
+      return;
+    } catch (err) {
+      if (!(err instanceof ApiRequestError) || (err.status !== 405 && !isRouteNotFound(err))) throw err;
+      lastRouteError = err;
+    }
   }
+
+  throw lastRouteError instanceof Error ? lastRouteError : new Error('Unable to remove toolkit asset.');
 }
 
 export default function ToolkitAdminPage() {
@@ -245,8 +312,7 @@ export default function ToolkitAdminPage() {
         await getAdminAccessToken();
 
       const loadedItems =
-        await authFetch<ToolkitAsset[]>(
-          '/admin/toolkit-assets',
+        await loadToolkitAssets(
           token,
         );
 
@@ -611,15 +677,9 @@ export default function ToolkitAdminPage() {
         );
       } else {
         const created =
-          await authFetch<ToolkitAsset>(
-            '/admin/toolkit-assets',
+          await createToolkitAsset(
             token,
-            {
-              method: 'POST',
-              body: JSON.stringify(
-                payload,
-              ),
-            },
+            payload,
           );
 
         /**
