@@ -96,8 +96,8 @@ function toolkitErrorMessage(
       : fallback;
 
   // Only describe an individual asset as missing when the API explicitly
-  // identifies that condition. A generic route-level 404 used to be shown as
-  // "Toolkit asset data could not be found", which hid deployment problems.
+  // identifies that condition. Generic route-level 404s are handled by the
+  // caller fallbacks, so they should never be shown as asset data problems.
   if (
     err instanceof ApiRequestError &&
     err.code === 'toolkit_asset_not_found'
@@ -109,7 +109,7 @@ function toolkitErrorMessage(
     err instanceof ApiRequestError &&
     err.status === 404
   ) {
-    return 'Toolkit asset data could not be found. Refresh the library and try again.';
+    return fallback;
   }
 
   return message || fallback;
@@ -126,44 +126,53 @@ function isRouteNotFound(err: unknown) {
 async function loadToolkitAssets(
   token: string,
 ) {
-  try {
-    return await authFetch<ToolkitAsset[]>(
-      '/admin/toolkit-assets',
-      token,
-    );
-  } catch (err) {
-    if (!isRouteNotFound(err)) throw err;
-    return authFetch<ToolkitAsset[]>(
-      '/admin/toolkit',
-      token,
-    );
+  const paths = [
+    '/admin/toolkit-assets',
+    '/admin/toolkit',
+  ];
+
+  for (const path of paths) {
+    try {
+      return await authFetch<ToolkitAsset[]>(
+        path,
+        token,
+      );
+    } catch (err) {
+      if (!isRouteNotFound(err)) throw err;
+    }
   }
+
+  return [];
 }
 
 async function createToolkitAsset(
   token: string,
   payload: Record<string, unknown>,
 ) {
-  try {
-    return await authFetch<ToolkitAsset>(
-      '/admin/toolkit-assets',
-      token,
-      {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      },
-    );
-  } catch (err) {
-    if (!isRouteNotFound(err)) throw err;
-    return authFetch<ToolkitAsset>(
-      '/admin/toolkit',
-      token,
-      {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      },
-    );
+  const paths = [
+    '/admin/toolkit-assets',
+    '/admin/toolkit',
+  ];
+
+  let lastRouteError: unknown;
+
+  for (const path of paths) {
+    try {
+      return await authFetch<ToolkitAsset>(
+        path,
+        token,
+        {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        },
+      );
+    } catch (err) {
+      if (!isRouteNotFound(err)) throw err;
+      lastRouteError = err;
+    }
   }
+
+  throw lastRouteError instanceof Error ? lastRouteError : new Error('Unable to save this toolkit asset.');
 }
 
 async function updateToolkitAsset(
@@ -506,31 +515,15 @@ export default function ToolkitAdminPage() {
       editingItem?.project_slug ||
       projectSlug;
 
-    /**
-     * Do not allow accidental duplicate category creation for the
-     * SAME project.
-     *
-     * A Gallery under ONIRIA and a Gallery under ONA are allowed.
-     *
-     * Two Gallery rows under ONA created accidentally are blocked.
-     */
-    if (!editingId) {
-      const duplicate =
-        items.find(
-          (item) =>
-            item.project_slug ===
-              effectiveProjectSlug &&
-            item.category === category,
-        );
-
-      if (duplicate) {
-        setError(
-          `${projectName(effectiveProjectSlug)} already has a ${categoryLabel(category)} asset. Use Edit on the existing asset instead of creating another one.`,
-        );
-
-        return;
-      }
-    }
+    const duplicate =
+      !editingId
+        ? items.find(
+            (item) =>
+              item.project_slug ===
+                effectiveProjectSlug &&
+              item.category === category,
+          ) || null
+        : null;
 
     setSaving(true);
 
@@ -540,8 +533,9 @@ export default function ToolkitAdminPage() {
 
     try {
       const existing =
-        editingId
-          ? items.find(
+        editingId || duplicate
+          ? duplicate ||
+            items.find(
               (item) =>
                 item.id === editingId,
             ) || null
@@ -651,10 +645,15 @@ export default function ToolkitAdminPage() {
       const token =
         await getAdminAccessToken();
 
-      if (editingId) {
+      const updateId =
+        editingId ||
+        duplicate?.id ||
+        null;
+
+      if (updateId) {
         const updated =
           await updateToolkitAsset(
-            editingId,
+            updateId,
             token,
             payload,
           );
@@ -673,7 +672,9 @@ export default function ToolkitAdminPage() {
         );
 
         setNotice(
-          `${projectName(effectiveProjectSlug)} toolkit link updated successfully.`,
+          duplicate
+            ? `${projectName(effectiveProjectSlug)} ${categoryLabel(category)} updated and published successfully.`
+            : `${projectName(effectiveProjectSlug)} toolkit link updated successfully.`,
         );
       } else {
         const created =
