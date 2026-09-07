@@ -22,9 +22,9 @@ import type {
 
 import {
   fallbackToolkitAssets,
-  getToolkitAssetsForProject,
+  getPublicToolkitAssetsForProject,
   mergeToolkitAssets,
-  toolkitProjects,
+  publicToolkitProjects,
 } from '@/lib/toolkit';
 
 /*
@@ -531,216 +531,98 @@ export default function ToolkitCarousel({
     useReducedMotion();
 
   /*
-   * --------------------------------------------------------
-   * COMPLETE TOOLKIT COLLECTION
-   * --------------------------------------------------------
-   *
-   * IMPORTANT FIX:
-   *
-   * The database/API assets are merged with the built-in
-   * ONIRIA Investments assets.
-   *
-   * This means:
-   *
-   * Adding ONA Towers does NOT remove ONIRIA Investments.
-   *
-   * Adding ROHO does NOT remove ONIRIA Investments.
-   *
-   * Adding ROHO does NOT remove ONA Towers.
-   *
-   * A database asset replaces a fallback only if BOTH:
-   *
-   * project_slug + category
-   *
-   * match.
+   * Keep the complete API/fallback collection intact. Public presentation is
+   * applied afterwards, so admin records and existing download links are not
+   * rewritten or deleted.
    */
-  const allAssets =
-    useMemo(
-      () =>
-        mergeToolkitAssets(
-          initialAssets,
-        ),
-      [initialAssets],
-    );
-
-  /*
-   * Current selected project.
-   */
-  const [
-    projectSlug,
-    setProjectSlug,
-  ] = useState(
-    toolkitProjects[0].slug,
+  const allAssets = useMemo(
+    () => mergeToolkitAssets(initialAssets),
+    [initialAssets],
   );
 
   /*
-   * Current active card.
+   * null = public project chooser.
+   * A selected slug = that project's five-card 3D toolkit.
    */
-  const [
-    active,
-    setActive,
-  ] = useState(0);
+  const [projectSlug, setProjectSlug] =
+    useState<string | null>(null);
+
+  const [active, setActive] =
+    useState(0);
+
+  const [preview, setPreview] =
+    useState<ToolkitAsset | null>(null);
+
+  const selectedProject = useMemo(
+    () =>
+      projectSlug
+        ? publicToolkitProjects.find(
+            (project) => project.slug === projectSlug,
+          ) || null
+        : null,
+    [projectSlug],
+  );
 
   /*
-   * Internal preview modal.
+   * Public order is always 5, 3, 1, 2, 4. Existing project records keep their
+   * real file URLs and permissions; the supplied images are used as covers.
    */
-  const [
-    preview,
-    setPreview,
-  ] =
-    useState<ToolkitAsset | null>(
-      null,
-    );
-
-  /*
-   * Selected project information.
-   */
-  const selectedProject =
-    useMemo(
-      () =>
-        toolkitProjects.find(
-          (project) =>
-            project.slug ===
+  const assets = useMemo(
+    () =>
+      projectSlug
+        ? getPublicToolkitAssetsForProject(
+            allAssets,
             projectSlug,
-        ) ||
-        toolkitProjects[0],
-      [projectSlug],
-    );
+          )
+        : [],
+    [allAssets, projectSlug],
+  );
 
-  /*
-   * --------------------------------------------------------
-   * STRICT PROJECT FILTER
-   * --------------------------------------------------------
-   *
-   * ONIRIA Investments:
-   *
-   * project_slug === "all-projects"
-   *
-   * ONA Towers:
-   *
-   * project_slug === "ona-towers"
-   *
-   * ROHO:
-   *
-   * project_slug === "roho"
-   *
-   * `all-projects` is therefore treated as ONIRIA
-   * Investments itself, NOT as a request to combine all
-   * projects.
-   */
-  const assets =
-    useMemo(
-      () =>
-        getToolkitAssetsForProject(
-          allAssets,
-          projectSlug,
-        ),
-      [
-        allAssets,
-        projectSlug,
-      ],
-    );
-
-  /*
-   * Reset carousel whenever project changes.
-   */
   useEffect(() => {
     setActive(0);
-
     setPreview(null);
   }, [projectSlug]);
 
-  /*
-   * Protect active index if assets change while the same
-   * project remains selected.
-   */
   useEffect(() => {
     if (!assets.length) {
       setActive(0);
       return;
     }
 
-    setActive(
-      (current) =>
-        Math.min(
-          current,
-          assets.length - 1,
-        ),
+    setActive((current) =>
+      Math.min(current, assets.length - 1),
     );
   }, [assets.length]);
 
-  /*
-   * Move carousel left/right.
-   */
-  const move =
-    useCallback(
-      (
-        delta: number,
-      ) => {
-        if (
-          !assets.length
-        ) {
-          return;
-        }
+  const move = useCallback(
+    (delta: number) => {
+      if (!assets.length) return;
 
-        setActive(
-          (value) =>
-            (
-              value +
-              delta +
-              assets.length
-            ) %
-            assets.length,
-        );
-      },
-      [assets.length],
-    );
+      setActive(
+        (value) =>
+          (value + delta + assets.length) % assets.length,
+      );
+    },
+    [assets.length],
+  );
 
-  /*
-   * Keyboard controls.
-   */
   useEffect(() => {
-    const onKey = (
-      event: KeyboardEvent,
-    ) => {
-      if (
-        preview ||
-        !assets.length
-      ) {
+    const onKey = (event: KeyboardEvent) => {
+      if (preview || !projectSlug || !assets.length) {
         return;
       }
 
-      if (
-        event.key ===
-        'ArrowLeft'
-      ) {
-        move(-1);
-      }
-
-      if (
-        event.key ===
-        'ArrowRight'
-      ) {
-        move(1);
-      }
+      if (event.key === 'ArrowLeft') move(-1);
+      if (event.key === 'ArrowRight') move(1);
+      if (event.key === 'Escape') setProjectSlug(null);
     };
 
-    window.addEventListener(
-      'keydown',
-      onKey,
-    );
+    window.addEventListener('keydown', onKey);
 
     return () => {
-      window.removeEventListener(
-        'keydown',
-        onKey,
-      );
+      window.removeEventListener('keydown', onKey);
     };
-  }, [
-    assets.length,
-    move,
-    preview,
-  ]);
+  }, [assets.length, move, preview, projectSlug]);
 
   return (
     <section
@@ -752,183 +634,153 @@ export default function ToolkitCarousel({
         aria-hidden="true"
       />
 
-      {/*
-       * ----------------------------------------------------
-       * TOP HEADER
-       * ----------------------------------------------------
-       */}
-      <header className="toolkitIntro">
-        <Link
-          href="/"
-          prefetch
-          className="toolkitBrand"
-          aria-label="ONIRIA Investments home"
-        >
-          <span
-            className="wordmarkLogo toolkitBrandWordmark"
-            aria-hidden="true"
-          />
-        </Link>
-
-        <div className="toolkitTitleBlock">
-          <h1>
-            {
-              selectedProject.name
-            }
-          </h1>
-
-          {selectedProject.slogan && (
-            <p>
-              {
-                selectedProject.slogan
-              }
-            </p>
-          )}
-        </div>
-
-        <label className="toolkitProjectPicker">
-          <span>
-            Project
-          </span>
-
-          <select
-            value={
-              projectSlug
-            }
-            onChange={(
-              event,
-            ) =>
-              setProjectSlug(
-                event.target
-                  .value,
-              )
-            }
+      <AnimatePresence mode="wait" initial={false}>
+        {!selectedProject ? (
+          <motion.div
+            key="project-picker"
+            className="toolkitLanding"
+            initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -14 }}
+            transition={{ duration: reduceMotion ? 0 : 0.35 }}
           >
-            {toolkitProjects.map(
-              (project) => (
-                <option
-                  key={
-                    project.slug
-                  }
-                  value={
-                    project.slug
-                  }
+            <header className="toolkitLandingHeader">
+              <Link
+                href="/"
+                prefetch
+                className="toolkitBrand"
+                aria-label="ONIRIA Investments home"
+              >
+                <span
+                  className="wordmarkLogo toolkitBrandWordmark"
+                  aria-hidden="true"
+                />
+              </Link>
+
+              <div className="toolkitLandingIntro">
+                <h1>Projects</h1>
+              </div>
+            </header>
+
+            <div
+              className="toolkitProjectGrid"
+              aria-label="Toolkit projects"
+            >
+              {publicToolkitProjects.map((project, index) => (
+                <motion.button
+                  type="button"
+                  key={project.slug}
+                  className="toolkitProjectCard"
+                  onClick={() => setProjectSlug(project.slug)}
+                  initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.45,
+                    delay: reduceMotion ? 0 : index * 0.08,
+                  }}
+                  aria-label={`Open ${project.name} toolkit`}
                 >
-                  {
-                    project.name
-                  }
-                </option>
-              ),
-            )}
-          </select>
-        </label>
-      </header>
+                  <span className="toolkitProjectCardMedia">
+                    <Image
+                      src={project.cover_image_url}
+                      alt=""
+                      fill
+                      sizes="(max-width: 760px) 90vw, 42vw"
+                      quality={92}
+                      priority={index === 0}
+                    />
+                    <span
+                      className="toolkitProjectCardShade"
+                      aria-hidden="true"
+                    />
+                  </span>
 
-      {/*
-       * ----------------------------------------------------
-       * CAROUSEL
-       * ----------------------------------------------------
-       */}
-
-      {assets.length ? (
-        <>
-          <div
-            className="toolkitStage"
-            style={{
-              perspective:
-                '1500px',
-            }}
+                  <span className="toolkitProjectCardCopy">
+                    <strong>{project.name}</strong>
+                    <em>{project.slogan}</em>
+                  </span>
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key={selectedProject.slug}
+            className="toolkitProjectExperience"
+            initial={reduceMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.28 }}
           >
-            {assets.map(
-              (
-                asset,
-                index,
-              ) => {
-                const offset =
-                  circularOffset(
-                    index,
-                    active,
-                    assets.length,
-                  );
+            <header className="toolkitIntro">
+              <Link
+                href="/"
+                prefetch
+                className="toolkitBrand"
+                aria-label="ONIRIA Investments home"
+              >
+                <span
+                  className="wordmarkLogo toolkitBrandWordmark"
+                  aria-hidden="true"
+                />
+              </Link>
 
-                const pose =
-                  cardPose(
-                    offset,
-                  );
+              <div className="toolkitTitleBlock">
+                <h1>{selectedProject.name}</h1>
+                <p>{selectedProject.slogan}</p>
+              </div>
 
-                const isActive =
-                  offset === 0;
+              <button
+                type="button"
+                className="toolkitBackButton"
+                onClick={() => setProjectSlug(null)}
+                aria-label="Back to toolkit projects"
+              >
+                <ArrowIcon direction="left" />
+                <span>Projects</span>
+              </button>
+            </header>
+
+            <div
+              className="toolkitStage"
+              style={{ perspective: '1500px' }}
+            >
+              {assets.map((asset, index) => {
+                const offset = circularOffset(
+                  index,
+                  active,
+                  assets.length,
+                );
+
+                const pose = cardPose(offset);
+                const isActive = offset === 0;
 
                 return (
                   <motion.article
-                    /*
-                     * Include project in the React key as an extra
-                     * isolation guard.
-                     */
                     key={`${asset.project_slug}:${asset.id}`}
-                    className={
-                      `toolkitCard toolkitCard--${asset.category} ${
-                        isActive
-                          ? 'active'
-                          : ''
-                      }`
-                    }
-                    animate={
-                      pose
-                    }
+                    className={`toolkitCard toolkitCard--${asset.category} ${
+                      isActive ? 'active' : ''
+                    }`}
+                    animate={pose}
                     transition={
                       reduceMotion
-                        ? {
-                            duration:
-                              0,
-                          }
+                        ? { duration: 0 }
                         : {
-                            type:
-                              'spring',
-
-                            stiffness:
-                              120,
-
-                            damping:
-                              22,
-
-                            mass:
-                              0.85,
+                            type: 'spring',
+                            stiffness: 120,
+                            damping: 22,
+                            mass: 0.85,
                           }
                     }
                     style={{
-                      zIndex:
-                        20 -
-                        Math.abs(
-                          offset,
-                        ),
-
-                      transformStyle:
-                        'preserve-3d',
+                      zIndex: 20 - Math.abs(offset),
+                      transformStyle: 'preserve-3d',
                     }}
                     onClick={() => {
-                      if (
-                        !isActive
-                      ) {
-                        setActive(
-                          index,
-                        );
-                      }
+                      if (!isActive) setActive(index);
                     }}
-                    aria-hidden={
-                      Math.abs(
-                        offset,
-                      ) > 2
-                    }
+                    aria-hidden={Math.abs(offset) > 2}
                   >
-                    {/*
-                     * CARD COVER
-                     *
-                     * preview_image_url controls the visual card.
-                     *
-                     * file_url remains the actual downloadable /
-                     * viewable material.
-                     */}
                     <ToolkitImage
                       src={getToolkitImageUrl(asset)}
                       alt=""
@@ -937,88 +789,44 @@ export default function ToolkitCarousel({
                     />
 
                     <div className="toolkitCardShade" />
+                    <h2>{asset.title}</h2>
 
-                    <h2>
-                      {
-                        asset.title
-                      }
-                    </h2>
-
-                    {/*
-                     * ------------------------------------------------
-                     * ACTIVE CARD ACTIONS
-                     * ------------------------------------------------
-                     */}
                     {isActive && (
                       <div className="toolkitCardActions">
-                        {/*
-                         * DOWNLOAD
-                         */}
                         {asset.is_downloadable && (
                           <a
-                            href={
-                              getDownloadUrl(
-                                asset.file_url,
-                              )
-                            }
+                            href={getDownloadUrl(asset.file_url)}
                             target={
-                              isGoogleDriveFile(
-                                asset.file_url,
-                              )
+                              isGoogleDriveFile(asset.file_url)
                                 ? '_blank'
                                 : undefined
                             }
                             rel={
-                              isGoogleDriveFile(
-                                asset.file_url,
-                              )
+                              isGoogleDriveFile(asset.file_url)
                                 ? 'noopener noreferrer'
                                 : undefined
                             }
                             download={
-                              !isGoogleDriveFile(
-                                asset.file_url,
-                              )
-                                ? asset.file_name ||
-                                  undefined
+                              !isGoogleDriveFile(asset.file_url)
+                                ? asset.file_name || undefined
                                 : undefined
                             }
                             className="toolkitSquareAction"
                             aria-label={`Download ${asset.title}`}
-                            onClick={(
-                              event,
-                            ) => {
-                              event.stopPropagation();
-                            }}
+                            onClick={(event) => event.stopPropagation()}
                           >
                             <DownloadIcon />
                           </a>
                         )}
 
-                        {/*
-                         * VIEW / PREVIEW
-                         *
-                         * Google Drive opens externally.
-                         *
-                         * Other assets use the existing internal
-                         * preview.
-                         */}
-                        {isGoogleDriveFile(
-                          asset.file_url,
-                        ) ? (
+                        {isGoogleDriveFile(asset.file_url) ? (
                           <a
-                            href={
-                              asset.file_url
-                            }
+                            href={asset.file_url}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="toolkitSquareAction"
                             aria-label={`View ${asset.title}`}
-                            onClick={(
-                              event,
-                            ) => {
-                              event.stopPropagation();
-                            }}
+                            onClick={(event) => event.stopPropagation()}
                           >
                             <EyeIcon />
                           </a>
@@ -1026,14 +834,9 @@ export default function ToolkitCarousel({
                           <button
                             type="button"
                             className="toolkitSquareAction"
-                            onClick={(
-                              event,
-                            ) => {
+                            onClick={(event) => {
                               event.stopPropagation();
-
-                              setPreview(
-                                asset,
-                              );
+                              setPreview(asset);
                             }}
                             aria-label={`Preview ${asset.title}`}
                           >
@@ -1044,85 +847,35 @@ export default function ToolkitCarousel({
                     )}
                   </motion.article>
                 );
-              },
-            )}
-          </div>
+              })}
+            </div>
 
-          {/*
-           * ----------------------------------------------------
-           * NAVIGATION
-           * ----------------------------------------------------
-           */}
-          <div className="toolkitControls">
-            <button
-              type="button"
-              onClick={() =>
-                move(-1)
-              }
-              aria-label="Previous toolkit item"
-            >
-              <ArrowIcon direction="left" />
-            </button>
+            <div className="toolkitControls">
+              <button
+                type="button"
+                onClick={() => move(-1)}
+                aria-label="Previous toolkit item"
+              >
+                <ArrowIcon direction="left" />
+              </button>
 
-            <button
-              type="button"
-              onClick={() =>
-                move(1)
-              }
-              aria-label="Next toolkit item"
-            >
-              <ArrowIcon direction="right" />
-            </button>
-          </div>
-        </>
-      ) : (
-        /*
-         * ----------------------------------------------------
-         * EMPTY PROJECT
-         * ----------------------------------------------------
-         *
-         * Do NOT substitute ONIRIA Investments assets when
-         * ONA or ROHO genuinely has no public assets.
-         */
-        <div
-          className="toolkitEmptyProject"
-          role="status"
-        >
-          <span>
-            {
-              selectedProject.name
-            }
-          </span>
+              <button
+                type="button"
+                onClick={() => move(1)}
+                aria-label="Next toolkit item"
+              >
+                <ArrowIcon direction="right" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-          <h2>
-            Project toolkit
-            coming together.
-          </h2>
-
-          <p>
-            No public assets
-            have been published
-            for this project yet.
-          </p>
-        </div>
-      )}
-
-      {/*
-       * ------------------------------------------------------
-       * LOCAL ASSET PREVIEW MODAL
-       * ------------------------------------------------------
-       */}
       <AnimatePresence>
         {preview && (
           <AssetPreview
-            asset={
-              preview
-            }
-            onClose={() =>
-              setPreview(
-                null,
-              )
-            }
+            asset={preview}
+            onClose={() => setPreview(null)}
           />
         )}
       </AnimatePresence>

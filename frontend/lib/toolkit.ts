@@ -119,12 +119,95 @@ export const toolkitProjects: ToolkitProject[] = [
   },
 ];
 
+/**
+ * Public Toolkit entry cards.
+ *
+ * ONIRIA Investments remains in `toolkitProjects` for admin/data backwards
+ * compatibility, but it is intentionally not shown as a public project choice.
+ */
+export const publicToolkitProjects = [
+  {
+    slug: 'ona-towers',
+    name: 'ONA Tower',
+    slogan: 'Ishi juu, ona zaidi.',
+    cover_image_url: '/images/toolkit/covers/4-payment-plan.webp',
+  },
+  {
+    slug: 'roho',
+    name: 'ROHO',
+    slogan: 'The Art of Living',
+    cover_image_url: '/images/toolkit/covers/2-project-brief.webp',
+  },
+] as const;
+
+/**
+ * Exact public carousel order for both ONA Towers and ROHO.
+ * The visible covers are fixed, while admin/API records keep control of the
+ * real file links when they exist.
+ */
+export const publicToolkitSequence: ReadonlyArray<{
+  category: ToolkitCategory;
+  title: string;
+  file_url: string;
+  cover_image_url: string;
+  sort_order: number;
+}> = [
+  {
+    category: 'logo',
+    title: 'Logo',
+    file_url:
+      'https://drive.google.com/file/d/1SfgaphlnuV2_AiGKmEFeLgagevCnrZFy/view?usp=drive_link',
+    cover_image_url: '/images/toolkit/covers/6-Logo.webp',
+    sort_order: 10,
+  },
+  {
+    category: 'masterplan',
+    title: 'Masterplan',
+    file_url:
+      'https://drive.google.com/file/d/14VMJrUFeMluAMQCpeTSdBFos0hEBxkrF/view?usp=drive_link',
+    cover_image_url: '/images/toolkit/covers/5-masterplan.webp',
+    sort_order: 20,
+  },
+  {
+    category: 'brochure',
+    title: 'Brochure',
+    file_url:
+      'https://drive.google.com/file/d/1bupjZHDpBByA36p2PeroY1XiqJrxCPAZ/view?usp=sharing',
+    cover_image_url: '/images/toolkit/covers/1-brochure.webp',
+    sort_order: 30,
+  },
+  {
+    category: 'project_brief',
+    title: 'Project Briefing',
+    file_url:
+      'https://drive.google.com/file/d/1ui8jUIKPY4Id02s1HwdJMyCiXAZqjDVH/view?usp=drive_link',
+    cover_image_url: '/images/toolkit/covers/2-project-brief.webp',
+    sort_order: 40,
+  },
+  {
+    category: 'floor_plans',
+    title: 'Floor Plans',
+    file_url:
+      'https://drive.google.com/file/d/1HJ9DzHvzuFHAqK4AuMmsSBGEZWeVemJc/view?usp=drive_link',
+    cover_image_url: '/images/toolkit/covers/3-floor-plans.webp',
+    sort_order: 50,
+  },
+  {
+    category: 'payment_plan',
+    title: 'Payment Plan',
+    file_url:
+      'https://drive.google.com/file/d/1I-CaLr1B-MZ90gssZz3S1WbNk5XBrkqn/view?usp=drive_link',
+    cover_image_url: '/images/toolkit/covers/4-payment-plan.webp',
+    sort_order: 60,
+  },
+];
+
 export const toolkitCategoryDefaultCover: Record<
   ToolkitCategory,
   string
 > = {
   gallery: '/images/toolkit/ona-tower.png',
-  logo: '/images/toolkit/oniria-logo-white.png',
+  logo: '/images/toolkit/covers/6-Logo.webp',
   project_brief: '/images/toolkit/ona-hall.png',
   brochure: '/images/toolkit/abstract/palm-shadow.png',
   floor_plans: '/images/toolkit/ona-living-room.png',
@@ -298,6 +381,54 @@ export function mergeToolkitAssets(
     }
 
     return a.title.localeCompare(b.title);
+  });
+}
+
+/**
+ * Build the five-card public sequence for one project without changing the
+ * underlying admin/API records. Existing links/download settings are kept;
+ * only the card cover and public order are controlled here.
+ *
+ * If a project does not yet have a database record for one of the five slots,
+ * a visual preview card is supplied so the public animation remains complete.
+ */
+export function getPublicToolkitAssetsForProject(
+  assets: ToolkitAsset[],
+  projectSlug: string,
+): ToolkitAsset[] {
+  const projectAssets = getToolkitAssetsForProject(assets, projectSlug);
+  const byCategory = new Map<ToolkitCategory, ToolkitAsset>();
+
+  for (const asset of projectAssets) {
+    if (!byCategory.has(asset.category)) {
+      byCategory.set(asset.category, asset);
+    }
+  }
+
+  return publicToolkitSequence.map((slot) => {
+    const existing = byCategory.get(slot.category);
+
+    if (existing) {
+      return {
+        ...existing,
+        preview_image_url: slot.cover_image_url,
+        sort_order: slot.sort_order,
+      };
+    }
+
+    return {
+      id: `public-${projectSlug}-${slot.category}`,
+      project_slug: projectSlug,
+      category: slot.category,
+      title: slot.title,
+      file_url: slot.file_url,
+      preview_image_url: slot.cover_image_url,
+      media_type: inferToolkitMediaType(slot.file_url, slot.category),
+      file_name: null,
+      is_public: true,
+      is_downloadable: true,
+      sort_order: slot.sort_order,
+    } satisfies ToolkitAsset;
   });
 }
 

@@ -9331,6 +9331,210 @@ body,
     );
 }
 
+/* Public Toolkit project chooser */
+.toolkitLanding,
+.toolkitProjectExperience{
+  position:relative;
+  z-index:2;
+  width:100%;
+  flex:1;
+  min-height:0;
+}
+
+.toolkitProjectExperience{
+  display:flex;
+  flex-direction:column;
+}
+
+.toolkitLanding{
+  display:flex;
+  flex-direction:column;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:none;
+}
+
+.toolkitLanding::-webkit-scrollbar{
+  display:none;
+}
+
+.toolkitLandingHeader{
+  position:relative;
+  z-index:30;
+  display:grid;
+  grid-template-columns:1fr minmax(0,620px) 1fr;
+  gap:34px;
+  align-items:start;
+}
+
+.toolkitLandingIntro{
+  grid-column:2;
+  text-align:center;
+}
+
+.toolkitLandingIntro>span{
+  display:block;
+  margin:4px 0 12px;
+  color:rgba(255,255,255,.52);
+  font-family:"Montserrat","Helvetica Neue",Arial,sans-serif;
+  font-size:9px;
+  font-weight:500;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+}
+
+.toolkitLandingIntro h1{
+  margin:0;
+  color:#fff;
+  font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  font-size:clamp(46px,4.8vw,72px);
+  font-weight:300;
+  line-height:.92;
+  letter-spacing:-.028em;
+}
+
+.toolkitLandingIntro p{
+  margin:15px 0 0;
+  color:rgba(255,255,255,.66);
+  font-family:"Montserrat","Helvetica Neue",Arial,sans-serif;
+  font-size:clamp(10px,.75vw,12px);
+  font-weight:500;
+  line-height:1.55;
+  letter-spacing:.035em;
+}
+
+.toolkitProjectGrid{
+  width:min(1120px,91vw);
+  margin:auto;
+  padding:clamp(34px,5vh,64px) 0 clamp(10px,2vh,24px);
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:clamp(24px,3.2vw,48px);
+  align-items:center;
+}
+
+.toolkitProjectCard{
+  min-width:0;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:#fff;
+  text-align:left;
+  cursor:pointer;
+}
+
+.toolkitProjectCardMedia{
+  position:relative;
+  display:block;
+  width:100%;
+  height:clamp(360px,55vh,590px);
+  overflow:hidden;
+  background:#0b1826;
+  box-shadow:0 26px 68px rgba(0,0,0,.38);
+}
+
+.toolkitProjectCardMedia::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:2;
+  border:1px solid rgba(255,255,255,.08);
+  pointer-events:none;
+}
+
+.toolkitProjectCardMedia img{
+  object-fit:cover;
+  transition:transform .65s cubic-bezier(.2,.7,.2,1),filter .45s ease;
+}
+
+.toolkitProjectCardShade{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.12));
+  transition:background .4s ease;
+}
+
+.toolkitProjectCardCopy{
+  display:block;
+  padding:18px 2px 0;
+}
+
+.toolkitProjectCardCopy strong{
+  display:block;
+  color:#fff;
+  font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  font-size:clamp(29px,2.4vw,40px);
+  font-weight:300;
+  line-height:1;
+  letter-spacing:-.02em;
+}
+
+.toolkitProjectCardCopy em{
+  display:block;
+  margin-top:8px;
+  color:rgba(255,255,255,.62);
+  font-family:"Montserrat","Helvetica Neue",Arial,sans-serif;
+  font-size:10px;
+  font-style:normal;
+  font-weight:500;
+  line-height:1.4;
+  letter-spacing:.08em;
+}
+
+.toolkitProjectCard:hover .toolkitProjectCardMedia img,
+.toolkitProjectCard:focus-visible .toolkitProjectCardMedia img{
+  transform:scale(1.035);
+  filter:brightness(1.05);
+}
+
+.toolkitProjectCard:hover .toolkitProjectCardShade,
+.toolkitProjectCard:focus-visible .toolkitProjectCardShade{
+  background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.04));
+}
+
+.toolkitProjectCard:focus-visible{
+  outline:1px solid rgba(255,255,255,.9);
+  outline-offset:8px;
+}
+
+.toolkitBackButton{
+  justify-self:end;
+  min-height:42px;
+  padding:0 2px 8px;
+  border:0;
+  border-bottom:1px solid rgba(255,255,255,.44);
+  background:transparent;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  cursor:pointer;
+  font-family:"Montserrat","Helvetica Neue",Arial,sans-serif;
+  font-size:9px;
+  font-weight:500;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  transition:border-color .2s ease,opacity .2s ease;
+}
+
+.toolkitBackButton:hover{
+  border-bottom-color:#fff;
+}
+
+.toolkitBackButton:focus-visible{
+  outline:1px solid #fff;
+  outline-offset:5px;
+}
+
+.toolkitBackButton svg{
+  width:18px;
+  height:18px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.35;
+}
+
 /* Header: ONIRIA logo / selected project / project selector */
 .toolkitIntro{
   position:relative;
@@ -9448,7 +9652,7 @@ body,
 
 .toolkitCard{
   position:absolute;
-  width:min(430px,34vw);
+  width:min(370px,29vw);
   height:min(604px,61vh);
   min-height:470px;
   overflow:hidden;
@@ -9477,32 +9681,36 @@ body,
   object-fit:cover;
 }
 
-/* Keep the toolkit's Logo asset visually separate from the site navigation
-   wordmark: it is presented as a brand specimen inside the animation. */
 .toolkitCard--logo{
-  background:#f5f1eb;
+  background:#102031;
 }
 .toolkitCard--logo>img{
-  object-fit:contain;
-  padding:44px 26px;
-  background:#f5f1eb;
+  object-fit:cover;
+  padding:0;
+  background:#102031;
 }
 .toolkitCard--logo .toolkitCardShade{
-  background:linear-gradient(180deg,rgba(3,27,53,.08),transparent 32%,rgba(3,27,53,.10) 100%);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(1,8,16,.16) 0%,
+      rgba(1,7,13,.03) 46%,
+      rgba(0,0,0,.64) 100%
+    );
 }
 .toolkitCard--logo h2{
-  color:var(--navy);
-  text-shadow:none;
+  color:var(--cream);
+  text-shadow:0 2px 20px rgba(0,0,0,.38);
 }
 .toolkitCard--logo .toolkitSquareAction{
-  border-color:rgba(3,27,53,.42);
-  background:rgba(255,255,255,.72);
-  color:var(--navy);
+  border-color:rgba(244,239,228,.62);
+  background:rgba(3,20,37,.24);
+  color:var(--cream);
 }
 .toolkitCard--logo .toolkitSquareAction:hover{
-  background:var(--navy);
-  border-color:var(--navy);
-  color:#fff;
+  background:rgba(244,239,228,.94);
+  border-color:rgba(244,239,228,.94);
+  color:var(--navy);
 }
 
 .toolkitCardShade{
@@ -9846,6 +10054,30 @@ body,
 
 /* Public toolkit responsive */
 @media(max-width:900px){
+  .toolkitLandingHeader{
+    grid-template-columns:1fr;
+    gap:22px;
+  }
+
+  .toolkitLandingHeader .toolkitBrand{
+    justify-self:start;
+  }
+
+  .toolkitLandingIntro{
+    grid-column:1;
+    text-align:left;
+  }
+
+  .toolkitProjectGrid{
+    width:100%;
+    padding-top:34px;
+    gap:24px;
+  }
+
+  .toolkitBackButton{
+    align-self:start;
+  }
+
   .toolkitExperience{
     padding:30px 22px 28px;
   }
@@ -9884,12 +10116,30 @@ body,
   }
 
   .toolkitCard{
-    width:min(360px,62vw);
+    width:min(315px,56vw);
     height:485px;
   }
 }
 
 @media(max-width:600px){
+  .toolkitProjectGrid{
+    grid-template-columns:1fr;
+    width:min(420px,100%);
+    gap:34px;
+  }
+
+  .toolkitProjectCardMedia{
+    height:min(470px,58vh);
+  }
+
+  .toolkitProjectCardCopy{
+    padding-top:14px;
+  }
+
+  .toolkitLandingIntro h1{
+    font-size:44px;
+  }
+
   .toolkitExperience{
     min-height:100svh;
     padding:24px 18px 24px;
@@ -9925,8 +10175,8 @@ body,
   }
 
   .toolkitCard{
-    width:72vw;
-    max-width:310px;
+    width:64vw;
+    max-width:280px;
     height:430px;
     min-height:390px;
   }
