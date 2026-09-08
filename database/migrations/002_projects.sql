@@ -19,7 +19,7 @@ CREATE TABLE projects (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-COMMENT ON TABLE projects IS 'The four ONIRIA portfolio projects (Stone Town, Michamvi, ONA Towers, V Town) shown on the public projects pages.';
+COMMENT ON TABLE projects IS 'The four ONIRIA portfolio projects (Stone Town, Michamvi, ONA Towers, ROHO) shown on the public projects pages.';
 
 CREATE TYPE project_media_type AS ENUM ('image', 'video');
 

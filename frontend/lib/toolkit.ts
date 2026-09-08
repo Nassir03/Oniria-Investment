@@ -115,7 +115,7 @@ export const toolkitProjects: ToolkitProject[] = [
   {
     slug: 'roho',
     name: 'ROHO',
-    slogan: 'The Art of Living',
+    slogan: 'Nyumbani kwangu. Roho yangu',
   },
 ];
 
@@ -128,14 +128,14 @@ export const toolkitProjects: ToolkitProject[] = [
 export const publicToolkitProjects = [
   {
     slug: 'ona-towers',
-    name: 'ONA Tower',
-    slogan: 'Ishi juu, ona zaidi.',
+    name: 'ONA Towers',
+    slogan: '1. Ishi juu, ona zaidi.',
     cover_image_url: '/images/toolkit/covers/4-payment-plan.webp',
   },
   {
     slug: 'roho',
     name: 'ROHO',
-    slogan: 'The Art of Living',
+    slogan: '2. Nyumbani kwangu. Roho yangu',
     cover_image_url: '/images/toolkit/covers/2-project-brief.webp',
   },
 ] as const;

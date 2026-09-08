@@ -30,10 +30,17 @@ const fallbackDetails: Record<string, Detail> = {
   },
   'ona-towers': {
     name: 'ONA Towers',
-    subheading: 'Landmark Residences',
+    subheading: 'Leave above. See beyond',
     summary:
       'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
     hero: '/images/ona-towers-attached.png',
+  },
+  'v-town': {
+    name: 'ROHO',
+    subheading: 'My home. My soul.',
+    summary:
+      'A new kind of coastal community where residences, sport and social life come together — designed around the way people want to live.',
+    hero: '/images/v-town-attached.png',
   },
 };
 

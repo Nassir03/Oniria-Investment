@@ -80,7 +80,7 @@ RLS: enabled, no public policy (backend/service-role access only).
 
 \## projects
 
-The four ONIRIA portfolio projects (Stone Town, Michamvi, ONA Towers, V Town).
+The four ONIRIA portfolio projects (Stone Town, Michamvi, ONA Towers, ROHO).
 
 
 
@@ -94,7 +94,7 @@ The four ONIRIA portfolio projects (Stone Town, Michamvi, ONA Towers, V Town).
 
 | name | VARCHAR(255) | Project name |
 
-| category | VARCHAR(100) | e.g. "Residential", "Mixed-Use" |
+| category | VARCHAR(100) | e.g. "Residential", "Integrated Living" |
 
 | location | VARCHAR(255) | Project location |
 

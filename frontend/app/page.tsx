@@ -21,14 +21,14 @@ const collection = [
   },
   {
     name: 'ONA Towers',
-    descriptor: 'Landmark Residences',
+    descriptor: 'Leave above. See beyond.',
     image: '/images/ona-towers-attached.png',
     href: '/projects/ona-towers',
     external: false,
   },
   {
-    name: 'V Town',
-    descriptor: 'The Art of Living',
+    name: 'ROHO',
+    descriptor: 'My home. My soul.',
     image: '/images/v-town-attached.png',
     href: '/projects/v-town',
     external: false,

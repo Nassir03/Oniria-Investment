@@ -5,6 +5,31 @@ import { AdminFrame } from '@/components/AdminData';
 import { getProjects } from '@/lib/api';
 import type { Project } from '@/lib/types';
 
+function projectDisplay(project: Project) {
+  if (project.slug === 'v-town') {
+    return {
+      name: 'ROHO',
+      category: 'My home. My soul.',
+      summary:
+        'A new kind of coastal community where residences, sport and social life come together - designed around the way people want to live.',
+    };
+  }
+
+  if (project.slug === 'ona-towers') {
+    return {
+      name: 'ONA Towers',
+      category: 'Leave above. See beyond.',
+      summary: project.summary || 'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
+    };
+  }
+
+  return {
+    name: project.name,
+    category: project.category,
+    summary: project.summary,
+  };
+}
+
 export default function Page() {
   const [items, setItems] = useState<Project[]>([]);
   const [error, setError] = useState('');
@@ -23,6 +48,9 @@ export default function Page() {
       <article><span>Featured</span><strong>{featured || '—'}</strong><small>Priority projects</small></article>
     </div>
     {error && <div className="adminNotice error">{error}</div>}
-    <div className="adminProjectGrid adminProjectGridPremium">{items.map((project)=><article key={project.id}><div><p className="eyebrow">{project.category || 'ONIRIA project'}</p><h2>{project.name}</h2><p>{project.summary || 'Project information is being prepared.'}</p></div><div><small>Status</small><strong>{project.status}</strong><small>Location</small><strong>{project.location || 'Available on enquiry'}</strong></div></article>)}</div>
+    <div className="adminProjectGrid adminProjectGridPremium">{items.map((project)=>{
+      const display = projectDisplay(project);
+      return <article key={project.id}><div><p className="eyebrow">{display.category || 'ONIRIA project'}</p><h2>{display.name}</h2><p>{display.summary || 'Project information is being prepared.'}</p></div><div><small>Status</small><strong>{project.status}</strong><small>Location</small><strong>{project.location || 'Available on enquiry'}</strong></div></article>;
+    })}</div>
   </AdminFrame>;
 }

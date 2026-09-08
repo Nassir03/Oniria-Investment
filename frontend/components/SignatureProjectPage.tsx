@@ -254,7 +254,7 @@ function OnaTowersPage() {
         <Image src="/images/project-pages/ona-hero-towers.jpg" alt="ONA Towers in Zanzibar" fill priority quality={92} sizes="100vw" />
         <div className="signatureHeroShade" />
         <div className="signatureHeroCopy">
-          <p>Landmark Residences</p>
+          <p>Leave above. See beyond.</p>
           <h1>ONA Towers</h1>
           <span>Elevated living in the heart of Zanzibar.<br/>Two iconic towers designed for light, space and connection.</span>
         </div>
@@ -295,10 +295,10 @@ function VTownPage() {
   ];
 
   const residences = [
-    ['/images/project-pages/vtown-entry.jpg', 'V Town coastal residence'],
-    ['/images/project-pages/vtown-bedroom-ocean.jpg', 'V Town ocean-view bedroom'],
-    ['/images/project-pages/vtown-kitchen.jpg', 'V Town contemporary kitchen'],
-    ['/images/project-pages/vtown-bedroom-arch.jpg', 'V Town arched bedroom'],
+    ['/images/project-pages/vtown-entry.jpg', 'ROHO coastal residence'],
+    ['/images/project-pages/vtown-bedroom-ocean.jpg', 'ROHO ocean-view bedroom'],
+    ['/images/project-pages/vtown-kitchen.jpg', 'ROHO contemporary kitchen'],
+    ['/images/project-pages/vtown-bedroom-arch.jpg', 'ROHO arched bedroom'],
   ];
 
   const amenities: Array<[IconName, string, string]> = [
@@ -317,7 +317,7 @@ function VTownPage() {
       <section className="signatureHero vTownHero">
         <Image
           src="/images/v-town-villa.png"
-          alt="V Town coastal villa in Fumba, Zanzibar"
+          alt="ROHO coastal villa in Fumba, Zanzibar"
           fill
           priority
           quality={92}
@@ -325,8 +325,8 @@ function VTownPage() {
         />
         <div className="signatureHeroShade" />
         <div className="signatureHeroCopy vTownHeroCopy">
-          <h1>V TOWN</h1>
-          <strong>The Art of Living</strong>
+          <h1>ROHO</h1>
+          <strong>My home. My soul.</strong>
           <span>A masterplanned coastal community in Fumba, where art, wellbeing and nature come together to create an elevated way of life.</span>
         </div>
       </section>
@@ -336,14 +336,14 @@ function VTownPage() {
           <p className="signatureSectionKicker alignLeft">The Essence</p>
           <div className="signatureRule" />
           <h2>More than a place<br/>to live.<br/>A way to live.</h2>
-          <p>V Town is thoughtfully designed to harmonize modern living with Zanzibar&apos;s natural beauty. Every space, every detail, every experience is crafted for balance and connection.</p>
+          <p>ROHO is thoughtfully designed to harmonize modern living with Zanzibar&apos;s natural beauty. Every space, every detail, every experience is crafted for balance and connection.</p>
         </div>
         <div className="vTownEssenceImage">
-          <Image src="/images/project-pages/vtown-living.jpg" alt="V Town contemporary coastal living space" fill quality={92} sizes="(max-width:800px) 100vw, 58vw"/>
+          <Image src="/images/project-pages/vtown-living.jpg" alt="ROHO contemporary coastal living space" fill quality={92} sizes="(max-width:800px) 100vw, 58vw"/>
         </div>
       </section>
 
-      <section className="vTownFeatureStrip signatureSectionIvory" aria-label="V Town highlights">
+      <section className="vTownFeatureStrip signatureSectionIvory" aria-label="ROHO highlights">
         {highlights.map(([icon, title, copy]) => (
           <article key={title}>
             <ProjectIcon name={icon}/>
@@ -369,11 +369,11 @@ function VTownPage() {
       </section>
 
       <section className="vTownArtOfLiving">
-        <Image src="/images/project-pages/vtown-entry.jpg" alt="V Town landscaped arrival and coastal architecture" fill quality={92} sizes="100vw"/>
+        <Image src="/images/project-pages/vtown-entry.jpg" alt="ROHO landscaped arrival and coastal architecture" fill quality={92} sizes="100vw"/>
         <div className="vTownArtShade" />
         <div className="vTownArtInner">
           <div className="vTownArtIntro">
-            <p className="signatureSectionKicker alignLeft">The Art of Living</p>
+            <p className="signatureSectionKicker alignLeft">My home. My soul.</p>
             <h2>Live well.<br/>Every day.</h2>
             <p>Wellbeing, connection and inspiration are woven into every moment.</p>
           </div>

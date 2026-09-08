@@ -31,7 +31,7 @@ const fallbackProjects = [
     id: 'ona-towers',
     slug: 'ona-towers',
     name: 'ONA Towers',
-    category: 'Residential',
+    category: 'Leave above. See beyond',
     location: '',
     summary:
       'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
@@ -39,9 +39,9 @@ const fallbackProjects = [
   {
     id: 'v-town',
     slug: 'v-town',
-    name: 'V Town',
-    category: 'Mixed-use',
-    location: 'Fumba, Zanzibar',
+    name: 'ROHO',
+    category: 'My home. My soul.',
+    location: '',
     summary:
       'A new kind of coastal community where residences, sport and social life come together — designed around the way people want to live.',
   },
@@ -67,14 +67,14 @@ const projectPresentation: Record<
   'ona-towers': {
     number: '03',
     name: 'ONA Towers',
-    subheading: 'Landmark Residences',
+    subheading: 'Leave above. See beyond',
     summary:
       'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
   },
   'v-town': {
     number: '04',
-    name: 'V Town',
-    subheading: 'The Art of Living',
+    name: 'ROHO',
+    subheading: 'My home. My soul.',
     summary:
       'A new kind of coastal community where residences, sport and social life come together — designed around the way people want to live.',
   },

@@ -9208,7 +9208,7 @@ body,
 .onaAmenitiesGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:42px 28px}.onaAmenitiesGrid article{text-align:center}.onaAmenitiesGrid svg{width:40px;height:40px;margin:0 auto 14px;fill:none;stroke:#53677b;stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round}.onaAmenitiesGrid h3{max-width:150px;margin:0 auto;font:700 10px/1.35 var(--sans);letter-spacing:.05em;text-transform:uppercase}
 
 
-/* V Town */
+/* ROHO */
 .vTownHero>img{object-position:center 54%;filter:saturate(.96) contrast(1.02)}
 .vTownHero .signatureHeroShade{background:linear-gradient(90deg,rgba(3,22,41,.80) 0%,rgba(3,22,41,.52) 33%,rgba(3,22,41,.13) 67%,rgba(3,22,41,.03) 100%),linear-gradient(0deg,rgba(3,22,41,.24),transparent 56%)}
 .vTownHeroCopy{width:min(620px,45vw)}

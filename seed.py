@@ -25,7 +25,7 @@ PROJECTS = [
     {
         'slug': 'ona-towers',
         'name': 'ONA Towers',
-        'category': 'Residential',
+        'category': 'Leave above. See beyond.',
         'location': 'Location details available on enquiry',
         'summary': 'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
         'featured': True,
@@ -33,12 +33,12 @@ PROJECTS = [
     },
     {
         'slug': 'v-town',
-        'name': 'V Town',
-        'category': 'Mixed-use',
+        'name': 'ROHO',
+        'category': 'My home. My soul.',
         'location': 'Location details available on enquiry',
         'summary': 'A new ONIRIA residential expression composed around calm architecture, greenery and everyday quality of life.',
         'featured': False,
-        'media': [('/images/v-town-villa.webp','V Town villa concept visualization'),('/images/room.png','ONIRIA residential interior concept visualization')],
+        'media': [('/images/v-town-villa.webp','ROHO villa concept visualization'),('/images/room.png','ONIRIA residential interior concept visualization')],
     },
 ]
 
@@ -46,7 +46,7 @@ BUSINESS_AREAS = [
     ('destination-development', 'Destination Development', 'Destination concepts that align architecture, landscape and experience around a clear sense of place.'),
     ('hospitality', 'Hospitality', 'Guest experiences considered from arrival and dining through private rooms and shared spaces.'),
     ('residential', 'Residential', 'Homes designed around comfort, light, materiality and an understated sense of premium living.'),
-    ('mixed-use', 'Mixed-use', 'Integrated environments where complementary uses contribute to a coherent destination experience.'),
+    ('mixed-use', 'Integrated Living', 'Integrated environments where complementary uses contribute to a coherent destination experience.'),
 ]
 
 async def main():
