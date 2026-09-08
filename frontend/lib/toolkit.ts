@@ -129,13 +129,13 @@ export const publicToolkitProjects = [
   {
     slug: 'ona-towers',
     name: 'ONA Towers',
-    slogan: '1. Ishi juu, ona zaidi.',
+    slogan: 'Leave above. See beyond.',
     cover_image_url: '/images/toolkit/covers/4-payment-plan.webp',
   },
   {
     slug: 'roho',
     name: 'ROHO',
-    slogan: '2. Nyumbani kwangu. Roho yangu',
+    slogan: 'My home. My soul',
     cover_image_url: '/images/toolkit/covers/2-project-brief.webp',
   },
 ] as const;
