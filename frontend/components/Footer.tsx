@@ -21,16 +21,26 @@ const socialLinks = [
       </svg>
     ),
   },
-  // Facebook and YouTube are kept here for later, but hidden from the footer for now.
-  // {
-  //   label: 'Facebook',
-  //   href: 'https://www.facebook.com/',
-  //   icon: (
-  //     <svg viewBox="0 0 24 24" aria-hidden="true">
-  //       <path d="M13.5 21v-8h2.8l.42-3.15H13.5V7.83c0-.91.26-1.53 1.6-1.53H16.8V3.5c-.3-.04-1.3-.13-2.48-.13-2.46 0-4.14 1.5-4.14 4.25v2.23H7.4V13h2.78v8h3.32Z" className="socialFill" />
-  //     </svg>
-  //   ),
-  // },
+  {
+    label: 'LinkedIn',
+    href: 'https://www.linkedin.com/company/oniriainvestments',
+    icon: (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5.4 8.8h3.1V19H5.4V8.8Z" className="socialFill" />
+        <path d="M7 4.1a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6Z" className="socialFill" />
+        <path d="M10.8 8.8h3v1.4c.44-.78 1.52-1.65 3.12-1.65 3.33 0 3.95 2.2 3.95 5.05V19h-3.1v-4.8c0-1.15-.02-2.62-1.6-2.62-1.6 0-1.85 1.25-1.85 2.54V19h-3.1V8.8Z" className="socialFill" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Facebook',
+    href: 'https://web.facebook.com/oniriainvestments',
+    icon: (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M13.5 21v-8h2.8l.42-3.15H13.5V7.83c0-.91.26-1.53 1.6-1.53H16.8V3.5c-.3-.04-1.3-.13-2.48-.13-2.46 0-4.14 1.5-4.14 4.25v2.23H7.4V13h2.78v8h3.32Z" className="socialFill" />
+      </svg>
+    ),
+  },
   // {
   //   label: 'YouTube',
   //   href: 'https://www.youtube.com/',

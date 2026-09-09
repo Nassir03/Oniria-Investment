@@ -180,7 +180,7 @@ export const publicToolkitSequence: ReadonlyArray<{
     category: 'project_brief',
     title: 'Project Briefing',
     file_url:
-      'https://canva.link/f6oy7foc2f3ij59',
+      'https://drive.google.com/file/d/1DNFaT06IRXSbiN03DXU-0yb7VpL6XAXF/view?usp=sharing',
     cover_image_url: '/images/toolkit/covers/2-project-brief.webp',
     sort_order: 40,
   },
@@ -188,7 +188,7 @@ export const publicToolkitSequence: ReadonlyArray<{
     category: 'floor_plans',
     title: 'Floor Plans',
     file_url:
-      'https://canva.link/ro7wohcl6afed27',
+      'https://drive.google.com/file/d/11AwAzHuOI5TiKW87Wcfm-voM2cvpmrdt/view?usp=sharing',
     cover_image_url: '/images/toolkit/covers/3-floor-plans.webp',
     sort_order: 50,
   },
