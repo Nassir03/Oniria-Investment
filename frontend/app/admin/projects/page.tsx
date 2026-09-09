@@ -18,7 +18,7 @@ function projectDisplay(project: Project) {
   if (project.slug === 'ona-towers') {
     return {
       name: 'ONA Towers',
-      category: 'Leave above. See beyond.',
+      category: 'Live above. See beyond.',
       summary: project.summary || 'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
     };
   }

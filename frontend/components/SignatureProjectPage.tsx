@@ -254,7 +254,7 @@ function OnaTowersPage() {
         <Image src="/images/project-pages/ona-hero-towers.jpg" alt="ONA Towers in Zanzibar" fill priority quality={92} sizes="100vw" />
         <div className="signatureHeroShade" />
         <div className="signatureHeroCopy">
-          <p>Leave above. See beyond.</p>
+          <p>Live above. See beyond.</p>
           <h1>ONA Towers</h1>
           <span>Elevated living in the heart of Zanzibar.<br/>Two iconic towers designed for light, space and connection.</span>
         </div>

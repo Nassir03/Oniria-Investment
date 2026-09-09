@@ -110,12 +110,12 @@ export const toolkitProjects: ToolkitProject[] = [
   {
     slug: 'ona-towers',
     name: 'ONA Towers',
-    slogan: 'Ishi juu, ona zaidi.',
+    slogan: 'Live above. See beyond.',
   },
   {
     slug: 'roho',
     name: 'ROHO',
-    slogan: 'Nyumbani kwangu. Roho yangu',
+    slogan: 'My home. My soul.',
   },
 ];
 
@@ -129,7 +129,7 @@ export const publicToolkitProjects = [
   {
     slug: 'ona-towers',
     name: 'ONA Towers',
-    slogan: 'Leave above. See beyond.',
+    slogan: 'Live above. See beyond.',
     cover_image_url: '/images/toolkit/covers/4-payment-plan.webp',
   },
   {
@@ -172,7 +172,7 @@ export const publicToolkitSequence: ReadonlyArray<{
     category: 'brochure',
     title: 'Brochure',
     file_url:
-      'https://drive.google.com/file/d/1bupjZHDpBByA36p2PeroY1XiqJrxCPAZ/view?usp=sharing',
+      'https://canva.link/dn2l8mubochcdmb',
     cover_image_url: '/images/toolkit/covers/1-brochure.webp',
     sort_order: 30,
   },
@@ -180,7 +180,7 @@ export const publicToolkitSequence: ReadonlyArray<{
     category: 'project_brief',
     title: 'Project Briefing',
     file_url:
-      'https://drive.google.com/file/d/1ui8jUIKPY4Id02s1HwdJMyCiXAZqjDVH/view?usp=drive_link',
+      'https://canva.link/f6oy7foc2f3ij59',
     cover_image_url: '/images/toolkit/covers/2-project-brief.webp',
     sort_order: 40,
   },
@@ -188,7 +188,7 @@ export const publicToolkitSequence: ReadonlyArray<{
     category: 'floor_plans',
     title: 'Floor Plans',
     file_url:
-      'https://drive.google.com/file/d/1HJ9DzHvzuFHAqK4AuMmsSBGEZWeVemJc/view?usp=drive_link',
+      'https://canva.link/ro7wohcl6afed27',
     cover_image_url: '/images/toolkit/covers/3-floor-plans.webp',
     sort_order: 50,
   },

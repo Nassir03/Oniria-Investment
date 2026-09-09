@@ -30,7 +30,7 @@ const fallbackDetails: Record<string, Detail> = {
   },
   'ona-towers': {
     name: 'ONA Towers',
-    subheading: 'Leave above. See beyond',
+    subheading: 'Live above. See beyond',
     summary:
       'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
     hero: '/images/ona-towers-attached.png',

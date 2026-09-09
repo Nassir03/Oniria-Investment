@@ -31,7 +31,7 @@ const fallbackProjects = [
     id: 'ona-towers',
     slug: 'ona-towers',
     name: 'ONA Towers',
-    category: 'Leave above. See beyond',
+    category: 'Live above. See beyond',
     location: '',
     summary:
       'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
@@ -67,7 +67,7 @@ const projectPresentation: Record<
   'ona-towers': {
     number: '03',
     name: 'ONA Towers',
-    subheading: 'Leave above. See beyond',
+    subheading: 'Live above. See beyond',
     summary:
       'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
   },

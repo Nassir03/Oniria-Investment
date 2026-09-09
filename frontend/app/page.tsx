@@ -21,7 +21,7 @@ const collection = [
   },
   {
     name: 'ONA Towers',
-    descriptor: 'Leave above. See beyond.',
+    descriptor: 'Live above. See beyond.',
     image: '/images/ona-towers-attached.png',
     href: '/projects/ona-towers',
     external: false,
