@@ -172,7 +172,7 @@ export const publicToolkitSequence: ReadonlyArray<{
     category: 'brochure',
     title: 'Brochure',
     file_url:
-      'https://canva.link/dn2l8mubochcdmb',
+      'https://drive.google.com/file/d/1wezB8IQwKBMqXqEGa5450E5JzM3GCCWM/view?usp=sharing',
     cover_image_url: '/images/toolkit/covers/1-brochure.webp',
     sort_order: 30,
   },

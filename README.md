@@ -45,6 +45,7 @@ Run:
 
 ```powershell
 .\scripts\configure-local.ps1
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --host 127.0.0.1 --port 6200
 ```
 
 Enter the same PostgreSQL password that works with `psql`. The script URL-encodes special characters such as `@` automatically, so you do not need to manually write `%40`.
