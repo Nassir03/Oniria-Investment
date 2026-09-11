@@ -65,9 +65,25 @@ async def main():
             project.status = 'published'
             project.featured = data['featured']
             project.sort_order = i
-            existing_urls = set((await db.scalars(select(ProjectMedia.url).where(ProjectMedia.project_id == project.id))).all())
+            desired_media = data['media']
+            desired_urls = {url for url, _alt in desired_media}
+            existing_media = (
+                await db.scalars(select(ProjectMedia).where(ProjectMedia.project_id == project.id))
+            ).all()
+            media_by_url = {media.url: media for media in existing_media}
+
+            for media in existing_media:
+                if media.url not in desired_urls:
+                    await db.delete(media)
+
             for order, (url, alt) in enumerate(data['media']):
-                if url not in existing_urls:
+                media = media_by_url.get(url)
+                if media:
+                    media.alt_text = alt
+                    media.media_type = 'image'
+                    media.is_concept = True
+                    media.sort_order = order
+                else:
                     db.add(ProjectMedia(project_id=project.id,url=url,alt_text=alt,media_type='image',is_concept=True,sort_order=order))
 
         for i, (slug, name, summary) in enumerate(BUSINESS_AREAS):
