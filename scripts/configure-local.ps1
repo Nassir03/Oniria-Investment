@@ -33,7 +33,7 @@ DATABASE_URL=$databaseUrl
 SUPABASE_URL=
 SUPABASE_JWT_ISSUER=
 SUPABASE_JWKS_URL=
-SUPABASE_SERVICE_ROLE_KEY=
+SUPABASE_SECRET_KEY=
 STORAGE_BUCKET=oniria-media
 RESEND_API_KEY=
 CONTACT_NOTIFICATION_EMAIL=oniriaassist@gmail.com
@@ -41,7 +41,7 @@ EMAIL_FROM=ONIRIA Investments <oniriaassist@gmail.com>
 SENTRY_DSN=
 LEAD_RATE_LIMIT_PER_MINUTE=10
 MAX_UPLOAD_BYTES=10485760
-ALLOWED_UPLOAD_MIME_TYPES=image/jpeg,image/png,image/webp,image/avif
+ALLOWED_UPLOAD_MIME_TYPES=image/jpeg,image/png,image/webp,image/avif,application/pdf,video/mp4,video/webm
 "@
 
 Set-Content -Path .env -Value $envText -Encoding UTF8

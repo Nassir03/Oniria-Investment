@@ -1,13 +1,13 @@
 from functools import lru_cache
 from typing import Annotated, List
 
-from pydantic import field_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file='.env',
+        env_file=('.env', '../.env'),
         env_file_encoding='utf-8',
         case_sensitive=False,
         extra='ignore',
@@ -31,6 +31,8 @@ class Settings(BaseSettings):
     supabase_url: str | None = None
     supabase_jwt_issuer: str | None = None
     supabase_jwks_url: str | None = None
+    supabase_secret_key: str | None = None
+    # Backward-compatible local fallback for existing .env files.
     supabase_service_role_key: str | None = None
     storage_bucket: str = 'oniria-media'
 
@@ -81,6 +83,7 @@ class Settings(BaseSettings):
         'supabase_url',
         'supabase_jwt_issuer',
         'supabase_jwks_url',
+        'supabase_secret_key',
         'supabase_service_role_key',
         'resend_api_key',
         'contact_notification_email',
@@ -90,6 +93,12 @@ class Settings(BaseSettings):
     @classmethod
     def blank_to_none(cls, value):
         return None if value == '' else value
+
+    @model_validator(mode='after')
+    def use_legacy_supabase_service_role_key(self):
+        if self.supabase_secret_key is None and self.supabase_service_role_key is not None:
+            self.supabase_secret_key = self.supabase_service_role_key
+        return self
 
 
 @lru_cache

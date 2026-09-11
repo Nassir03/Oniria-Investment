@@ -43,7 +43,7 @@ class FakeClient:
 def install_fake_storage(monkeypatch):
     bucket = FakeBucket()
     monkeypatch.setattr(storage_service.settings, 'supabase_url', 'https://example.supabase.co')
-    monkeypatch.setattr(storage_service.settings, 'supabase_service_role_key', 'service-role')
+    monkeypatch.setattr(storage_service.settings, 'supabase_secret_key', 'secret-key')
     monkeypatch.setattr(storage_service.settings, 'storage_bucket', 'oniria-media')
     monkeypatch.setattr(storage_service, 'create_client', lambda *_: FakeClient(bucket))
     return bucket

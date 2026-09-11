@@ -25,9 +25,9 @@ def _safe_filename(name: str) -> str:
 
 
 def _storage_client():
-    if not settings.supabase_url or not settings.supabase_service_role_key:
+    if not settings.supabase_url or not settings.supabase_secret_key:
         raise AppError('storage_not_configured', 'Storage service is not configured.', 503)
-    return create_client(settings.supabase_url, settings.supabase_service_role_key)
+    return create_client(settings.supabase_url, settings.supabase_secret_key)
 
 
 def _storage_public_url(path: str) -> str:
