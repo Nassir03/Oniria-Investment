@@ -81,7 +81,7 @@ class UploadSignRequest(BaseModel):
     filename: str
     content_type: str
     size_bytes: int
-    folder: str = 'admin'
+    folder: str = 'toolkit'
 
 
 class UploadSignResponse(BaseModel):
