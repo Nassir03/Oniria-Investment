@@ -1,5 +1,4 @@
 import sentry_sdk
-from pathlib import Path
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -38,15 +37,6 @@ app.include_router(api_router, prefix=settings.api_v1_prefix)
 
 # Local media storage is used only during local development.
 # Production uploads are stored in Supabase Storage.
-
-if settings.environment == "local":
-    MEDIA_ROOT = Path(__file__).resolve().parents[1] / "uploads"
-    MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
-
-    app.mount("/media",
-        StaticFiles(directory=str(MEDIA_ROOT)),
-        name="media",)
-
 
 @app.get('/health', tags=['health'])
 async def health():
