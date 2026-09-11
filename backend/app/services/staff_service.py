@@ -14,13 +14,13 @@ ALLOWED_STAFF_ROLES = {'admin', 'editor', 'content_manager', 'sales'}
 
 
 def _admin_auth():
-    if not settings.supabase_url or not settings.supabase_service_role_key:
+    if not settings.supabase_url or not settings.supabase_secret_key:
         raise AppError(
             'staff_management_not_configured',
             'Supabase server credentials are required for staff management.',
             503,
         )
-    client = create_client(settings.supabase_url, settings.supabase_service_role_key)
+    client = create_client(settings.supabase_url, settings.supabase_secret_key)
     return client.auth.admin
 
 
