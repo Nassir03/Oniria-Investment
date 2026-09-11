@@ -3,7 +3,7 @@ from io import BytesIO, StringIO
 import csv
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, File, Query, Request, Response, UploadFile
+from fastapi import APIRouter, Depends, File, Query, Response, UploadFile
 from sqlalchemy import cast, Date, func, literal_column, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -26,7 +26,7 @@ from app.services.notification_service import (
     mark_notification_read,
     normalize_notification_preferences,
 )
-from app.services.storage_service import create_signed_upload, delete_storage_files, save_local_newsroom_image, save_local_profile_image
+from app.services.storage_service import create_signed_upload, delete_storage_files, save_newsroom_image, save_profile_image
 from app.services.staff_service import create_staff, delete_staff, list_staff, update_staff
 from fastapi.responses import StreamingResponse
 
@@ -542,26 +542,18 @@ async def admin_update_lead(lead_id: UUID, payload: LeadUpdate, db: AsyncSession
 
 @router.post('/uploads/newsroom-image')
 async def upload_newsroom_image(
-    request: Request,
     file: UploadFile = File(...),
     _: StaffPrincipal = Depends(require_roles('admin','editor','content_manager')),
 ):
-    public_path = await save_local_newsroom_image(file)
-    # Store a stable relative media path rather than a localhost/backend URL.
-    # The frontend proxies /media to the configured backend, so the same DB
-    # value works locally and after deployment.
-    return {'url': public_path, 'path': public_path}
+    return await save_newsroom_image(file)
 
 
 @router.post('/uploads/profile-image')
 async def upload_profile_image(
-    request: Request,
     file: UploadFile = File(...),
     staff: StaffPrincipal = Depends(get_current_staff),
 ):
-    public_path = await save_local_profile_image(file, staff.id)
-    base = str(request.base_url).rstrip('/')
-    return {'url': f'{base}{public_path}', 'path': public_path}
+    return await save_profile_image(file, staff.id)
 
 
 @router.post('/uploads/sign', response_model=UploadSignResponse)

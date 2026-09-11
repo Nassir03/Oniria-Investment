@@ -58,6 +58,17 @@ class Settings(BaseSettings):
             return [x.strip() for x in value.split(',') if x.strip()]
         return value
 
+    @field_validator('debug', mode='before')
+    @classmethod
+    def parse_debug_label(cls, value):
+        if isinstance(value, str):
+            normalized = value.strip().lower()
+            if normalized in {'release', 'production', 'prod'}:
+                return False
+            if normalized in {'development', 'dev', 'local'}:
+                return True
+        return value
+
     @field_validator('database_url')
     @classmethod
     def validate_database_url(cls, value: str) -> str:
