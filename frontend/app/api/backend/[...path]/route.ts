@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
+const internalBase = process.env.BACKEND_INTERNAL_URL?.replace(/\/$/, '');
+
 const BACKEND_BASE = (
-  process.env.INTERNAL_API_BASE_URL ||
-  process.env.BACKEND_API_BASE_URL ||
-  'http://127.0.0.1:6200/api/v1'
+  internalBase
+    ? `${internalBase}/api/v1`
+    : process.env.INTERNAL_API_BASE_URL ||
+      process.env.BACKEND_API_BASE_URL ||
+      'http://127.0.0.1:6200/api/v1'
 ).replace(/\/$/, '');
 
 function targetUrl(request: NextRequest, path: string[]) {

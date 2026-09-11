@@ -2,12 +2,13 @@ import ast
 import json
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+BACKEND_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 def admin_route_methods(path: str) -> set[str]:
     """Read FastAPI route decorators without importing optional runtime SDKs."""
-    source = (ROOT / 'app' / 'api' / 'routes' / 'admin.py').read_text(encoding='utf-8')
+    source = (BACKEND_ROOT / 'app' / 'api' / 'routes' / 'admin.py').read_text(encoding='utf-8')
     tree = ast.parse(source)
     methods: set[str] = set()
 
@@ -50,19 +51,19 @@ def test_toolkit_admin_route_contract_is_complete():
 
 
 def test_cloudflare_dynamic_routes_run_worker_first():
-    config = json.loads((ROOT / 'frontend' / 'wrangler.jsonc').read_text(encoding='utf-8'))
+    config = json.loads((PROJECT_ROOT / 'frontend' / 'wrangler.jsonc').read_text(encoding='utf-8'))
     routes = config['assets']['run_worker_first']
     assert routes is True or {'/api/*', '/media/*'}.issubset(set(routes))
 
 
 def test_toolkit_sql_editor_migration_is_present():
-    migration = (ROOT / 'database' / 'migrations' / '007_project_toolkit_assets.sql').read_text(encoding='utf-8').lower()
+    migration = (PROJECT_ROOT / 'database' / 'migrations' / '007_project_toolkit_assets.sql').read_text(encoding='utf-8').lower()
     assert 'create table if not exists project_toolkit_assets' in migration
     assert 'preview_storage_path' in migration
 
 
 def test_backend_env_example_uses_settings_key_names():
-    env_text = (ROOT / '.env.example').read_text(encoding='utf-8')
-    assert 'SUPABASE_SERVICE_ROLE_KEY=' in env_text
-    assert 'SUPABASE_SECRET_KEY=' not in env_text
+    env_text = (PROJECT_ROOT / '.env.example').read_text(encoding='utf-8')
+    assert 'SUPABASE_SECRET_KEY=' in env_text
+    assert 'SUPABASE_SERVICE_ROLE_KEY=' not in env_text
     assert 'supabase.supabase.co' not in env_text

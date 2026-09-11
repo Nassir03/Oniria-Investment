@@ -9,17 +9,23 @@ import type { ToolkitAsset } from './toolkit';
 export const PUBLIC_API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:6200/api/v1';
 
-const BROWSER_API_BASE = '/api/backend';
-
 function apiBase(): string {
   if (typeof window !== 'undefined') {
-    return BROWSER_API_BASE;
+    return '/api/backend';
+  }
+
+  const internalBase =
+    process.env.BACKEND_INTERNAL_URL?.replace(/\/$/, '');
+
+  if (internalBase) {
+    return `${internalBase}/api/v1`;
   }
 
   return (
     process.env.INTERNAL_API_BASE_URL ||
     process.env.BACKEND_API_BASE_URL ||
-    PUBLIC_API_BASE
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    'http://127.0.0.1:6200/api/v1'
   ).replace(/\/$/, '');
 }
 

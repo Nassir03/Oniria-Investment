@@ -27,14 +27,14 @@ def create_signed_upload(filename: str, content_type: str, size_bytes: int, fold
         raise AppError('unsupported_file_type', 'This file type is not allowed.', 400)
     if size_bytes <= 0 or size_bytes > settings.max_upload_bytes:
         raise AppError('invalid_file_size', f'Upload must be between 1 and {settings.max_upload_bytes} bytes.', 400)
-    if not settings.supabase_url or not settings.supabase_service_role_key:
+    if not settings.supabase_url or not settings.supabase_secret_key:
         raise AppError('storage_not_configured', 'Storage service is not configured.', 503)
 
     safe = _safe_filename(filename)
     folder = re.sub(r'[^A-Za-z0-9/_-]+', '-', folder).strip('/') or 'admin'
     path = f'{folder}/{secrets.token_hex(8)}-{safe}'
 
-    client = create_client(settings.supabase_url, settings.supabase_service_role_key)
+    client = create_client(settings.supabase_url, settings.supabase_secret_key)
     result = client.storage.from_(settings.storage_bucket).create_signed_upload_url(path)
     if not isinstance(result, dict):
         result = getattr(result, 'model_dump', lambda: {})()
@@ -125,10 +125,10 @@ def delete_storage_files(paths: list[str | None]) -> None:
 
     if not clean:
         return
-    if not settings.supabase_url or not settings.supabase_service_role_key:
+    if not settings.supabase_url or not settings.supabase_secret_key:
         raise AppError('storage_not_configured', 'Storage service is not configured.', 503)
 
-    client = create_client(settings.supabase_url, settings.supabase_service_role_key)
+    client = create_client(settings.supabase_url, settings.supabase_secret_key)
     result = client.storage.from_(settings.storage_bucket).remove(clean)
     # supabase-py raises for transport/auth errors. Some versions return an
     # object/dict; no additional response parsing is needed for successful removal.
