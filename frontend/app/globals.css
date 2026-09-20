@@ -6160,8 +6160,9 @@ body,
 
 @media(max-width:850px){
   .siteHeader .mobileMenu>a{
-    font-family:var(--montserrat-medium);
-    font-weight:500;
+    font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+    font-weight:400;
+    letter-spacing:-.025em;
     text-transform:none;
   }
 }
