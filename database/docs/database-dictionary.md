@@ -80,7 +80,7 @@ RLS: enabled, no public policy (backend/service-role access only).
 
 \## projects
 
-The four ONIRIA portfolio projects (Stone Town, Michamvi, ONA Towers, ROHO).
+The four ONIRIA portfolio projects (Stone Town, Michamvi, ÔNA Towers, MALǓA).
 
 
 

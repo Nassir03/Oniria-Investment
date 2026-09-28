@@ -29,15 +29,15 @@ const fallbackDetails: Record<string, Detail> = {
     hero: '/images/oniria-michamvi-attached.png',
   },
   'ona-towers': {
-    name: 'ONA Towers',
+    name: 'ÔNA Towers',
     subheading: 'Live above. See beyond',
     summary:
       'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
     hero: '/images/ona-towers-attached.png',
   },
   'v-town': {
-    name: 'MALUA',
-    subheading: 'My home. My soul.',
+    name: 'MALǓA',
+    subheading: 'A world of your own',
     summary:
       'A new kind of coastal community where residences, sport and social life come together — designed around the way people want to live.',
     hero: '/images/v-town-attached.png',

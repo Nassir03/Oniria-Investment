@@ -251,11 +251,11 @@ function OnaTowersPage() {
   return (
     <main className="signatureProjectPage onaTowersProjectPage">
       <section className="signatureHero onaHero">
-        <Image src="/images/project-pages/ona-hero-towers.jpg" alt="ONA Towers in Zanzibar" fill priority quality={92} sizes="100vw" />
+        <Image src="/images/project-pages/ona-hero-towers.jpg" alt="ÔNA Towers in Zanzibar" fill priority quality={92} sizes="100vw" />
         <div className="signatureHeroShade" />
         <div className="signatureHeroCopy">
           <p>Live above. See beyond.</p>
-          <h1>ONA Towers</h1>
+          <h1>ÔNA Towers</h1>
           <span>Elevated living in the heart of Zanzibar.<br/>Two iconic towers designed for light, space and connection.</span>
         </div>
       </section>
@@ -265,8 +265,8 @@ function OnaTowersPage() {
       </section>
 
       <section className="onaProjectIntro signatureSectionIvory">
-        <div className="onaProjectCopy"><p className="signatureSectionKicker alignLeft">The Project</p><h2>A New Landmark<br/>for Zanzibar</h2><p>ONA Towers is a contemporary residential development in Mazizini, Stone Town.</p><p>Two 11-storey towers rise above the city, bringing together elegant homes, premium amenities and vibrant community spaces.</p><ul><li>Prime location in the heart of Stone Town</li><li>Walking distance to the ocean</li><li>Contemporary architecture with tropical character</li><li>Designed for comfort, privacy and community</li></ul><Link href="/contact" className="signatureTextLink">Enquire Now <span>→</span></Link></div>
-        <div className="onaProjectImage"><Image src="/images/project-pages/ona-aerial.jpg" alt="Aerial view of ONA Towers" fill quality={92} sizes="(max-width:800px) 100vw, 58vw"/></div>
+        <div className="onaProjectCopy"><p className="signatureSectionKicker alignLeft">The Project</p><h2>A New Landmark<br/>for Zanzibar</h2><p>ÔNA Towers is a contemporary residential development in Mazizini, Stone Town.</p><p>Two 11-storey towers rise above the city, bringing together elegant homes, premium amenities and vibrant community spaces.</p><ul><li>Prime location in the heart of Stone Town</li><li>Walking distance to the ocean</li><li>Contemporary architecture with tropical character</li><li>Designed for comfort, privacy and community</li></ul><Link href="/contact" className="signatureTextLink">Enquire Now <span>→</span></Link></div>
+        <div className="onaProjectImage"><Image src="/images/project-pages/ona-aerial.jpg" alt="Aerial view of ÔNA Towers" fill quality={92} sizes="(max-width:800px) 100vw, 58vw"/></div>
       </section>
 
       <section className="onaResidences signatureNavySection">
@@ -275,7 +275,7 @@ function OnaTowersPage() {
       </section>
 
       <section className="onaAmenities signatureSectionIvory">
-        <div className="onaAmenitiesIntro"><p className="signatureSectionKicker alignLeft">Amenities & Services</p><h2>Designed for<br/>Everyday Wellbeing</h2><p>From daily essentials to moments of leisure, ONA Towers offers facilities that elevate your lifestyle.</p></div>
+        <div className="onaAmenitiesIntro"><p className="signatureSectionKicker alignLeft">Amenities & Services</p><h2>Designed for<br/>Everyday Wellbeing</h2><p>From daily essentials to moments of leisure, ÔNA Towers offers facilities that elevate your lifestyle.</p></div>
         <div className="onaAmenitiesGrid">{amenities.map(([icon,title])=><article key={title}><ProjectIcon name={icon}/><h3>{title}</h3></article>)}</div>
       </section>
 
@@ -295,10 +295,10 @@ function VTownPage() {
   ];
 
   const residences = [
-    ['/images/project-pages/vtown-entry.jpg', 'MALUA coastal residence'],
-    ['/images/project-pages/vtown-bedroom-ocean.jpg', 'MALUA ocean-view bedroom'],
-    ['/images/project-pages/vtown-kitchen.jpg', 'MALUA contemporary kitchen'],
-    ['/images/project-pages/vtown-bedroom-arch.jpg', 'MALUA arched bedroom'],
+    ['/images/project-pages/vtown-entry.jpg', 'MALǓA coastal residence'],
+    ['/images/project-pages/vtown-bedroom-ocean.jpg', 'MALǓA ocean-view bedroom'],
+    ['/images/project-pages/vtown-kitchen.jpg', 'MALǓA contemporary kitchen'],
+    ['/images/project-pages/vtown-bedroom-arch.jpg', 'MALǓA arched bedroom'],
   ];
 
   const amenities: Array<[IconName, string, string]> = [
@@ -317,7 +317,7 @@ function VTownPage() {
       <section className="signatureHero vTownHero">
         <Image
           src="/images/v-town-villa.png"
-          alt="MALUA coastal villa in Fumba, Zanzibar"
+          alt="MALǓA coastal villa in Fumba, Zanzibar"
           fill
           priority
           quality={92}
@@ -325,8 +325,8 @@ function VTownPage() {
         />
         <div className="signatureHeroShade" />
         <div className="signatureHeroCopy vTownHeroCopy">
-          <h1>MALUA</h1>
-          <strong>My home. My soul.</strong>
+          <h1 aria-label="MALǓA">MAL<span className="maluaMarkedU">U</span>A</h1>
+          <strong>A world of your own</strong>
           <span>A masterplanned coastal community in Fumba, where art, wellbeing and nature come together to create an elevated way of life.</span>
         </div>
       </section>
@@ -336,14 +336,14 @@ function VTownPage() {
           <p className="signatureSectionKicker alignLeft">The Essence</p>
           <div className="signatureRule" />
           <h2>More than a place<br/>to live.<br/>A way to live.</h2>
-          <p>MALUA is thoughtfully designed to harmonize modern living with Zanzibar&apos;s natural beauty. Every space, every detail, every experience is crafted for balance and connection.</p>
+          <p>MALǓA is thoughtfully designed to harmonize modern living with Zanzibar&apos;s natural beauty. Every space, every detail, every experience is crafted for balance and connection.</p>
         </div>
         <div className="vTownEssenceImage">
-          <Image src="/images/project-pages/vtown-living.jpg" alt="MALUA contemporary coastal living space" fill quality={92} sizes="(max-width:800px) 100vw, 58vw"/>
+          <Image src="/images/project-pages/vtown-living.jpg" alt="MALǓA contemporary coastal living space" fill quality={92} sizes="(max-width:800px) 100vw, 58vw"/>
         </div>
       </section>
 
-      <section className="vTownFeatureStrip signatureSectionIvory" aria-label="MALUA highlights">
+      <section className="vTownFeatureStrip signatureSectionIvory" aria-label="MALǓA highlights">
         {highlights.map(([icon, title, copy]) => (
           <article key={title}>
             <ProjectIcon name={icon}/>
@@ -369,11 +369,11 @@ function VTownPage() {
       </section>
 
       <section className="vTownArtOfLiving">
-        <Image src="/images/project-pages/vtown-entry.jpg" alt="MALUA landscaped arrival and coastal architecture" fill quality={92} sizes="100vw"/>
+        <Image src="/images/project-pages/vtown-entry.jpg" alt="MALǓA landscaped arrival and coastal architecture" fill quality={92} sizes="100vw"/>
         <div className="vTownArtShade" />
         <div className="vTownArtInner">
           <div className="vTownArtIntro">
-            <p className="signatureSectionKicker alignLeft">My home. My soul.</p>
+            <p className="signatureSectionKicker alignLeft">A world of your own</p>
             <h2>Live well.<br/>Every day.</h2>
             <p>Wellbeing, connection and inspiration are woven into every moment.</p>
           </div>

@@ -8,8 +8,8 @@ import type { Project } from '@/lib/types';
 function projectDisplay(project: Project) {
   if (project.slug === 'v-town') {
     return {
-      name: 'MALUA',
-      category: 'My home. My soul.',
+      name: 'MALǓA',
+      category: 'A world of your own',
       summary:
         'A new kind of coastal community where residences, sport and social life come together - designed around the way people want to live.',
     };
@@ -17,7 +17,7 @@ function projectDisplay(project: Project) {
 
   if (project.slug === 'ona-towers') {
     return {
-      name: 'ONA Towers',
+      name: 'ÔNA Towers',
       category: 'Live above. See beyond.',
       summary: project.summary || 'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
     };

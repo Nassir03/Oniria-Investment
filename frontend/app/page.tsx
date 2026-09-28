@@ -20,15 +20,15 @@ const collection = [
     external: false,
   },
   {
-    name: 'ONA Towers',
+    name: 'ÔNA Towers',
     descriptor: 'Live above. See beyond.',
     image: '/images/ona-towers-attached.png',
     href: '/projects/ona-towers',
     external: false,
   },
   {
-    name: 'MALUA',
-    descriptor: 'My home. My soul.',
+    name: 'MALǓA',
+    descriptor: 'A world of your own',
     image: '/images/v-town-attached.png',
     href: '/projects/v-town',
     external: false,

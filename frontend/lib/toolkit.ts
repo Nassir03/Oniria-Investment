@@ -27,7 +27,7 @@ export type ToolkitAsset = {
    * - all toolkit records
    * - global assets
    *
-   * This keeps ONIRIA Investments independent from ONA Towers and ROHO.
+   * This keeps ONIRIA Investments independent from ÔNA Towers and MALǓA.
    */
   project_slug: string;
 
@@ -109,13 +109,13 @@ export const toolkitProjects: ToolkitProject[] = [
   },
   {
     slug: 'ona-towers',
-    name: 'ONA Towers',
+    name: 'ÔNA Towers',
     slogan: 'Live above. See beyond.',
   },
   {
     slug: 'malua',
-    name: 'MALUA',
-    slogan: 'My home. My soul.',
+    name: 'MALǓA',
+    slogan: 'A world of your own',
   },
 ];
 
@@ -128,20 +128,20 @@ export const toolkitProjects: ToolkitProject[] = [
 export const publicToolkitProjects = [
   {
     slug: 'ona-towers',
-    name: 'ONA Towers',
+    name: 'ÔNA Towers',
     slogan: 'Live above. See beyond.',
     cover_image_url: '/images/toolkit/covers/4-payment-plan.webp',
   },
   {
     slug: 'malua',
-    name: 'MALUA',
-    slogan: 'My home. My soul',
-    cover_image_url: '/images/toolkit/covers/2-project-brief.webp',
+    name: 'MALǓA',
+    slogan: 'A world of your own',
+    cover_image_url: '/images/toolkit/malua/malua-arrival.png',
   },
 ] as const;
 
 /**
- * Exact public carousel order for both ONA Towers and MALUA.
+ * Exact public carousel order for both ÔNA Towers and MALǓA.
  * The visible covers are fixed, while admin/API records keep control of the
  * real file links when they exist.
  */
@@ -200,6 +200,69 @@ export const publicToolkitSequence: ReadonlyArray<{
     cover_image_url: '/images/toolkit/covers/4-payment-plan.webp',
     sort_order: 60,
   },
+
+];
+
+/**
+ * MALǓA public toolkit uses its own supplied documents and imagery.
+ * This sequence is intentionally separate so ÔNA Towers keeps all of its
+ * existing toolkit links and covers unchanged.
+ */
+export const maluaPublicToolkitSequence: ReadonlyArray<{
+  category: ToolkitCategory;
+  title: string;
+  file_url: string;
+  cover_image_url: string;
+  sort_order: number;
+}> = [
+  {
+    category: 'logo',
+    title: 'Logo',
+    file_url:
+      'https://drive.google.com/file/d/1n4wSSr7QsDToAySyVTkQ6E836NG3SXlR/view?usp=drive_link',
+    cover_image_url: '/images/toolkit/malua/malua-ocean.png',
+    sort_order: 10,
+  },
+  {
+    category: 'masterplan',
+    title: 'Masterplan',
+    file_url:
+      'https://drive.google.com/file/d/1eB5dmAQzswJCN3VrBwQ1L-AfT4C0m0jI/view?usp=drive_link',
+    cover_image_url: '/images/toolkit/malua/malua-texture.png',
+    sort_order: 20,
+  },
+  {
+    category: 'brochure',
+    title: 'Brochure',
+    file_url:
+      'https://drive.google.com/file/d/1wezB8IQwKBMqXqEGa5450E5JzM3GCCWM/view?usp=sharing',
+    cover_image_url: '/images/toolkit/malua/malua-shore.png',
+    sort_order: 30,
+  },
+  {
+    category: 'project_brief',
+    title: 'Project Briefing',
+    file_url:
+      'https://drive.google.com/file/d/1DNFaT06IRXSbiN03DXU-0yb7VpL6XAXF/view?usp=sharing',
+    cover_image_url: '/images/toolkit/malua/malua-villa.png',
+    sort_order: 40,
+  },
+  {
+    category: 'floor_plans',
+    title: 'Villa Plan',
+    file_url:
+      'https://drive.google.com/file/d/1fYGwP83hvqgniqzppUDlTuxhqLWfDXYT/view?usp=drive_link',
+    cover_image_url: '/images/toolkit/malua/malua-interior.png',
+    sort_order: 50,
+  },
+  {
+    category: 'payment_plan',
+    title: 'Payment Plan',
+    file_url:
+      'https://drive.google.com/file/d/1yDMPb3shRfDIsg5bSTQS72S5YPtcfT7b/view?usp=drive_link',
+    cover_image_url: '/images/toolkit/malua/malua-arrival.png',
+    sort_order: 60,
+  },
 ];
 
 export const toolkitCategoryDefaultCover: Record<
@@ -240,7 +303,7 @@ const pdfCategories = new Set<ToolkitCategory>([
  *
  * all-projects:gallery
  * ona-towers:gallery
- * roho:gallery
+ * malua:gallery
  *
  * Those are three completely different records.
  */
@@ -290,7 +353,7 @@ export function getToolkitAssetsForProject(
  *   ? apiAssets
  *   : fallbackToolkitAssets
  *
- * That means as soon as ONE database asset exists for ONA Towers,
+ * That means as soon as ONE database asset exists for ÔNA Towers,
  * all fallback ONIRIA Investments assets disappear.
  *
  * NEW behaviour:
@@ -298,7 +361,7 @@ export function getToolkitAssetsForProject(
  * - Preserve every fallback ONIRIA item.
  * - Replace only the SAME project + SAME category if the API contains it.
  * - Add ONA items separately.
- * - Add ROHO items separately.
+ * - Add MALǓA items separately.
  *
  * Example:
  *
@@ -346,7 +409,7 @@ export function mergeToolkitAssets(
   /**
    * Add API items which do not correspond to a fallback item.
    *
-   * This is where ONA Towers and ROHO records are added without
+   * This is where ÔNA Towers and MALǓA records are added without
    * touching ONIRIA Investments.
    */
   for (const apiAsset of apiAssets) {
@@ -405,12 +468,29 @@ export function getPublicToolkitAssetsForProject(
     }
   }
 
-  return publicToolkitSequence.map((slot) => {
+  const sequence =
+    projectSlug === 'malua'
+      ? maluaPublicToolkitSequence
+      : publicToolkitSequence;
+
+  return sequence.map((slot) => {
     const existing = byCategory.get(slot.category);
 
     if (existing) {
       return {
         ...existing,
+        ...(projectSlug === 'malua'
+          ? {
+              title: slot.title,
+              file_url: slot.file_url,
+              media_type: inferToolkitMediaType(
+                slot.file_url,
+                slot.category,
+              ),
+              is_public: true,
+              is_downloadable: true,
+            }
+          : {}),
         preview_image_url: slot.cover_image_url,
         sort_order: slot.sort_order,
       };
@@ -514,7 +594,7 @@ export function inferToolkitMediaType(
  *
  * These are ONIRIA Investments defaults.
  *
- * They remain available even when ONA Towers or ROHO receives
+ * They remain available even when ÔNA Towers or MALǓA receives
  * database/API Toolkit records.
  *
  * Database records replace a fallback only when BOTH:

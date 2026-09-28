@@ -30,7 +30,7 @@ const fallbackProjects = [
   {
     id: 'ona-towers',
     slug: 'ona-towers',
-    name: 'ONA Towers',
+    name: 'ÔNA Towers',
     category: 'Live above. See beyond',
     location: '',
     summary:
@@ -39,8 +39,8 @@ const fallbackProjects = [
   {
     id: 'v-town',
     slug: 'v-town',
-    name: 'MALUA',
-    category: 'My home. My soul.',
+    name: 'MALǓA',
+    category: 'A world of your own',
     location: '',
     summary:
       'A new kind of coastal community where residences, sport and social life come together — designed around the way people want to live.',
@@ -66,15 +66,15 @@ const projectPresentation: Record<
   },
   'ona-towers': {
     number: '03',
-    name: 'ONA Towers',
+    name: 'ÔNA Towers',
     subheading: 'Live above. See beyond',
     summary:
       'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
   },
   'v-town': {
     number: '04',
-    name: 'MALUA',
-    subheading: 'My home. My soul.',
+    name: 'MALǓA',
+    subheading: 'A world of your own',
     summary:
       'A new kind of coastal community where residences, sport and social life come together — designed around the way people want to live.',
   },

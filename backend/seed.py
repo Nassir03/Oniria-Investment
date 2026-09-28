@@ -24,21 +24,21 @@ PROJECTS = [
     },
     {
         'slug': 'ona-towers',
-        'name': 'ONA Towers',
+        'name': 'ÔNA Towers',
         'category': 'Leave above. See beyond.',
         'location': 'Location details available on enquiry',
         'summary': 'A contemporary residential concept with a premium arrival, light-filled homes and carefully considered shared spaces.',
         'featured': True,
-        'media': [('/images/outside-ona-tower.jpg','ONA Towers arrival concept visualization'),('/images/ona-tower.webp','ONA Towers exterior concept visualization'),('/images/room.png','ONA Towers bedroom concept visualization')],
+        'media': [('/images/outside-ona-tower.jpg','ÔNA Towers arrival concept visualization'),('/images/ona-tower.webp','ÔNA Towers exterior concept visualization'),('/images/room.png','ÔNA Towers bedroom concept visualization')],
     },
     {
         'slug': 'v-town',
-        'name': 'ROHO',
-        'category': 'My home. My soul.',
+        'name': 'MALǓA',
+        'category': 'A world of your own',
         'location': 'Location details available on enquiry',
         'summary': 'A new ONIRIA residential expression composed around calm architecture, greenery and everyday quality of life.',
         'featured': False,
-        'media': [('/images/v-town-villa.webp','ROHO villa concept visualization'),('/images/room.png','ONIRIA residential interior concept visualization')],
+        'media': [('/images/v-town-villa.webp','MALǓA villa concept visualization'),('/images/room.png','ONIRIA residential interior concept visualization')],
     },
 ]
 

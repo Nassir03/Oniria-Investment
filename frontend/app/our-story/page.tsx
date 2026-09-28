@@ -30,7 +30,7 @@ export default function Page() {
       <section className="about2026HeroFull" aria-label="About ONIRIA introduction">
         <Image
           src="/images/about-mazizini-rooftop-4pm.webp"
-          alt="ONA Towers rooftop leisure deck in Mazizini with pool, gym and dining terrace at 4pm"
+          alt="ÔNA Towers rooftop leisure deck in Mazizini with pool, gym and dining terrace at 4pm"
           fill
           priority
           sizes="100vw"
