@@ -295,10 +295,10 @@ function VTownPage() {
   ];
 
   const residences = [
-    ['/images/project-pages/vtown-entry.jpg', 'ROHO coastal residence'],
-    ['/images/project-pages/vtown-bedroom-ocean.jpg', 'ROHO ocean-view bedroom'],
-    ['/images/project-pages/vtown-kitchen.jpg', 'ROHO contemporary kitchen'],
-    ['/images/project-pages/vtown-bedroom-arch.jpg', 'ROHO arched bedroom'],
+    ['/images/project-pages/vtown-entry.jpg', 'MALUA coastal residence'],
+    ['/images/project-pages/vtown-bedroom-ocean.jpg', 'MALUA ocean-view bedroom'],
+    ['/images/project-pages/vtown-kitchen.jpg', 'MALUA contemporary kitchen'],
+    ['/images/project-pages/vtown-bedroom-arch.jpg', 'MALUA arched bedroom'],
   ];
 
   const amenities: Array<[IconName, string, string]> = [
@@ -317,7 +317,7 @@ function VTownPage() {
       <section className="signatureHero vTownHero">
         <Image
           src="/images/v-town-villa.png"
-          alt="ROHO coastal villa in Fumba, Zanzibar"
+          alt="MALUA coastal villa in Fumba, Zanzibar"
           fill
           priority
           quality={92}
@@ -325,7 +325,7 @@ function VTownPage() {
         />
         <div className="signatureHeroShade" />
         <div className="signatureHeroCopy vTownHeroCopy">
-          <h1>ROHO</h1>
+          <h1>MALUA</h1>
           <strong>My home. My soul.</strong>
           <span>A masterplanned coastal community in Fumba, where art, wellbeing and nature come together to create an elevated way of life.</span>
         </div>
@@ -336,14 +336,14 @@ function VTownPage() {
           <p className="signatureSectionKicker alignLeft">The Essence</p>
           <div className="signatureRule" />
           <h2>More than a place<br/>to live.<br/>A way to live.</h2>
-          <p>ROHO is thoughtfully designed to harmonize modern living with Zanzibar&apos;s natural beauty. Every space, every detail, every experience is crafted for balance and connection.</p>
+          <p>MALUA is thoughtfully designed to harmonize modern living with Zanzibar&apos;s natural beauty. Every space, every detail, every experience is crafted for balance and connection.</p>
         </div>
         <div className="vTownEssenceImage">
-          <Image src="/images/project-pages/vtown-living.jpg" alt="ROHO contemporary coastal living space" fill quality={92} sizes="(max-width:800px) 100vw, 58vw"/>
+          <Image src="/images/project-pages/vtown-living.jpg" alt="MALUA contemporary coastal living space" fill quality={92} sizes="(max-width:800px) 100vw, 58vw"/>
         </div>
       </section>
 
-      <section className="vTownFeatureStrip signatureSectionIvory" aria-label="ROHO highlights">
+      <section className="vTownFeatureStrip signatureSectionIvory" aria-label="MALUA highlights">
         {highlights.map(([icon, title, copy]) => (
           <article key={title}>
             <ProjectIcon name={icon}/>
@@ -369,7 +369,7 @@ function VTownPage() {
       </section>
 
       <section className="vTownArtOfLiving">
-        <Image src="/images/project-pages/vtown-entry.jpg" alt="ROHO landscaped arrival and coastal architecture" fill quality={92} sizes="100vw"/>
+        <Image src="/images/project-pages/vtown-entry.jpg" alt="MALUA landscaped arrival and coastal architecture" fill quality={92} sizes="100vw"/>
         <div className="vTownArtShade" />
         <div className="vTownArtInner">
           <div className="vTownArtIntro">

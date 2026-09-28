@@ -27,7 +27,7 @@ const collection = [
     external: false,
   },
   {
-    name: 'ROHO',
+    name: 'MALUA',
     descriptor: 'My home. My soul.',
     image: '/images/v-town-attached.png',
     href: '/projects/v-town',

@@ -113,8 +113,8 @@ export const toolkitProjects: ToolkitProject[] = [
     slogan: 'Live above. See beyond.',
   },
   {
-    slug: 'roho',
-    name: 'ROHO',
+    slug: 'malua',
+    name: 'MALUA',
     slogan: 'My home. My soul.',
   },
 ];
@@ -133,15 +133,15 @@ export const publicToolkitProjects = [
     cover_image_url: '/images/toolkit/covers/4-payment-plan.webp',
   },
   {
-    slug: 'roho',
-    name: 'ROHO',
+    slug: 'malua',
+    name: 'MALUA',
     slogan: 'My home. My soul',
     cover_image_url: '/images/toolkit/covers/2-project-brief.webp',
   },
 ] as const;
 
 /**
- * Exact public carousel order for both ONA Towers and ROHO.
+ * Exact public carousel order for both ONA Towers and MALUA.
  * The visible covers are fixed, while admin/API records keep control of the
  * real file links when they exist.
  */

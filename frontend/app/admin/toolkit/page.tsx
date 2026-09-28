@@ -424,7 +424,7 @@ export default function ToolkitAdminPage() {
      * Lock edit to the project's actual slug.
      *
      * The user can edit the asset, but cannot accidentally move it
-     * from ONIRIA Investments to ONA or ROHO.
+     * from ONIRIA Investments to ONA or MALUA.
      */
     setEditingId(item.id);
 
@@ -910,7 +910,7 @@ export default function ToolkitAdminPage() {
           Assets are kept
           separately for ONIRIA
           Investments, ONA Towers
-          and ROHO.
+          and MALUA.
         </p>
       </section>
 

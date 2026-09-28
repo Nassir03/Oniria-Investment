@@ -39,7 +39,7 @@ const fallbackProjects = [
   {
     id: 'v-town',
     slug: 'v-town',
-    name: 'ROHO',
+    name: 'MALUA',
     category: 'My home. My soul.',
     location: '',
     summary:
@@ -73,7 +73,7 @@ const projectPresentation: Record<
   },
   'v-town': {
     number: '04',
-    name: 'ROHO',
+    name: 'MALUA',
     subheading: 'My home. My soul.',
     summary:
       'A new kind of coastal community where residences, sport and social life come together — designed around the way people want to live.',

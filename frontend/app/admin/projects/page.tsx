@@ -8,7 +8,7 @@ import type { Project } from '@/lib/types';
 function projectDisplay(project: Project) {
   if (project.slug === 'v-town') {
     return {
-      name: 'ROHO',
+      name: 'MALUA',
       category: 'My home. My soul.',
       summary:
         'A new kind of coastal community where residences, sport and social life come together - designed around the way people want to live.',
