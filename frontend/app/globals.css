@@ -10223,6 +10223,149 @@ body,
   }
 }
 
+
+/* =========================================================
+   PUBLIC TOOLKIT — DARK BROWN THEME
+   Scoped to .toolkitPage so the rest of the website and the
+   Toolkit administration UI keep their existing visual system.
+   ========================================================= */
+
+.toolkitPage{
+  --toolkit-brown-950:#120a06;
+  --toolkit-brown-925:#170d08;
+  --toolkit-brown-900:#1d100b;
+  --toolkit-brown-850:#25150e;
+  --toolkit-brown-800:#2d1a12;
+  --toolkit-brown-750:#382219;
+  --toolkit-brown-accent:#a98768;
+  --toolkit-brown-cream:#f4ede6;
+  background:var(--toolkit-brown-950);
+}
+
+.toolkitPage .toolkitExperience{
+  background:
+    radial-gradient(circle at 50% 38%,rgba(117,75,49,.38),transparent 36%),
+    linear-gradient(
+      180deg,
+      var(--toolkit-brown-850) 0%,
+      var(--toolkit-brown-900) 48%,
+      var(--toolkit-brown-950) 78%,
+      #0a0503 100%
+    );
+}
+
+.toolkitPage .toolkitExperience::before{
+  background:
+    linear-gradient(
+      115deg,
+      rgba(198,161,124,.075),
+      transparent 27%,
+      transparent 72%,
+      rgba(151,103,70,.075)
+    );
+}
+
+.toolkitPage .toolkitAmbient{
+  background:
+    radial-gradient(
+      circle,
+      rgba(181,135,95,.18),
+      rgba(92,52,31,.12) 44%,
+      transparent 73%
+    );
+}
+
+.toolkitPage .toolkitProjectCardShade{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(31,16,9,.02),
+      rgba(22,11,6,.2)
+    );
+}
+
+.toolkitPage .toolkitProjectCard:hover .toolkitProjectCardShade,
+.toolkitPage .toolkitProjectCard:focus-visible .toolkitProjectCardShade{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(35,18,10,0),
+      rgba(28,14,8,.08)
+    );
+}
+
+.toolkitPage .toolkitProjectPicker select{
+  background:rgba(79,43,27,.16);
+}
+
+.toolkitPage .toolkitProjectPicker option{
+  background:var(--toolkit-brown-850);
+  color:#fff;
+}
+
+.toolkitPage .toolkitCard,
+.toolkitPage .toolkitCard--logo,
+.toolkitPage .toolkitCard--logo>img{
+  background:var(--toolkit-brown-800);
+}
+
+.toolkitPage .toolkitCardShade,
+.toolkitPage .toolkitCard--logo .toolkitCardShade{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(42,22,13,.23) 0%,
+      rgba(29,15,9,.055) 46%,
+      rgba(15,7,4,.76) 100%
+    );
+}
+
+.toolkitPage .toolkitSquareAction,
+.toolkitPage .toolkitCard--logo .toolkitSquareAction{
+  background:rgba(54,30,19,.44);
+}
+
+.toolkitPage .toolkitSquareAction:hover,
+.toolkitPage .toolkitCard--logo .toolkitSquareAction:hover{
+  background:rgba(244,237,230,.96);
+  border-color:rgba(244,237,230,.96);
+  color:var(--toolkit-brown-800);
+}
+
+.toolkitPage .toolkitControls>button{
+  background:rgba(54,30,19,.46);
+}
+
+.toolkitPage .toolkitControls>button:hover{
+  background:rgba(244,237,230,.96);
+  border-color:#fff;
+  color:var(--toolkit-brown-800);
+}
+
+.toolkitPage .toolkitModalBackdrop{
+  background:rgba(15,7,4,.93);
+}
+
+.toolkitPage .toolkitModalPanel{
+  background:var(--toolkit-brown-900);
+  box-shadow:0 40px 110px rgba(8,3,2,.64);
+}
+
+.toolkitPage .toolkitModalMedia{
+  background:var(--toolkit-brown-950);
+}
+
+.toolkitPage .toolkitIconButton:hover{
+  background:var(--toolkit-brown-cream);
+  border-color:var(--toolkit-brown-cream);
+  color:var(--toolkit-brown-800);
+}
+
+.toolkitPage .toolkitEmptyProject{
+  border-color:rgba(232,211,195,.16);
+  background:rgba(92,52,31,.12);
+}
+
 /* =========================================================
    TOOLKIT ADMINISTRATION
    ========================================================= */
