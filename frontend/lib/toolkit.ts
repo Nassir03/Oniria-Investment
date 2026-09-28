@@ -153,12 +153,13 @@ export const publicToolkitSequence: ReadonlyArray<{
   sort_order: number;
 }> = [
   {
-    category: 'logo',
-    title: 'Logo',
+    category: 'brochure',
+    title: 'Brochure',
     file_url:
-      'https://drive.google.com/file/d/1SfgaphlnuV2_AiGKmEFeLgagevCnrZFy/view?usp=drive_link',
-    cover_image_url: '/images/toolkit/covers/6-Logo.webp',
+      'https://drive.google.com/file/d/1wezB8IQwKBMqXqEGa5450E5JzM3GCCWM/view?usp=sharing',
+    cover_image_url: '/images/toolkit/covers/1-brochure.webp',
     sort_order: 10,
+    
   },
   {
     category: 'masterplan',
@@ -169,11 +170,11 @@ export const publicToolkitSequence: ReadonlyArray<{
     sort_order: 20,
   },
   {
-    category: 'brochure',
-    title: 'Brochure',
+    category: 'logo',
+    title: 'Logo',
     file_url:
-      'https://drive.google.com/file/d/1wezB8IQwKBMqXqEGa5450E5JzM3GCCWM/view?usp=sharing',
-    cover_image_url: '/images/toolkit/covers/1-brochure.webp',
+      'https://drive.google.com/file/d/1SfgaphlnuV2_AiGKmEFeLgagevCnrZFy/view?usp=drive_link',
+    cover_image_url: '/images/toolkit/covers/6-Logo.webp',
     sort_order: 30,
   },
   {
@@ -216,11 +217,11 @@ export const maluaPublicToolkitSequence: ReadonlyArray<{
   sort_order: number;
 }> = [
   {
-    category: 'logo',
-    title: 'Logo',
+    category: 'floor_plans',
+    title: 'Villa Plan',
     file_url:
-      'https://drive.google.com/file/d/1n4wSSr7QsDToAySyVTkQ6E836NG3SXlR/view?usp=drive_link',
-    cover_image_url: '/images/toolkit/malua/malua-ocean.png',
+      'https://drive.google.com/file/d/1fYGwP83hvqgniqzppUDlTuxhqLWfDXYT/view?usp=drive_link',
+    cover_image_url: '/images/toolkit/malua/malua-interior.png',
     sort_order: 10,
   },
   {
@@ -248,11 +249,11 @@ export const maluaPublicToolkitSequence: ReadonlyArray<{
     sort_order: 40,
   },
   {
-    category: 'floor_plans',
-    title: 'Villa Plan',
+    category: 'logo',
+    title: 'Logo',
     file_url:
-      'https://drive.google.com/file/d/1fYGwP83hvqgniqzppUDlTuxhqLWfDXYT/view?usp=drive_link',
-    cover_image_url: '/images/toolkit/malua/malua-interior.png',
+      'https://drive.google.com/file/d/1n4wSSr7QsDToAySyVTkQ6E836NG3SXlR/view?usp=drive_link',
+    cover_image_url: '/images/toolkit/malua/malua-ocean.png',
     sort_order: 50,
   },
   {
