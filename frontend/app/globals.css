@@ -10711,3 +10711,42 @@ body,
 
 /* Link-based toolkit admin keeps URL fields full-width at every breakpoint. */
 .toolkitAdminWideField{grid-column:1/-1}
+
+/* Toolkit project chooser: keep both project cards reachable on phones.
+   The original full-height flex container clipped the stacked second card. */
+@media (max-width: 900px) {
+  .toolkitPage {
+    overflow-x: clip;
+  }
+
+  .toolkitPage .toolkitExperience {
+    overflow: visible;
+  }
+
+  .toolkitPage .toolkitLanding {
+    flex: 0 0 auto;
+    min-height: auto;
+    overflow: visible;
+    overscroll-behavior: auto;
+  }
+
+  .toolkitPage .toolkitProjectGrid {
+    margin: 28px auto 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .toolkitPage .toolkitProjectGrid {
+    gap: 28px;
+    padding: 12px 0 36px;
+  }
+
+  .toolkitPage .toolkitProjectCardMedia {
+    height: clamp(220px, 39svh, 350px);
+  }
+
+  .toolkitPage .toolkitProjectCard {
+    width: 100%;
+    touch-action: manipulation;
+  }
+}
